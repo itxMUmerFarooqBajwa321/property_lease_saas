@@ -1,0 +1,119 @@
+html {
+  font-size: 14px;
+}
+
+.app-container {
+    min-height: 100vh;
+}
+
+@media (max-width: 767.98px) {
+    .main-content {
+        /* No special margins needed; flex-grow-1 handles expansion */
+    }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+/* ===== Property Image Carousel ===== */
+
+.property-carousel {
+    position: relative;
+    overflow: hidden;
+    border-top-left-radius: 0.75rem;
+    border-top-right-radius: 0.75rem;
+}
+
+.property-carousel img {
+    height: 230px;
+    width: 100%;
+    object-fit: cover;
+    transition: transform .4s ease, filter .4s ease;
+}
+
+/* Subtle zoom + contrast */
+.property-carousel:hover img {
+    transform: scale(1.06);
+    filter: brightness(0.95);
+}
+
+/* Overlay gradient for text readability */
+.property-carousel::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to bottom,
+        rgba(0,0,0,0) 50%,
+        rgba(0,0,0,.45) 100%
+    );
+    pointer-events: none;
+}
+
+/* Carousel controls — minimal & elegant */
+.carousel-control-prev,
+.carousel-control-next {
+    width: 12%;
+    opacity: 0;
+    transition: opacity .3s ease;
+}
+
+.property-carousel:hover .carousel-control-prev,
+.property-carousel:hover .carousel-control-next {
+    opacity: 1;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-color: rgba(0,0,0,.55);
+    border-radius: 50%;
+    padding: 14px;
+}
+
+/* Indicators styled as dots */
+.carousel-indicators [data-bs-target] {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: rgba(255,255,255,.6);
+}
+
+.carousel-indicators .active {
+    background-color: #fff;
+}
+
+/* Card elevation */
+.property-card {
+    transition: box-shadow .3s ease, transform .3s ease;
+}
+
+.property-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(0,0,0,.12);
+}
+
+.image-skeleton {
+    height: 230px;
+    background: linear-gradient(
+        90deg,
+        #eee 25%,
+        #f5f5f5 37%,
+        #eee 63%
+    );
+    animation: shimmer 1.4s infinite;
+}
+
+@keyframes shimmer {
+    0% { background-position: -468px 0; }
+    100% { background-position: 468px 0; }
+}

@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="../build/property-lease-saas.props" />
+</Project>

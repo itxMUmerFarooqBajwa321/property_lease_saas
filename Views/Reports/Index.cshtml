@@ -1,0 +1,169 @@
+@{
+    ViewBag.Title = "Reports";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-0">Reports</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/Dashboard/Index">Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Reports</li>
+                </ol>
+            </nav>
+        </div>
+        <button class="btn btn-outline-secondary">Export All</button>
+    </div>
+    
+    <ul class="nav nav-tabs" id="reportTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="rentRoll-tab" data-bs-toggle="tab" data-bs-target="#rentRoll" type="button" role="tab" aria-controls="rentRoll" aria-selected="true">Rent Roll</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="delinquency-tab" data-bs-toggle="tab" data-bs-target="#delinquency" type="button" role="tab" aria-controls="delinquency" aria-selected="false">Delinquency</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="occupancy-tab" data-bs-toggle="tab" data-bs-target="#occupancy" type="button" role="tab" aria-controls="occupancy" aria-selected="false">Occupancy</button>
+        </li>
+    </ul>
+    <div class="tab-content" id="reportTabsContent">
+        <div class="tab-pane fade show active" id="rentRoll" role="tabpanel" aria-labelledby="rentRoll-tab">
+            <div class="card shadow-sm mt-3">
+                <div class="card-header">
+                    <h5 class="mb-0">Rent Roll Summary</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <h6>Total Rent</h6>
+                                    <h4 class="text-success">$150,000</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <h6>Collected</h6>
+                                    <h4 class="text-primary">$125,000</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <h6>Pending</h6>
+                                    <h4 class="text-warning">$25,000</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Property</th>
+                                    <th>Unit</th>
+                                    <th>Tenant</th>
+                                    <th>Rent Amount</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Sunset Apartments</td>
+                                    <td>101</td>
+                                    <td>John Doe</td>
+                                    <td class="text-end">$1,200</td>
+                                    <td><span class="badge bg-success">Paid</span></td>
+                                </tr>
+                                <!-- More rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="delinquency" role="tabpanel" aria-labelledby="delinquency-tab">
+            <div class="card shadow-sm mt-3">
+                <div class="card-header">
+                    <h5 class="mb-0">Delinquency Report</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">12 tenants with overdue payments.</div>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Tenant</th>
+                                    <th>Property</th>
+                                    <th>Amount Due</th>
+                                    <th>Days Overdue</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Jane Smith</td>
+                                    <td>Ocean View</td>
+                                    <td class="text-end">$1,000</td>
+                                    <td>15</td>
+                                </tr>
+                                <!-- More rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="occupancy" role="tabpanel" aria-labelledby="occupancy-tab">
+            <div class="card shadow-sm mt-3">
+                <div class="card-header">
+                    <h5 class="mb-0">Occupancy Report</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <h6>Occupied Units</h6>
+                                    <h4>95%</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <h6>Vacant Units</h6>
+                                    <h4>5%</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Property</th>
+                                    <th>Total Units</th>
+                                    <th>Occupied</th>
+                                    <th>Vacant</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Sunset Apartments</td>
+                                    <td>10</td>
+                                    <td>9</td>
+                                    <td>1</td>
+                                </tr>
+                                <!-- More rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

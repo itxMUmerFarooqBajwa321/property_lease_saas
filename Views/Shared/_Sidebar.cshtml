@@ -1,0 +1,182 @@
+<!-- Role-aware sidebar with fixed width, full height, and offcanvas for mobile -->
+
+@if (User.FindFirst("UserType")?.Value == "Tenant")
+{
+    <nav class="sidebar bg-dark text-white vh-100 d-none d-md-flex flex-column" style="width: 260px;">
+        <div class="p-3">
+            <h5 class="text-white mb-4">Property SaaS</h5>
+            <ul class="nav flex-column">
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Dashboard"
+                        asp-action="Index">Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Properties"
+                        asp-action="Available">Properties</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Lease" asp-action="Index">My Lease</a>
+                </li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Payments"
+                        asp-action="Index">Payments</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Maintenance"
+                        asp-action="Index">Maintenance Requests</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Messages"
+                        asp-action="Index">Messages</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Documents"
+                        asp-action="Index">Documents</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Settings"
+                        asp-action="Index">Settings</a></li>
+            </ul>
+        </div>
+    </nav>
+}
+
+@if (User.FindFirst("UserType")?.Value == "Landlord")
+{
+    <nav class="sidebar bg-dark text-white vh-100 d-none d-md-flex flex-column" style="width: 260px;">
+        <div class="p-3">
+            <h5 class="text-white mb-4">Property SaaS</h5>
+            <ul class="nav flex-column">
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Dashboard"
+                        asp-action="Index">Dashboard</a></li>
+
+                <li class="nav-item mb-3"><small class="text-muted">Operations</small></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Properties"
+                        asp-action="My">Properties</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Units" asp-action="Index">Units</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Tenants" asp-action="Index">Tenants</a>
+                </li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Lease" asp-action="MyLeasedProperties">Leases</a>
+                </li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="LandlordMaintenance"
+                        asp-action="Requests">Maintenance</a></li>
+
+                <li class="nav-item mb-3"><small class="text-muted">Finance</small></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Payments"
+                        asp-action="Index">Payments</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Reports" asp-action="Index">Reports</a>
+                </li>
+
+                <li class="nav-item mb-3"><small class="text-muted">Communication</small></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Messages"
+                        asp-action="Index">Messages</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Documents"
+                        asp-action="Index">Documents</a></li>
+
+                <li class="nav-item mb-3"><small class="text-muted">Admin</small></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Settings"
+                        asp-action="Index">Settings</a></li>
+            </ul>
+        </div>
+    </nav>
+}
+
+@if (User.FindFirst("UserType")?.Value == "Mechanic")
+{
+    <nav class="sidebar bg-dark text-white vh-100 d-none d-md-flex flex-column" style="width: 260px;">
+        <div class="p-3">
+            <h5 class="text-white mb-4">Property SaaS</h5>
+            <ul class="nav flex-column">
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Dashboard"
+                        asp-action="Index">Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="MechanicMaintenance" asp-action="Available">Find
+                        Work</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Maintenance" asp-action="Index">Assigned
+                        Jobs</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Payments"
+                        asp-action="Index">Payments</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Messages"
+                        asp-action="Index">Messages</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Documents"
+                        asp-action="Index">Documents</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Settings"
+                        asp-action="Index">Settings</a></li>
+            </ul>
+        </div>
+    </nav>
+}
+
+<!-- Offcanvas for mobile (role-aware) -->
+<div class="offcanvas offcanvas-start bg-dark text-white" tabindex="-1" id="sidebarOffcanvas"
+    aria-labelledby="sidebarOffcanvasLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="sidebarOffcanvasLabel">Property SaaS</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+
+    <div class="offcanvas-body">
+
+        @if (User.FindFirst("UserType")?.Value == "Tenant")
+        {
+            <ul class="nav flex-column">
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Dashboard"
+                        asp-action="Index">Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Properties"
+                        asp-action="Available">Properties</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Lease" asp-action="Index">My Lease</a>
+                </li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Payments"
+                        asp-action="Index">Payments</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Maintenance"
+                        asp-action="Index">Maintenance Requests</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Messages"
+                        asp-action="Index">Messages</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Documents"
+                        asp-action="Index">Documents</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Settings"
+                        asp-action="Index">Settings</a></li>
+            </ul>
+        }
+
+        @if (User.FindFirst("UserType")?.Value == "Landlord")
+        {
+            <ul class="nav flex-column">
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Dashboard"
+                        asp-action="Index">Dashboard</a></li>
+                <li class="nav-item mb-3"><small class="text-muted">Operations</small></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Properties"
+                        asp-action="My">Properties</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Units" asp-action="Index">Units</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Tenants" asp-action="Index">Tenants</a>
+                </li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Lease" asp-action="MyLeasedProperties">Leases</a>
+                </li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="LandlordMaintenance"
+                        asp-action="Requests">Maintenance</a></li>
+
+                <li class="nav-item mb-3"><small class="text-muted">Finance</small></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Payments"
+                        asp-action="Index">Payments</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Reports" asp-action="Index">Reports</a>
+                </li>
+
+                <li class="nav-item mb-3"><small class="text-muted">Communication</small></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Messages"
+                        asp-action="Index">Messages</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Documents"
+                        asp-action="Index">Documents</a></li>
+
+                <li class="nav-item mb-3"><small class="text-muted">Admin</small></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Settings"
+                        asp-action="Index">Settings</a></li>
+            </ul>
+        }
+
+        @if (User.FindFirst("UserType")?.Value == "Mechanic")
+        {
+            <ul class="nav flex-column">
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Dashboard"
+                        asp-action="Index">Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="MechanicMaintenance" asp-action="Available">Find
+                        Work</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Maintenance" asp-action="Index">Assigned
+                        Jobs</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Payments"
+                        asp-action="Index">Payments</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Messages"
+                        asp-action="Index">Messages</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Documents"
+                        asp-action="Index">Documents</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Settings"
+                        asp-action="Index">Settings</a></li>
+            </ul>
+        }
+
+    </div>
+</div>

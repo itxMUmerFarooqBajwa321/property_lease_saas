@@ -1,0 +1,54 @@
+@using property_lease_saas.Models.Entities
+@model IEnumerable<Lease>
+
+
+<table class="table table-hover">
+<thead>
+<tr>
+    <th>Property</th>
+    <th>Requested On</th>
+    <th>Status</th>
+    <th>Action</th>
+</tr>
+</thead>
+
+<tbody>
+@foreach (Lease r in Model)
+{
+    <tr>
+        <td>@r.Property.Title</td>
+        <td>@r.RentAmount</td>
+
+        <td>
+            <span class="badge 
+                @(r.Status == LeaseStatus.Pending ? "bg-warning" :
+                  r.Status == LeaseStatus.Approved ? "bg-success" : "bg-danger")">
+                @r.Status
+            </span>
+        </td>
+
+        <td>
+            @if (r.Status == LeaseStatus.Pending)
+            {
+                <form asp-controller="Lease" asp-action="Approve" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="leaseId" value="@r.Id" />
+                    <button type="submit" class="btn btn-sm btn-success">
+                        Approve
+                    </button>
+                </form>
+
+                <form asp-controller="Lease" asp-action="Reject" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="leaseId" value="@r.Id" />
+                    <button type="submit" class="btn btn-sm btn-danger">
+                        Reject
+                    </button>
+                </form>
+            }
+        </td>
+    </tr>
+}
+
+</tbody>
+</table>

@@ -1,0 +1,25 @@
+@model IEnumerable<MaintenanceRequest>
+
+<h3>My Maintenance Requests</h3>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Status</th>
+            <th>Created</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var r in Model)
+        {
+            <tr>
+                <td>@r.Title</td>
+                <td>
+                    <span class="badge bg-secondary">@r.Status</span>
+                </td>
+                <td>@r.CreatedAt.ToShortDateString()</td>
+            </tr>
+        }
+    </tbody>
+</table>

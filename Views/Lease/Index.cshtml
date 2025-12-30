@@ -1,0 +1,43 @@
+@using property_lease_saas.Models.Entities
+@model List<Lease>
+
+<div class="container mt-4">
+    <h2 class="mb-4">My Lease Requests</h2>
+
+    <table class="table table-hover align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>Property</th>
+                <th>Rent</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var lease in Model)
+        {
+            <tr>
+                <td>@lease.Property.Title</td>
+                <td>Rs. @lease.RentAmount</td>
+                <td>@lease.StartDate.ToShortDateString()</td>
+                <td>@lease.EndDate.ToShortDateString()</td>
+                <td>
+                    @if (lease.Status == LeaseStatus.Pending)
+                    {
+                        <span class="badge bg-warning">Pending</span>
+                    }
+                    else if (lease.Status == LeaseStatus.Approved)
+                    {
+                        <span class="badge bg-success">Approved</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger">Rejected</span>
+                    }
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,75 @@
+@{
+    ViewBag.Title = "Properties";
+}
+@using  property_lease_saas.Models.Entities;
+@model IEnumerable<Property>    
+@using property_lease_saas.Infrastructure.Extensions;
+<div class="container-fluid">
+    <h1 class="mb-4">Properties</h1>
+    
+    <div class="d-flex justify-content-between mb-3">
+        <div class="d-flex justify-content-between mb-3">
+        <input class="form-control w-50" placeholder="Search properties..." />
+        @if (User.IsLandlord())
+        {
+            <a asp-action="Create" class="btn btn-primary">
+                + Add Property
+            </a>
+        }
+        </div>
+        @* <input type="text" class="form-control w-50" placeholder="Search properties...">
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#quickActionModal">Add Property</button> *@
+    </div>
+    
+    @if (User.IsTenant())
+    {
+        
+    }
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Address</th>
+                    @* <th>Units</th> *@
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="4" class="text-center text-muted py-4">
+                            No properties found.
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var p in Model)
+                    {
+                        <tr>
+                            <td>@p.Title</td>
+                            <td>@p.Address</td>
+                            @* <td>@p.TotalUnits</td> *@
+                            <td>
+                                <a asp-controller="Properties" asp-action="Details"
+                                asp-route-id="@p.Id"
+                                class="btn btn-sm btn-outline-primary">
+                                    View
+                                </a>
+
+                                <a asp-action="Delete"
+                                asp-route-id="@p.Id"
+                                class="btn btn-sm btn-outline-danger">
+                                    Delete
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+
+        </table>
+    </div>
+</div>

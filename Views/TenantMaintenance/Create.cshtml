@@ -1,0 +1,21 @@
+@{
+    ViewData["Title"] = "Request Maintenance";
+}
+
+<div class="container">
+    <h3>Request Maintenance</h3>
+
+    <form method="post">
+        <div class="mb-3">
+            <label>Title</label>
+            <input name="title" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+            <label>Description</label>
+            <textarea name="description" class="form-control" rows="4"></textarea>
+        </div>
+
+        <button class="btn btn-primary">Submit</button>
+    </form>
+</div>

@@ -1,0 +1,69 @@
+@{
+    ViewBag.Title = "Maintenance";
+}
+
+<div class="container-fluid">
+    <h1 class="mb-4">Maintenance</h1>
+    
+    <div class="d-flex justify-content-between mb-3">
+        <input type="text" class="form-control w-50" placeholder="Search tickets...">
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#quickActionModal">Add Ticket</button>
+    </div>
+    
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Ticket ID</th>
+                    <th>Property</th>
+                    <th>Description</th>
+                    <th>Priority</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>001</td>
+                    <td>Sunset Apartments</td>
+                    <td>Leaky faucet in Unit 101</td>
+                    <td><span class="badge bg-danger">High</span></td>
+                    <td><span class="badge bg-warning">In Progress</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary">View</button>
+                        <button class="btn btn-sm btn-outline-secondary">Edit</button>
+                        <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>002</td>
+                    <td>Ocean View Condos</td>
+                    <td>Broken light fixture</td>
+                    <td><span class="badge bg-warning">Medium</span></td>
+                    <td><span class="badge bg-success">Closed</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary">View</button>
+                        <button class="btn btn-sm btn-outline-secondary">Edit</button>
+                        <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>003</td>
+                    <td>Sunset Apartments</td>
+                    <td>HVAC repair</td>
+                    <td><span class="badge bg-info">Low</span></td>
+                    <td><span class="badge bg-secondary">Open</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary">View</button>
+                        <button class="btn btn-sm btn-outline-secondary">Edit</button>
+                        <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button>
+                    </td>
+                </tr>
+                <!-- Empty state -->
+                <tr class="d-none">
+                    <td colspan="6" class="text-center text-muted">No maintenance tickets found.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

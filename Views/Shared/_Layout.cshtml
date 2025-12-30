@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewBag.Title - Property Management SaaS</title>
+    <!-- Bootstrap 5 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <!-- Bootstrap Icons CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body class="bg-light">
+    <!-- Flex-based app shell: sidebar fixed width, main content flex-grow-1 -->
+
+    <div>
+    </div>
+    @* <div>
+        Authenticated: @User.Identity.IsAuthenticated
+        UserType: @User.FindFirst("UserType")?.Value
+    </div> *@
+
+    <div class="app-shell d-flex min-vh-100">
+        <!-- Sidebar -->
+        @Html.Partial("_Sidebar")
+        
+        <!-- Main content area -->
+        <div class="main-content flex-grow-1 d-flex flex-column">
+            <!-- Topbar -->
+            @Html.Partial("_Topbar")
+            
+            <!-- Page content renders here using RenderBody() -->
+            <main class="flex-grow-1 p-4">
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+    
+    <!-- Bootstrap 5 JS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+    <!-- Custom JS -->
+    <script src="~/js/site.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

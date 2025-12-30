@@ -1,0 +1,52 @@
+@{
+    ViewBag.Title = "Tenants";
+}
+
+<div class="container-fluid">
+    <h1 class="mb-4">Tenants</h1>
+    
+    <div class="d-flex justify-content-between mb-3">
+        <input type="text" class="form-control w-50" placeholder="Search tenants...">
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#quickActionModal">Add Tenant</button>
+    </div>
+    
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Property</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>John Doe</td>
+                    <td>john@example.com</td>
+                    <td>Sunset Apartments</td>
+                    <td><span class="badge bg-success">Active</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary">Edit</button>
+                        <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Jane Smith</td>
+                    <td>jane@example.com</td>
+                    <td>Ocean View Condos</td>
+                    <td><span class="badge bg-warning">Late</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary">Edit</button>
+                        <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button>
+                    </td>
+                </tr>
+                <!-- Empty state -->
+                <tr class="d-none">
+                    <td colspan="5" class="text-center text-muted">No tenants found.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

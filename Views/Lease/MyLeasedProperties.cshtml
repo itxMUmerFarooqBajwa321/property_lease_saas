@@ -1,0 +1,40 @@
+@using property_lease_saas.Models.Entities
+@model IEnumerable<Lease>
+
+<div class="container mt-4">
+    <h2 class="mb-4">My Leased Properties</h2>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            No properties are currently leased.
+        </div>
+    }
+    else
+    {
+        <div class="row">
+        @foreach (var lease in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">@lease.Property.Title</h5>
+                        <p class="text-muted">@lease.Property.Address</p>
+
+                        <p><strong>Rent:</strong> Rs. @lease.RentAmount</p>
+                        <p><strong>Tenant ID:</strong> @lease.TenantId</p>
+                        <p>
+                            <strong>Lease Period:</strong><br />
+                            @lease.StartDate.ToShortDateString()
+                            →
+                            @lease.EndDate.ToShortDateString()
+                        </p>
+
+                        <span class="badge bg-success">Active Lease</span>
+                    </div>
+                </div>
+            </div>
+        }
+        </div>
+    }
+</div>

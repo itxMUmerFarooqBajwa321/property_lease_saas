@@ -1,0 +1,235 @@
+is_global = true
+build_property.TargetFramework = net8.0
+build_property.TargetFramework = net8.0
+build_property.TargetPlatformMinVersion = 
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = property_lease_saas
+build_property.RootNamespace = property_lease_saas
+build_property.ProjectDir = /home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 8.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = /home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas
+build_property._RazorSourceGeneratorDebug = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Areas/Identity/Pages/Account/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXMvSWRlbnRpdHkvUGFnZXMvQWNjb3VudC9Mb2dpbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Areas/Identity/Pages/Account/Logout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXMvSWRlbnRpdHkvUGFnZXMvQWNjb3VudC9Mb2dvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Areas/Identity/Pages/Account/Register.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXMvSWRlbnRpdHkvUGFnZXMvQWNjb3VudC9SZWdpc3Rlci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Areas/Identity/Pages/Account/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXMvSWRlbnRpdHkvUGFnZXMvQWNjb3VudC9fVmlld0ltcG9ydHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Areas/Identity/Pages/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXMvSWRlbnRpdHkvUGFnZXMvX1ZhbGlkYXRpb25TY3JpcHRzUGFydGlhbC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Areas/Identity/Pages/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXMvSWRlbnRpdHkvUGFnZXMvX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Areas/Identity/Pages/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXMvSWRlbnRpdHkvUGFnZXMvX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/Dashboard/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRGFzaGJvYXJkL0luZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/Documents/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRG9jdW1lbnRzL0luZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9JbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/Home/Privacy.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9Qcml2YWN5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/LandlordMaintenance/Applications.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvTGFuZGxvcmRNYWludGVuYW5jZS9BcHBsaWNhdGlvbnMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/LandlordMaintenance/Requests.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvTGFuZGxvcmRNYWludGVuYW5jZS9SZXF1ZXN0cy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/LandlordMaintenance/VerifyCompleted.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvTGFuZGxvcmRNYWludGVuYW5jZS9WZXJpZnlDb21wbGV0ZWQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/Lease/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvTGVhc2UvSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/Lease/MyLeasedProperties.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvTGVhc2UvTXlMZWFzZWRQcm9wZXJ0aWVzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/Lease/Requests.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvTGVhc2UvUmVxdWVzdHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/Logout/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvTG9nb3V0L0luZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/Maintenance/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvTWFpbnRlbmFuY2UvSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/MechanicMaintenance/Available.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvTWVjaGFuaWNNYWludGVuYW5jZS9BdmFpbGFibGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/MechanicMaintenance/MyJobs.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvTWVjaGFuaWNNYWludGVuYW5jZS9NeUpvYnMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/MechanicMaintenance/x.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvTWVjaGFuaWNNYWludGVuYW5jZS94LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/Messages/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvTWVzc2FnZXMvSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/Payments/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUGF5bWVudHMvSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/Properties/Available.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJvcGVydGllcy9BdmFpbGFibGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/Properties/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJvcGVydGllcy9DcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/Properties/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJvcGVydGllcy9EZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/Properties/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJvcGVydGllcy9EZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/Properties/My.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJvcGVydGllcy9NeS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/Reports/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUmVwb3J0cy9JbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/Settings/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2V0dGluZ3MvSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/Shared/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL0Vycm9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/Shared/_EmptyState.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19FbXB0eVN0YXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/Shared/_Footer.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19Gb290ZXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/Shared/_KpiCard.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19LcGlDYXJkLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/Shared/_LoginPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19Mb2dpblBhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/Shared/_Modals.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19Nb2RhbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/Shared/_RecentTable.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19SZWNlbnRUYWJsZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/Shared/_Sidebar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19TaWRlYmFyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/Shared/_TableToolbar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19UYWJsZVRvb2xiYXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/Shared/_Toasts.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19Ub2FzdHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/Shared/_Topbar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19Ub3BiYXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/TenantMaintenance/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVGVuYW50TWFpbnRlbmFuY2UvQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/TenantMaintenance/MyRequests.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVGVuYW50TWFpbnRlbmFuY2UvTXlSZXF1ZXN0cy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/Tenants/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVGVuYW50cy9JbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/Units/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVW5pdHMvSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/Users/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVXNlcnMvRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/Users/Profile.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVXNlcnMvUHJvZmlsZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = b-hvdbeqr479

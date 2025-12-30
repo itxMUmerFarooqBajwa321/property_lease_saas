@@ -1,0 +1,109 @@
+@model IEnumerable<property_lease_saas.Models.Entities.MaintenanceRequest>
+
+@{
+    ViewData["Title"] = "My Maintenance Jobs";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4 fw-semibold">My Jobs</h2>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            You have no assigned maintenance jobs.
+        </div>
+    }
+    else
+    {
+        <div class="accordion" id="jobsAccordion">
+            @foreach (var job in Model)
+            {
+                var collapseId = $"job-{job.Id}";
+
+                <div class="accordion-item mb-3 shadow-sm">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#@collapseId">
+                            <div class="w-100 d-flex justify-content-between align-items-center">
+                                <strong>@job.Title</strong>
+                                <span class="badge @GetStatusBadge(job.Status)">
+                                    @job.Status
+                                </span>
+                            </div>
+                        </button>
+                    </h2>
+
+                    <div id="@collapseId" class="accordion-collapse collapse">
+                        <div class="accordion-body">
+
+                            <p class="text-muted">@job.Description</p>
+
+                            <!-- Start Work -->
+                            @if (job.Status == MaintenanceRequestStatus.Published)
+                            {
+                                <form asp-action="Start" method="post" class="mb-3">
+                                    <input type="hidden" name="requestId" value="@job.Id" />
+                                    <button class="btn btn-warning btn-sm">
+                                        Start Work
+                                    </button>
+                                </form>
+                            }
+
+                            <!-- Complete Job -->
+                            @if (job.Status == MaintenanceRequestStatus.InProgress)
+                            {
+                                <form asp-action="Complete"
+                                      method="post"
+                                      enctype="multipart/form-data"
+                                      class="border rounded p-3">
+
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="requestId" value="@job.Id" />
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Receipt</label>
+                                        <input type="file" name="receipt" class="form-control" required />
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Completion Image</label>
+                                        <input type="file" name="completionImage" class="form-control" required />
+                                    </div>
+
+                                    <button class="btn btn-success">
+                                        Mark as Completed
+                                    </button>
+                                </form>
+                            }
+
+                            <!-- Uploaded Evidence -->
+                            @if (!string.IsNullOrEmpty(job.CompletionImagePath))
+                            {
+                                <hr />
+                                <h6 class="fw-semibold">Uploaded Evidence</h6>
+                                <img src="@job.CompletionImagePath"
+                                     class="img-fluid rounded border"
+                                     style="max-height: 250px;" />
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@functions {
+    private string GetStatusBadge(MaintenanceRequestStatus status)
+    {
+        return status switch
+        {
+            MaintenanceRequestStatus.Published => "bg-info",
+            MaintenanceRequestStatus.InProgress => "bg-warning",
+            MaintenanceRequestStatus.Completed => "bg-primary",
+            MaintenanceRequestStatus.Verified => "bg-success",
+            _ => "bg-secondary"
+        };
+    }
+}

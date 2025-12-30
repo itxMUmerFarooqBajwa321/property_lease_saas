@@ -1,0 +1,26 @@
+@model property_lease_saas.Models.Entities.Property
+
+@{
+    ViewBag.Title = "Delete Property";
+}
+
+<div class="container mt-4">
+    <h2>Delete Property</h2>
+    <div class="alert alert-warning">
+        <p>Are you sure you want to delete the following property?</p>
+    </div>
+
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5 class="card-title">@Model.Title</h5>
+            <p class="card-text"><strong>Address:</strong> @Model.Address</p>
+            <p class="card-text"><strong>Description:</strong> @Model.Description</p>
+            <p class="card-text"><strong>Rent:</strong> @Model.Rent</p>
+        </div>
+    </div>
+
+    <form asp-action="Delete" asp-route-id="@Model.Id" method="post">
+        <button type="submit" class="btn btn-danger">Delete</button>
+        <a asp-action="My" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>

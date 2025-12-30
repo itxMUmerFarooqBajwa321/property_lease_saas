@@ -1,0 +1,146 @@
+@model dynamic
+
+@if (Model.Type == "Payments")
+{
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>Tenant</th>
+                    <th>Property</th>
+                    <th>Amount</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>John Doe</td>
+                    <td>Sunset Apartments</td>
+                    <td class="text-end">$1,200</td>
+                    <td>2023-10-01</td>
+                    <td><span class="badge bg-success">Paid</span></td>
+                </tr>
+                <tr>
+                    <td>Jane Smith</td>
+                    <td>Ocean View</td>
+                    <td class="text-end">$1,000</td>
+                    <td>2023-10-02</td>
+                    <td><span class="badge bg-warning">Pending</span></td>
+                </tr>
+                <!-- Empty state -->
+                <tr class="d-none">
+                    <td colspan="5">@Html.Partial("_EmptyState")</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+}
+@if (Model.Type == "Maintenance")
+{
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>Property</th>
+                    <th>Description</th>
+                    <th>Priority</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Sunset Apartments</td>
+                    <td>Leaky faucet</td>
+                    <td><span class="badge bg-danger">High</span></td>
+                    <td><span class="badge bg-warning">Pending</span></td>
+                    <td><button class="btn btn-sm btn-outline-primary">Assign</button></td>
+                </tr>
+                <!-- Empty state -->
+                <tr class="d-none">
+                    <td colspan="5">@Html.Partial("_EmptyState")</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+}
+@if (Model.Type == "MyPayments")
+{
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>Amount</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="text-end">$1,200</td>
+                    <td>2023-10-01</td>
+                    <td><span class="badge bg-success">Paid</span></td>
+                </tr>
+                <!-- Empty state -->
+                <tr class="d-none">
+                    <td colspan="3">@Html.Partial("_EmptyState")</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+}
+@if (Model.Type == "MyMaintenance")
+{
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Date Submitted</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Leaky faucet</td>
+                    <td><span class="badge bg-warning">In Progress</span></td>
+                    <td>2023-09-28</td>
+                </tr>
+                <!-- Empty state -->
+                <tr class="d-none">
+                    <td colspan="3">@Html.Partial("_EmptyState")</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+}
+@if (Model.Type == "AssignedJobs")
+{
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>Job ID</th>
+                    <th>Description</th>
+                    <th>Priority</th>
+                    <th>Due Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>123</td>
+                    <td>Fix leaky faucet</td>
+                    <td><span class="badge bg-danger">High</span></td>
+                    <td>2023-10-05</td>
+                    <td><button class="btn btn-sm btn-outline-primary">Update Status</button></td>
+                </tr>
+                <!-- Empty state -->
+                <tr class="d-none">
+                    <td colspan="5">@Html.Partial("_EmptyState")</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+}

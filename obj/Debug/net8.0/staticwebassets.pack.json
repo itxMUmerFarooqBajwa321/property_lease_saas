@@ -1,0 +1,341 @@
+{
+  "Files": [
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/obj/Debug/net8.0/scopedcss/projectbundle/property-lease-saas.bundle.scp.css",
+      "PackagePath": "staticwebassets/property-lease-saas.bundle.scp.css"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/css/site.css",
+      "PackagePath": "staticwebassets/css/site.css"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/favicon.ico",
+      "PackagePath": "staticwebassets/favicon.ico"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/js/site.js",
+      "PackagePath": "staticwebassets/js/site.js"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/bootstrap/LICENSE",
+      "PackagePath": "staticwebassets/lib/bootstrap"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.css",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-grid.css"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.css.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-grid.css.map"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.min.css",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-grid.min.css"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.min.css.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-grid.min.css.map"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.rtl.css",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-grid.rtl.css"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.rtl.css.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-grid.rtl.css.map"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.rtl.min.css",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-grid.rtl.min.css"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.rtl.min.css.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-grid.rtl.min.css.map"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/bootstrap/dist/css/bootstrap-reboot.css",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-reboot.css"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/bootstrap/dist/css/bootstrap-reboot.css.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-reboot.css.map"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/bootstrap/dist/css/bootstrap-reboot.min.css",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-reboot.min.css"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/bootstrap/dist/css/bootstrap-reboot.min.css.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-reboot.min.css.map"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/bootstrap/dist/css/bootstrap-reboot.rtl.css",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-reboot.rtl.css"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/bootstrap/dist/css/bootstrap-reboot.rtl.css.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-reboot.rtl.css.map"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/bootstrap/dist/css/bootstrap-reboot.rtl.min.css",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-reboot.rtl.min.css"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/bootstrap/dist/css/bootstrap-reboot.rtl.min.css.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-reboot.rtl.min.css.map"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/bootstrap/dist/css/bootstrap-utilities.css",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-utilities.css"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/bootstrap/dist/css/bootstrap-utilities.css.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-utilities.css.map"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/bootstrap/dist/css/bootstrap-utilities.min.css",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-utilities.min.css"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/bootstrap/dist/css/bootstrap-utilities.min.css.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-utilities.min.css.map"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/bootstrap/dist/css/bootstrap-utilities.rtl.css",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-utilities.rtl.css"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/bootstrap/dist/css/bootstrap-utilities.rtl.css.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-utilities.rtl.css.map"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/bootstrap/dist/css/bootstrap-utilities.rtl.min.css",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-utilities.rtl.min.css"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/bootstrap/dist/css/bootstrap-utilities.rtl.min.css.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-utilities.rtl.min.css.map"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/bootstrap/dist/css/bootstrap.css",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap.css"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/bootstrap/dist/css/bootstrap.css.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap.css.map"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/bootstrap/dist/css/bootstrap.min.css",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap.min.css"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/bootstrap/dist/css/bootstrap.min.css.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap.min.css.map"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/bootstrap/dist/css/bootstrap.rtl.css",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap.rtl.css"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/bootstrap/dist/css/bootstrap.rtl.css.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap.rtl.css.map"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/bootstrap/dist/css/bootstrap.rtl.min.css",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap.rtl.min.css"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/bootstrap/dist/css/bootstrap.rtl.min.css.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap.rtl.min.css.map"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/bootstrap/dist/js/bootstrap.bundle.js",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/js/bootstrap.bundle.js"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/bootstrap/dist/js/bootstrap.bundle.js.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/js/bootstrap.bundle.js.map"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/bootstrap/dist/js/bootstrap.bundle.min.js",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/js/bootstrap.bundle.min.js"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/bootstrap/dist/js/bootstrap.bundle.min.js.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/js/bootstrap.bundle.min.js.map"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/bootstrap/dist/js/bootstrap.esm.js",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/js/bootstrap.esm.js"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/bootstrap/dist/js/bootstrap.esm.js.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/js/bootstrap.esm.js.map"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/bootstrap/dist/js/bootstrap.esm.min.js",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/js/bootstrap.esm.min.js"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/bootstrap/dist/js/bootstrap.esm.min.js.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/js/bootstrap.esm.min.js.map"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/bootstrap/dist/js/bootstrap.js",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/js/bootstrap.js"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/bootstrap/dist/js/bootstrap.js.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/js/bootstrap.js.map"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/bootstrap/dist/js/bootstrap.min.js",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/js/bootstrap.min.js"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/bootstrap/dist/js/bootstrap.min.js.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/js/bootstrap.min.js.map"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/jquery-validation-unobtrusive/LICENSE.txt",
+      "PackagePath": "staticwebassets/lib/jquery-validation-unobtrusive/LICENSE.txt"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js",
+      "PackagePath": "staticwebassets/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js",
+      "PackagePath": "staticwebassets/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/jquery-validation/LICENSE.md",
+      "PackagePath": "staticwebassets/lib/jquery-validation/LICENSE.md"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/jquery-validation/dist/additional-methods.js",
+      "PackagePath": "staticwebassets/lib/jquery-validation/dist/additional-methods.js"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/jquery-validation/dist/additional-methods.min.js",
+      "PackagePath": "staticwebassets/lib/jquery-validation/dist/additional-methods.min.js"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/jquery-validation/dist/jquery.validate.js",
+      "PackagePath": "staticwebassets/lib/jquery-validation/dist/jquery.validate.js"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/jquery-validation/dist/jquery.validate.min.js",
+      "PackagePath": "staticwebassets/lib/jquery-validation/dist/jquery.validate.min.js"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/jquery/LICENSE.txt",
+      "PackagePath": "staticwebassets/lib/jquery/LICENSE.txt"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/jquery/dist/jquery.js",
+      "PackagePath": "staticwebassets/lib/jquery/dist/jquery.js"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/jquery/dist/jquery.min.js",
+      "PackagePath": "staticwebassets/lib/jquery/dist/jquery.min.js"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/lib/jquery/dist/jquery.min.map",
+      "PackagePath": "staticwebassets/lib/jquery/dist/jquery.min.map"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/property-docs/0999e035-4c06-4e4d-88f3-b61b76d5e158.jpeg",
+      "PackagePath": "staticwebassets/property-docs/0999e035-4c06-4e4d-88f3-b61b76d5e158.jpeg"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/property-docs/0ccb6db8-6edb-423b-a78d-2754b8362007.jpeg",
+      "PackagePath": "staticwebassets/property-docs/0ccb6db8-6edb-423b-a78d-2754b8362007.jpeg"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/property-docs/c716168b-c5e8-4519-a3d7-86cd7e9bcba7.jpeg",
+      "PackagePath": "staticwebassets/property-docs/c716168b-c5e8-4519-a3d7-86cd7e9bcba7.jpeg"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/property-docs/cd01882d-30ed-47eb-bbcc-9ccdcf440ded.png",
+      "PackagePath": "staticwebassets/property-docs/cd01882d-30ed-47eb-bbcc-9ccdcf440ded.png"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/property-docs/d25cb688-ffd7-4181-862e-bd9078611413.png",
+      "PackagePath": "staticwebassets/property-docs/d25cb688-ffd7-4181-862e-bd9078611413.png"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/property-docs/d34fc649-25c0-4530-be69-727ff1075a65.jpeg",
+      "PackagePath": "staticwebassets/property-docs/d34fc649-25c0-4530-be69-727ff1075a65.jpeg"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/property-docs/df1307d5-115e-4daa-8819-3c8b0f030b2f.jpeg",
+      "PackagePath": "staticwebassets/property-docs/df1307d5-115e-4daa-8819-3c8b0f030b2f.jpeg"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/property-docs/f67dd592-6657-41b5-b31f-9f063ac6c23f.jpeg",
+      "PackagePath": "staticwebassets/property-docs/f67dd592-6657-41b5-b31f-9f063ac6c23f.jpeg"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/property-images/04b891de-3541-42d9-9cdb-f7e47cae0f30.jpeg",
+      "PackagePath": "staticwebassets/property-images/04b891de-3541-42d9-9cdb-f7e47cae0f30.jpeg"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/property-images/0ab162e5-e9e8-4084-8c62-7834d42dea45.jpeg",
+      "PackagePath": "staticwebassets/property-images/0ab162e5-e9e8-4084-8c62-7834d42dea45.jpeg"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/property-images/3ce72a13-8703-4794-af0d-78432acc16a1.jpeg",
+      "PackagePath": "staticwebassets/property-images/3ce72a13-8703-4794-af0d-78432acc16a1.jpeg"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/property-images/4f6a4a32-9e6c-4741-bc2a-d78ab869e20d.jpeg",
+      "PackagePath": "staticwebassets/property-images/4f6a4a32-9e6c-4741-bc2a-d78ab869e20d.jpeg"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/property-images/733fbc3c-e96d-494b-a7c4-440ab8b0c265.jpeg",
+      "PackagePath": "staticwebassets/property-images/733fbc3c-e96d-494b-a7c4-440ab8b0c265.jpeg"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/property-images/7cb0b185-b71d-45a5-8580-4a5bdb6fb6e0.jpeg",
+      "PackagePath": "staticwebassets/property-images/7cb0b185-b71d-45a5-8580-4a5bdb6fb6e0.jpeg"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/property-images/9d9f76bd-8966-49cc-87de-1a1c11c52f39.jpeg",
+      "PackagePath": "staticwebassets/property-images/9d9f76bd-8966-49cc-87de-1a1c11c52f39.jpeg"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/property-images/a45b4aed-19e7-44d4-b946-f8d1bbb581e1.jpeg",
+      "PackagePath": "staticwebassets/property-images/a45b4aed-19e7-44d4-b946-f8d1bbb581e1.jpeg"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/property-images/a5258bbf-b94c-46bf-9c4e-7f752ebff902.jpeg",
+      "PackagePath": "staticwebassets/property-images/a5258bbf-b94c-46bf-9c4e-7f752ebff902.jpeg"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/property-images/eb04df1d-deb1-4387-835c-7b55865cd8c8.jpeg",
+      "PackagePath": "staticwebassets/property-images/eb04df1d-deb1-4387-835c-7b55865cd8c8.jpeg"
+    },
+    {
+      "Id": "/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/wwwroot/property-images/f0570459-7df5-4aab-94e1-d452f175a03a.jpeg",
+      "PackagePath": "staticwebassets/property-images/f0570459-7df5-4aab-94e1-d452f175a03a.jpeg"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.build.property-lease-saas.props",
+      "PackagePath": "build\\property-lease-saas.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.buildMultiTargeting.property-lease-saas.props",
+      "PackagePath": "buildMultiTargeting\\property-lease-saas.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.buildTransitive.property-lease-saas.props",
+      "PackagePath": "buildTransitive\\property-lease-saas.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.property-lease-saas.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

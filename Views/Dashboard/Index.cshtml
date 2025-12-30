@@ -1,0 +1,275 @@
+@{
+    ViewBag.Title = "Dashboard";
+}
+
+<div class="container-fluid">
+    @if (User.FindFirst("UserType")?.Value == "Landlord")
+    {
+        <!-- Landlord Dashboard: Business Control Center -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3 mb-0">Dashboard</h1>
+            <button class="btn btn-primary">View Reports</button>
+        </div>
+        
+        <!-- KPI Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                @Html.Partial("_KpiCard", new { Title = "Total Rent Collected", Value = "$125,000", Subtitle = "This Month", Color = "success" })
+            </div>
+            <div class="col-md-3">
+                @Html.Partial("_KpiCard", new { Title = "Overdue Payments", Value = "$5,200", Subtitle = "Needs Attention", Color = "warning" })
+            </div>
+            <div class="col-md-3">
+                @Html.Partial("_KpiCard", new { Title = "Occupied Units", Value = "95%", Subtitle = "Out of 100 Total", Color = "primary" })
+            </div>
+            <div class="col-md-3">
+                @Html.Partial("_KpiCard", new { Title = "Open Maintenance", Value = "12", Subtitle = "Requests", Color = "danger" })
+            </div>
+        </div>
+        
+        <!-- Recent Payments Table -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Recent Payments</h5>
+            </div>
+            <div class="card-body">
+                @Html.Partial("_RecentTable", new { Type = "Payments" })
+            </div>
+        </div>
+        
+        <!-- Pending Maintenance Requests -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Pending Maintenance Requests</h5>
+            </div>
+            <div class="card-body">
+                @Html.Partial("_RecentTable", new { Type = "Maintenance" })
+            </div>
+        </div>
+        
+        <!-- Lease Expirations -->
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h5 class="mb-0">Lease Expirations (Next 60 Days)</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Tenant</th>
+                                <th>Property</th>
+                                <th>Expiration Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>John Doe</td>
+                                <td>Sunset Apartments</td>
+                                <td>2023-11-15</td>
+                                <td><button class="btn btn-sm btn-outline-primary">Renew</button></td>
+                            </tr>
+                            <!-- More rows -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="row mt-4">
+            <div class="col-md-3">
+                <button class="btn btn-primary w-100 mb-2">Add Property</button>
+            </div>
+            <div class="col-md-3">
+                <button class="btn btn-primary w-100 mb-2">Add Tenant</button>
+            </div>
+            <div class="col-md-3">
+                <button class="btn btn-primary w-100 mb-2">Create Lease</button>
+            </div>
+            <div class="col-md-3">
+                <button class="btn btn-primary w-100 mb-2">Publish Maintenance</button>
+            </div>
+        </div>
+    }
+    
+    @if (User.FindFirst("UserType")?.Value == "Tenant")
+    {
+        <!-- Tenant Dashboard: Personal Status Center -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3 mb-0">Dashboard</h1>
+        </div>
+        
+        <!-- KPI Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                @Html.Partial("_KpiCard", new { Title = "Current Rent Due", Value = "$1,200", Subtitle = "Due Oct 1", Color = "warning" })
+            </div>
+            <div class="col-md-3">
+                @Html.Partial("_KpiCard", new { Title = "Next Payment", Value = "Oct 1", Subtitle = "2023", Color = "info" })
+            </div>
+            <div class="col-md-3">
+                @Html.Partial("_KpiCard", new { Title = "Maintenance Requests", Value = "1", Subtitle = "Open", Color = "secondary" })
+            </div>
+            <div class="col-md-3">
+                @Html.Partial("_KpiCard", new { Title = "Lease Status", Value = "Active", Subtitle = "Expires Dec 31", Color = "success" })
+            </div>
+        </div>
+        
+        <!-- My Payments -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">My Payments</h5>
+            </div>
+            <div class="card-body">
+                @Html.Partial("_RecentTable", new { Type = "MyPayments" })
+            </div>
+        </div>
+        
+        <!-- My Maintenance Requests -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">My Maintenance Requests</h5>
+            </div>
+            <div class="card-body">
+                @Html.Partial("_RecentTable", new { Type = "MyMaintenance" })
+            </div>
+        </div>
+        
+        <!-- Lease Summary -->
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h5 class="mb-0">Lease Summary</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Start Date:</strong> Jan 1, 2023</p>
+                <p><strong>End Date:</strong> Dec 31, 2023</p>
+                <p><strong>Monthly Rent:</strong> $1,200</p>
+                <p><strong>Status:</strong> <span class="badge bg-success">Active</span></p>
+                <button class="btn btn-outline-primary">View Full Lease</button>
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="row mt-4">
+            <div class="col-md-3">
+                <button class="btn btn-primary w-100 mb-2">Pay Rent</button>
+            </div>
+            <div class="col-md-3">
+                <button class="btn btn-primary w-100 mb-2">Submit Maintenance</button>
+            </div>
+            <div class="col-md-3">
+                <button class="btn btn-outline-primary w-100 mb-2">View Lease</button>
+            </div>
+            <div class="col-md-3">
+                <button class="btn btn-outline-primary w-100 mb-2">Contact Landlord</button>
+            </div>
+        </div>
+    }
+    
+    @if (User.FindFirst("UserType")?.Value == "Mechanic")
+    {
+        <!-- Mechanic Dashboard: Work & Earnings Hub -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3 mb-0">Dashboard</h1>
+        </div>
+        
+        <!-- KPI Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                @Html.Partial("_KpiCard", new { Title = "Assigned Jobs", Value = "5", Subtitle = "Active", Color = "primary" })
+            </div>
+            <div class="col-md-3">
+                @Html.Partial("_KpiCard", new { Title = "Jobs In Progress", Value = "2", Subtitle = "Ongoing", Color = "warning" })
+            </div>
+            <div class="col-md-3">
+                @Html.Partial("_KpiCard", new { Title = "Completed Jobs", Value = "15", Subtitle = "This Month", Color = "success" })
+            </div>
+            <div class="col-md-3">
+                @Html.Partial("_KpiCard", new { Title = "Payments Received", Value = "$3,500", Subtitle = "Pending $1,200", Color = "info" })
+            </div>
+        </div>
+        
+        <!-- Assigned Maintenance Requests -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Assigned Maintenance Requests</h5>
+            </div>
+            <div class="card-body">
+                @Html.Partial("_RecentTable", new { Type = "AssignedJobs" })
+            </div>
+        </div>
+        
+        <!-- Work Status Updates -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Work Status Updates</h5>
+            </div>
+            <div class="card-body">
+                <div class="timeline">
+                    <div class="timeline-item mb-3">
+                        <div class="timeline-marker bg-success"></div>
+                        <div class="timeline-content">
+                            <h6>Job #123 Completed</h6>
+                            <p class="text-muted">Oct 1, 2023 - Fixed leaky faucet</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-marker bg-warning"></div>
+                        <div class="timeline-content">
+                            <h6>Job #124 In Progress</h6>
+                            <p class="text-muted">Oct 2, 2023 - HVAC repair</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Uploaded Receipts -->
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h5 class="mb-0">Uploaded Receipts / Bills</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Job ID</th>
+                                <th>Description</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>123</td>
+                                <td>Parts for faucet repair</td>
+                                <td class="text-end">$150</td>
+                                <td><span class="badge bg-success">Approved</span></td>
+                            </tr>
+                            <!-- More rows -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="row mt-4">
+            <div class="col-md-3">
+                <button class="btn btn-primary w-100 mb-2">Update Job Status</button>
+            </div>
+            <div class="col-md-3">
+                <button class="btn btn-primary w-100 mb-2">Upload Receipt</button>
+            </div>
+            <div class="col-md-3">
+                <button class="btn btn-outline-primary w-100 mb-2">Find New Work</button>
+            </div>
+            <div class="col-md-3">
+                <button class="btn btn-outline-primary w-100 mb-2">Message Landlord</button>
+            </div>
+        </div>
+    }
+</div>

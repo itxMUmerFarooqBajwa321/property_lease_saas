@@ -1,0 +1,69 @@
+@{
+    ViewBag.Title = "Payments";
+}
+
+<div class="container-fluid">
+    <h1 class="mb-4">Payments</h1>
+    
+    <div class="d-flex justify-content-between mb-3">
+        <input type="text" class="form-control w-50" placeholder="Search invoices...">
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#quickActionModal">Add Invoice</button>
+    </div>
+    
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Tenant</th>
+                    <th>Property</th>
+                    <th>Amount</th>
+                    <th>Due Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>John Doe</td>
+                    <td>Sunset Apartments</td>
+                    <td class="text-end">$1,200</td>
+                    <td>2023-10-01</td>
+                    <td><span class="badge bg-success">Paid</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary">View</button>
+                        <button class="btn btn-sm btn-outline-secondary">Edit</button>
+                        <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Jane Smith</td>
+                    <td>Ocean View Condos</td>
+                    <td class="text-end">$1,000</td>
+                    <td>2023-10-15</td>
+                    <td><span class="badge bg-warning">Pending</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary">View</button>
+                        <button class="btn btn-sm btn-outline-secondary">Edit</button>
+                        <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Bob Johnson</td>
+                    <td>Sunset Apartments</td>
+                    <td class="text-end">$1,200</td>
+                    <td>2023-09-30</td>
+                    <td><span class="badge bg-danger">Overdue</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary">View</button>
+                        <button class="btn btn-sm btn-outline-secondary">Edit</button>
+                        <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button>
+                    </td>
+                </tr>
+                <!-- Empty state -->
+                <tr class="d-none">
+                    <td colspan="6" class="text-center text-muted">No payments found.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

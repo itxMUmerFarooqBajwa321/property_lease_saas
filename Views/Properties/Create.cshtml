@@ -1,0 +1,110 @@
+@model property_lease_saas.Models.Entities.Property
+
+@{
+    ViewData["Title"] = "Add Property";
+}
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Add New Property</h4>
+                </div>
+
+                <div class="card-body">
+                    <form asp-action="Create"
+                          asp-controller="Properties"
+                          method="post"
+                          enctype="multipart/form-data">
+
+                        <!-- Property Info -->
+                        <h5 class="mb-3">Property Information</h5>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="Title" class="form-label"></label>
+                                <input asp-for="Title" class="form-control" />
+                                <span asp-validation-for="Title" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="Rent" class="form-label">Monthly Rent</label>
+                                <input asp-for="Rent" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Address" class="form-label"></label>
+                            <input asp-for="Address" class="form-control" />
+                            <span asp-validation-for="Address" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label"></label>
+                            <textarea asp-for="Description"
+                                      class="form-control"
+                                      rows="3"></textarea>
+                        </div>
+
+                        <div class="form-check mb-4">
+                            <input asp-for="IsPublished"
+                                   class="form-check-input" />
+                            <label asp-for="IsPublished"
+                                   class="form-check-label">
+                                Publish property (visible to tenants)
+                            </label>
+                        </div>
+
+                        <hr />
+
+                        <!-- Images -->
+                        <h5 class="mb-3">Property Images</h5>
+
+                        <div class="mb-3">
+                            <input type="file"
+                                   name="images"
+                                   class="form-control"
+                                   multiple
+                                   accept="image/*" />
+                            <small class="text-muted">
+                                Upload multiple images (JPG, PNG)
+                            </small>
+                        </div>
+
+                        <!-- Documents -->
+                        <h5 class="mb-3">Ownership Documents</h5>
+
+                        <div class="mb-3">
+                            <input type="file"
+                                   name="documents"
+                                   class="form-control"
+                                   multiple />
+                            <small class="text-muted">
+                                Ownership deed, registration, etc.
+                            </small>
+                        </div>
+
+                        <div class="d-flex justify-content-end mt-4">
+                            <a asp-action="My"
+                               class="btn btn-outline-secondary me-2">
+                                Cancel
+                            </a>
+                            <button type="submit"
+                                    class="btn btn-primary">
+                                Save Property
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,74 @@
+@{
+    ViewBag.Title = "Documents";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-0">Documents</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/Dashboard/Index">Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Documents</li>
+                </ol>
+            </nav>
+        </div>
+        <button class="btn btn-primary">Upload Document</button>
+    </div>
+    
+    <div class="card shadow-sm">
+        <div class="card-body">
+            @Html.Partial("_TableToolbar")
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Uploaded By</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Lease_JohnDoe.pdf</td>
+                            <td>Lease</td>
+                            <td>Admin</td>
+                            <td>2023-10-01</td>
+                            <td>
+                                <a href="/Documents/Details/1" class="btn btn-sm btn-outline-primary">View</a>
+                                <button class="btn btn-sm btn-outline-secondary">Download</button>
+                                <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">Delete</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Invoice_123.pdf</td>
+                            <td>Invoice</td>
+                            <td>System</td>
+                            <td>2023-10-02</td>
+                            <td>
+                                <a href="/Documents/Details/2" class="btn btn-sm btn-outline-primary">View</a>
+                                <button class="btn btn-sm btn-outline-secondary">Download</button>
+                                <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">Delete</button>
+                            </td>
+                        </tr>
+                        <!-- Empty state if no data -->
+                        <tr class="d-none">
+                            <td colspan="5">@Html.Partial("_EmptyState")</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- Pagination placeholder -->
+            <nav aria-label="Documents pagination">
+                <ul class="pagination justify-content-center mt-3">
+                    <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>

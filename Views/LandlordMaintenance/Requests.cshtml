@@ -1,0 +1,209 @@
+@model IEnumerable<property_lease_saas.Models.Entities.MaintenanceRequest>
+
+@{
+    ViewData["Title"] = "Maintenance Requests";
+    var properties = ViewBag.Properties as IEnumerable<property_lease_saas.Models.Entities.Property>;
+}
+
+<div class="container mt-4">
+
+    <h2 class="mb-4 fw-semibold">My Maintenance Requests</h2>
+
+    <!-- Add New Maintenance Request Form -->
+    <div class="card shadow-sm mb-5">
+        <div class="card-header">
+            <strong>Create New Request</strong>
+        </div>
+        <div class="card-body">
+            <form asp-action="Create" method="post">
+                <div class="mb-3">
+                    <label for="Title" class="form-label">Title</label>
+                    <input type="text" class="form-control" id="Title" name="Title" required placeholder="Enter request title" />
+                </div>
+                <div class="mb-3">
+                    <label for="Description" class="form-label">Description</label>
+                    <textarea class="form-control" id="Description" name="Description" rows="3" required placeholder="Enter detailed description"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="PropertyId" class="form-label">Property</label>
+                    <select class="form-select" id="PropertyId" name="PropertyId" required>
+                        <option value="" selected disabled>Select property</option>
+                        @if (properties != null && properties.Any())
+                        {
+                            @foreach (var property in properties)
+                            {
+                                <option value="@property.Id">@property.Title - @property.Address</option>
+                            }
+                        }
+                        else
+                        {
+                            <option disabled>No properties available</option>
+                        }
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary" @(properties == null || !properties.Any() ? "disabled" : "")>
+                    Create Request
+                </button>
+                
+                @if (properties == null || !properties.Any())
+                {
+                    <small class="text-muted d-block mt-2">
+                        You must have at least one property to create a maintenance request.
+                    </small>
+                }
+            </form>
+        </div>
+    </div>
+
+    <!-- Existing Requests -->
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            You have not created any maintenance requests yet.
+        </div>
+    }
+    else
+    {
+        <div class="accordion" id="maintenanceAccordion">
+
+            @foreach (var request in Model)
+            {
+                var collapseId = $"collapse-{request.Id}";
+                var headingId = $"heading-{request.Id}";
+
+                <div class="accordion-item mb-3 shadow-sm">
+                    <h2 class="accordion-header" id="@headingId">
+                        <button class="accordion-button collapsed" type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#@collapseId">
+                            <div class="w-100 d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>@request.Title</strong>
+                                    <small class="text-muted ms-2">
+                                        @request.CreatedAt.ToString("dd MMM yyyy")
+                                    </small>
+                                </div>
+                                <span class="badge @GetStatusBadge(request.Status)">
+                                    @request.Status
+                                </span>
+                            </div>
+                        </button>
+                    </h2>
+
+                    <div id="@collapseId" class="accordion-collapse collapse"
+                         data-bs-parent="#maintenanceAccordion">
+                        <div class="accordion-body">
+
+                            <!-- Request Details -->
+                            <p class="mb-2"><strong>Description:</strong></p>
+                            <p class="text-muted">@request.Description</p>
+
+                            <hr />
+
+                            <!-- Actions -->
+                            <div class="d-flex gap-2 mb-3">
+                                @* @if (request.Status == property_lease_saas.Models.Entities.MaintenanceRequestStatus.Pending)
+                                { *@
+                                    <form asp-action="Publish" method="post">
+                                        <input type="hidden" name="id" value="@request.Id" />
+                                        <button class="btn btn-outline-primary btn-sm">
+                                            Publish to Mechanics
+                                        </button>
+                                    </form>
+                                @* } *@
+
+                                @if (request.Status == property_lease_saas.Models.Entities.MaintenanceRequestStatus.Completed)
+                                {
+                                    <form asp-action="Verify" method="post">
+                                        <input type="hidden" name="id" value="@request.Id" />
+                                        <button class="btn btn-outline-success btn-sm">
+                                            Verify Completion
+                                        </button>
+                                    </form>
+                                }
+                            </div>
+
+                            <!-- Applications -->
+                            <h6 class="fw-semibold">Mechanic Applications</h6>
+
+                            @if (!request.Applications.Any())
+                            {
+                                <p class="text-muted fst-italic">
+                                    No applications received yet.
+                                </p>
+                            }
+                            else
+                            {
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover align-middle">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Mechanic</th>
+                                                <th>Proposed Bill</th>
+                                                <th>Notes</th>
+                                                <th>Applied At</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var app in request.Applications)
+                                            {
+                                                <tr>
+                                                    <td>@app.MechanicId</td>
+                                                    <td>Rs. @app.ProposedBill</td>
+                                                    <td>@app.Notes</td>
+                                                    <td>@app.AppliedAt.ToString("dd MMM yyyy")</td>
+                                                    <td>
+                                                        @if (!app.IsAccepted && request.AssignedMechanicId == null)
+                                                        {
+                                                            <form asp-action="Accept" method="post">
+                                                                <input type="hidden" name="applicationId" value="@app.Id" />
+                                                                <button class="btn btn-sm btn-success">
+                                                                    Accept
+                                                                </button>
+                                                            </form>
+                                                        }
+                                                        else if (app.IsAccepted)
+                                                        {
+                                                            <span class="badge bg-success">Accepted</span>
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+
+                            <!-- Evidence -->
+                            @if (!string.IsNullOrEmpty(request.CompletionImagePath))
+                            {
+                                <hr />
+                                <h6 class="fw-semibold">Completion Evidence</h6>
+                                <img src="@request.CompletionImagePath"
+                                     class="img-fluid rounded border"
+                                     style="max-height: 250px;" />
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@functions {
+    private string GetStatusBadge(property_lease_saas.Models.Entities.MaintenanceRequestStatus status)
+    {
+        return status switch
+        {
+            property_lease_saas.Models.Entities.MaintenanceRequestStatus.Pending => "bg-secondary",
+            property_lease_saas.Models.Entities.MaintenanceRequestStatus.Published => "bg-info",
+            property_lease_saas.Models.Entities.MaintenanceRequestStatus.InProgress => "bg-warning",
+            property_lease_saas.Models.Entities.MaintenanceRequestStatus.Completed => "bg-primary",
+            property_lease_saas.Models.Entities.MaintenanceRequestStatus.Verified => "bg-success",
+            _ => "bg-dark"
+        };
+    }
+}

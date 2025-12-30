@@ -1,0 +1,68 @@
+@{
+    ViewBag.Title = "Property Details";
+}
+@* @using property_lease_saas.Models.Entities; *@
+@model property_lease_saas.Models.Entities.Property
+<div class="container-fluid">
+    <h1 class="mb-4">@Model.Title</h1>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-3">
+                <div class="card-header fw-bold">
+                    Property Info
+                </div>
+                <div class="card-body">
+                    <p><strong>Description:</strong> @Model.Description</p>
+                    <p><strong>Address:</strong> @Model.Address</p>
+                    <p><strong>Lease:</strong> @Model.Rent</p>
+                    <p><strong>Status:</strong> @(Model.IsTaken?"Taken":"Blank")</p>
+                    @* <p><strong>Total Units:</strong> @Model.TotalUnits</p>
+                    <p><strong>Available Units:</strong> @Model.AvailableUnits</p> *@
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header fw-bold">
+                    Documents
+                </div>
+                <ul class="list-group list-group-flush">
+                    @foreach (var doc in Model.Documents)
+                    {
+                        <li class="list-group-item">
+                            <a href="@doc.FilePath" target="_blank">
+                                @doc.DocumentType
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </div>
+            <div> &nbsp;</div>
+            <div class="card shadow-sm">
+                <div class="card-header fw-bold">
+                    Images
+                </div>
+                <ul class="list-group list-group-flush">
+                    @foreach (var doc in Model.Images)
+                    {
+                        <li class="list-group-item">
+                            <a href="@doc.FilePath" target="_blank">
+                                Images
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </div>
+
+        </div>
+    </div>
+
+    </div>
+
+
+    <a asp-controller="Properties" asp-action="My" class="btn btn-secondary mt-4">
+        Back
+    </a>
+</div>

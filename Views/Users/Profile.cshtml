@@ -1,0 +1,24 @@
+@{
+    ViewBag.Title = "My Profile";
+}
+
+@model property_lease_saas.Models.ApplicationUser
+
+<div class="container mtz`-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">User Profile</h5>
+        </div>
+
+        <div class="card-body">
+            <p><strong>Full Name:</strong> @Model.FullName</p>
+            <p><strong>Email:</strong> @Model.Email</p>
+        </div>
+
+        <div class="card-footer text-end">
+            <a asp-controller="Users" asp-action="Edit" class="btn btn-outline-primary">
+                Edit Profile
+            </a>
+        </div>
+    </div>
+</div>
