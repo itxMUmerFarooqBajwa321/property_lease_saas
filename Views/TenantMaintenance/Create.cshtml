@@ -1,21 +1,113 @@
+@model object
 @{
     ViewData["Title"] = "Request Maintenance";
+    var leases = ViewBag.Leases as List<property_lease_saas.Models.Entities.Lease>;
 }
 
-<div class="container">
-    <h3>Request Maintenance</h3>
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Header -->
+            <div class="mb-4">
+                <h2 class="fw-bold text-dark">Request Maintenance</h2>
+                <p class="text-muted">Submit a maintenance request for your leased property</p>
+            </div>
 
-    <form method="post">
-        <div class="mb-3">
-            <label>Title</label>
-            <input name="title" class="form-control" required />
+            <!-- Form Card -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-primary text-white py-3">
+                    <h5 class="mb-0"><i class="bi bi-tools me-2"></i>Maintenance Request Form</h5>
+                </div>
+                <div class="card-body p-4">
+                    @* @if (leases == null || !leases.Any())
+                    {
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            <strong>No Active Leases Found</strong>
+                            <p class="mb-0 mt-2">You don't have any active leases. You need an active lease to submit a maintenance request.</p>
+                        </div>
+                    }
+                    else
+                    { *@
+                        <form method="post" asp-action="Create">
+                            <!-- Select Lease/Property -->
+                            <div class="mb-4">
+                                <label for="leaseId" class="form-label fw-semibold">
+                                    Select Property <span class="text-danger">*</span>
+                                </label>
+                                <select name="leaseId" 
+                                        id="leaseId" 
+                                        class="form-select form-select-lg" 
+                                        required>
+                                    <option value="" selected disabled>Choose the property with the issue...</option>
+                                    @foreach (var lease in leases)
+                                    {
+                                        <option value="@lease.Id">
+                                            @lease.Property.Title - @lease.Property.Address
+                                            (Lease: @lease.StartDate.ToString("MMM yyyy") - @lease.EndDate.ToString("MMM yyyy"))
+                                        </option>
+                                    }
+                                </select>
+                                <small class="text-muted">Select which property needs maintenance</small>
+                            </div>
+
+                            <!-- Title -->
+                            <div class="mb-4">
+                                <label for="title" class="form-label fw-semibold">
+                                    Issue Title <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" 
+                                       name="title" 
+                                       id="title"
+                                       class="form-control form-control-lg" 
+                                       placeholder="e.g., Leaking faucet in bathroom"
+                                       required />
+                                <small class="text-muted">Brief description of the issue</small>
+                            </div>
+
+                            <!-- Description -->
+                            <div class="mb-4">
+                                <label for="description" class="form-label fw-semibold">
+                                    Detailed Description <span class="text-danger">*</span>
+                                </label>
+                                <textarea name="description" 
+                                          id="description"
+                                          class="form-control" 
+                                          rows="5"
+                                          placeholder="Please provide detailed information about the maintenance issue, including location, severity, and any other relevant details..."
+                                          required></textarea>
+                                <small class="text-muted">Provide as much detail as possible to help resolve the issue quickly</small>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="bi bi-send me-2"></i>Submit Maintenance Request
+                                </button>
+                                <a asp-action="MyRequests" class="btn btn-outline-secondary">
+                                    <i class="bi bi-arrow-left me-2"></i>Cancel
+                                </a>
+                            </div>
+                        </form>
+                    @* } *@
+                </div>
+            </div>
+
+            <!-- Help Text -->
+            @if (leases != null && leases.Any())
+            {
+                <div class="card border-0 bg-light mt-3">
+                    <div class="card-body">
+                        <h6 class="fw-bold mb-3"><i class="bi bi-info-circle text-primary me-2"></i>What happens next?</h6>
+                        <ol class="mb-0 ps-3">
+                            <li class="mb-2">Your landlord will review your maintenance request</li>
+                            <li class="mb-2">The landlord may publish it to mechanics for quotes</li>
+                            <li class="mb-2">Once a mechanic is assigned, work will begin</li>
+                            <li>You'll be notified when the work is completed</li>
+                        </ol>
+                    </div>
+                </div>
+            }
         </div>
-
-        <div class="mb-3">
-            <label>Description</label>
-            <textarea name="description" class="form-control" rows="4"></textarea>
-        </div>
-
-        <button class="btn btn-primary">Submit</button>
-    </form>
+    </div>
 </div>

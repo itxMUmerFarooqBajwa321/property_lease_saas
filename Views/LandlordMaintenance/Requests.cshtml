@@ -1,8 +1,9 @@
-@model IEnumerable<property_lease_saas.Models.Entities.MaintenanceRequest>
+@model IEnumerable<property_lease_saas.Models.Entities.MaintenanceApplication>
 
 @{
     ViewData["Title"] = "Maintenance Requests";
     var properties = ViewBag.Properties as IEnumerable<property_lease_saas.Models.Entities.Property>;
+    var maintenanceRequests = ViewBag.MaintenanceRequests as IEnumerable<property_lease_saas.Models.Entities.MaintenanceRequest>;
 }
 
 <div class="container mt-4">
@@ -57,7 +58,7 @@
     </div>
 
     <!-- Existing Requests -->
-    @if (!Model.Any())
+    @if (!maintenanceRequests.Any())
     {
         <div class="alert alert-info">
             You have not created any maintenance requests yet.
@@ -67,7 +68,7 @@
     {
         <div class="accordion" id="maintenanceAccordion">
 
-            @foreach (var request in Model)
+            @foreach (var request in maintenanceRequests)
             {
                 var collapseId = $"collapse-{request.Id}";
                 var headingId = $"heading-{request.Id}";
@@ -103,15 +104,15 @@
 
                             <!-- Actions -->
                             <div class="d-flex gap-2 mb-3">
-                                @* @if (request.Status == property_lease_saas.Models.Entities.MaintenanceRequestStatus.Pending)
-                                { *@
+                                @if (request.Status == property_lease_saas.Models.Entities.MaintenanceRequestStatus.Pending)
+                                { 
                                     <form asp-action="Publish" method="post">
                                         <input type="hidden" name="id" value="@request.Id" />
                                         <button class="btn btn-outline-primary btn-sm">
                                             Publish to Mechanics
                                         </button>
                                     </form>
-                                @* } *@
+                                }
 
                                 @if (request.Status == property_lease_saas.Models.Entities.MaintenanceRequestStatus.Completed)
                                 {
@@ -127,7 +128,7 @@
                             <!-- Applications -->
                             <h6 class="fw-semibold">Mechanic Applications</h6>
 
-                            @if (!request.Applications.Any())
+                            @if (!Model.Any())
                             {
                                 <p class="text-muted fst-italic">
                                     No applications received yet.
@@ -146,8 +147,9 @@
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
+
                                         <tbody>
-                                            @foreach (var app in request.Applications)
+                                            @foreach (var app in Model)
                                             {
                                                 <tr>
                                                     <td>@app.MechanicId</td>

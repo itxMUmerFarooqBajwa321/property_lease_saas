@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace property_lease_saas.Models.Entities;
 public class LeaseRequest
@@ -19,6 +20,12 @@ public class LeaseRequest
     public LeaseRequestStatus Status { get; set; } = LeaseRequestStatus.Pending;
 
     public DateTime RequestedAt { get; set; } = DateTime.UtcNow;
+    
+    // Foreign key to Lease (if approved)
+    public Guid? LeaseId { get; set; }
+    
+    // Navigation property
+    public virtual Lease? Lease { get; set; }
 }
 
 public enum LeaseRequestStatus

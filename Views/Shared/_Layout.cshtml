@@ -14,13 +14,6 @@
 <body class="bg-light">
     <!-- Flex-based app shell: sidebar fixed width, main content flex-grow-1 -->
 
-    <div>
-    </div>
-    @* <div>
-        Authenticated: @User.Identity.IsAuthenticated
-        UserType: @User.FindFirst("UserType")?.Value
-    </div> *@
-
     <div class="app-shell d-flex min-vh-100">
         <!-- Sidebar -->
         @Html.Partial("_Sidebar")

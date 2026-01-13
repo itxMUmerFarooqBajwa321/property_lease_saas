@@ -243,6 +243,7 @@
 /home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/obj/Debug/net8.0/property-lease-saas.MvcApplicationPartsAssemblyInfo.cache
 /home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/obj/Debug/net8.0/property-lease-saas.RazorAssemblyInfo.cache
 /home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/obj/Debug/net8.0/property-lease-saas.RazorAssemblyInfo.cs
+/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/obj/Debug/net8.0/property-lease-saas.sourcelink.json
 /home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/obj/Debug/net8.0/staticwebassets.build.json
 /home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/obj/Debug/net8.0/staticwebassets.development.json
 /home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/obj/Debug/net8.0/staticwebassets/msbuild.property-lease-saas.Microsoft.AspNetCore.StaticWebAssets.props

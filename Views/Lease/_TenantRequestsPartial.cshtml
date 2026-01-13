@@ -1,0 +1,45 @@
+@model IEnumerable<property_lease_saas.Models.Entities.LeaseRequest>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info mb-0">
+        No lease requests found.
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Property</th>
+                    <th>Request Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var request in Model)
+                {
+                    <tr>
+                        <td>@request.Property?.Title</td>
+                        <td>@request.RequestedAt.ToString("dd MMM yyyy")</td>
+                        <td>
+                            @if (request.Status == LeaseRequestStatus.Pending)
+                            {
+                                <span class="badge bg-warning">Pending</span>
+                            }
+                            else if (request.Status == LeaseRequestStatus.Approved)
+                            {
+                                <span class="badge bg-success">Approved</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Rejected</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

@@ -7,10 +7,14 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using property_lease_saas.Services;
 using property_lease_saas.Models.Repositories;
 using property_lease_saas.Models;
-
+// Add these using statements
+using property_lease_saas.Hubs; // We'll create this folder
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add SignalR service
+builder.Services.AddSignalR();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 
 // Repository registrations
 builder.Services.AddScoped<IPropertyRepository, PropertyRepository>();
@@ -26,7 +30,6 @@ builder.Services.AddScoped<LeaseService>();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-
 /// ===============================
 /// IDENTITY (REQUIRED)
 /// ===============================
@@ -39,10 +42,8 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 
-
 builder.Services.AddAuthorization(options =>
 {
-
     options.AddPolicy("AdminOnly", policy =>
         policy.RequireClaim("UserType", "Admin"));
 
@@ -56,14 +57,11 @@ builder.Services.AddAuthorization(options =>
         policy.RequireClaim("UserType", "Mechanic"));
 });
 
-
-
 /// ===============================
 /// MVC + RAZOR PAGES (REQUIRED)
 /// ===============================
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
-
 
 /// ===============================
 /// DAPPER SUPPORT
@@ -76,21 +74,13 @@ builder.Services.AddScoped<IDbConnection>(sp =>
 });
 
 builder.Services.AddScoped<PropertyService>();
-
 builder.Services.AddScoped<IPropertyRepository, PropertyRepository>();
-
-builder.Services.AddScoped<LeaseRepository>();
-
 builder.Services.AddScoped<IFileStorage, LocalFileStorage>();
-
 builder.Services.AddScoped<IMaintenanceRepository, MaintenanceRepository>();
 builder.Services.AddScoped<IMaintenanceApplicationRepository, MaintenanceApplicationRepository>();
-
 builder.Services.AddScoped<MaintenanceService>();
 
-
 var app = builder.Build();
-
 
 /// ===============================
 /// PIPELINE
@@ -109,7 +99,6 @@ app.UseRouting();
 app.UseAuthentication(); // 🔴 REQUIRED
 app.UseAuthorization();
 
-
 /// ===============================
 /// ENDPOINTS (VERY IMPORTANT)
 /// ===============================
@@ -118,5 +107,8 @@ app.MapControllerRoute(
     pattern: "{controller=Dashboard}/{action=Index}/{id?}");
 
 app.MapRazorPages(); // 🔴 REQUIRED for /Identity/*
+
+// Add SignalR Hub route
+app.MapHub<NotificationHub>("/notificationHub");
 
 app.Run();

@@ -1,5 +1,432 @@
 ﻿@page
 @model LoginModel
+@{
+    ViewData["Title"] = "Log in";
+}
+
+<style>
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    .login-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+    }
+    
+    .login-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        padding: 3.5rem;
+        max-width: 480px;
+        width: 100%;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .login-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .login-header {
+        text-align: center;
+        margin-bottom: 2.5rem;
+    }
+    
+    .login-header h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.5rem;
+        letter-spacing: -0.5px;
+    }
+    
+    .login-header p {
+        color: #6c757d;
+        font-size: 1rem;
+        font-weight: 300;
+    }
+    
+    .form-floating {
+        margin-bottom: 1.5rem;
+        position: relative;
+    }
+    
+    .form-control {
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        padding: 1rem 1.25rem;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        background: #fafafa;
+    }
+    
+    .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        background: #ffffff;
+        transform: translateY(-2px);
+    }
+    
+    .form-floating > label {
+        padding: 1rem 1.25rem;
+        color: #6c757d;
+    }
+    
+    .btn-login {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 1rem;
+        font-size: 1.05rem;
+        font-weight: 600;
+        margin-top: 1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+    
+    .btn-login:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 25px rgba(102, 126, 234, 0.5);
+    }
+    
+    .btn-login:active {
+        transform: translateY(0);
+    }
+    
+    .checkbox-container {
+        margin: 1.5rem 0;
+    }
+    
+    .checkbox-container label {
+        font-size: 0.9rem;
+        color: #495057;
+        cursor: pointer;
+        font-weight: 400;
+    }
+    
+    .form-check-input {
+        cursor: pointer;
+        width: 1.1rem;
+        height: 1.1rem;
+        margin-top: 0.15rem;
+    }
+    
+    .form-check-input:checked {
+        background-color: #667eea;
+        border-color: #667eea;
+    }
+    
+    .login-footer {
+        text-align: center;
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid #e9ecef;
+    }
+    
+    .login-footer a {
+        color: #667eea;
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+    
+    .login-footer a::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: -2px;
+        left: 50%;
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        transition: all 0.3s ease;
+        transform: translateX(-50%);
+    }
+    
+    .login-footer a:hover::after {
+        width: 100%;
+    }
+    
+    .login-footer a:hover {
+        color: #764ba2;
+    }
+    
+    .separator {
+        color: #dee2e6;
+        margin: 0 0.75rem;
+        font-weight: 300;
+    }
+    
+    .text-danger {
+        font-size: 0.85rem;
+        margin-top: 0.5rem;
+        font-weight: 500;
+    }
+    
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .login-card {
+        animation: fadeIn 0.6s ease-out;
+    }
+</style>
+
+<div class="login-container">
+    <div class="login-card">
+        <div class="login-header">
+            <h1>Welcome Back</h1>
+            <p>Sign in to continue to your account</p>
+        </div>
+        
+        <form id="account" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+            
+            <div class="form-floating">
+                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                <label asp-for="Input.Email" class="form-label">Email Address</label>
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+            
+            <div class="form-floating">
+                <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
+                <label asp-for="Input.Password" class="form-label">Password</label>
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+            
+            <div class="checkbox-container">
+                <label asp-for="Input.RememberMe" class="form-label">
+                    <input class="form-check-input" asp-for="Input.RememberMe" />
+                    @Html.DisplayNameFor(m => m.Input.RememberMe)
+                </label>
+            </div>
+            
+            <button id="login-submit" type="submit" class="w-100 btn btn-primary btn-login">Sign In</button>
+            
+            <div class="login-footer">
+                <a id="forgot-password" asp-page="./ForgotPassword">Forgot Password?</a>
+                <span class="separator">•</span>
+                <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Create Account</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@* @page
+@model LoginModel
+@{
+    ViewData["Title"] = "Log in";
+}
+
+<style>
+    .login-container {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 0;
+    }
+    
+    .login-card {
+        background: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 3rem;
+        max-width: 450px;
+        width: 100%;
+    }
+    
+    .login-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .login-header h1 {
+        font-size: 1.75rem;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 0.5rem;
+    }
+    
+    .login-header p {
+        color: #6c757d;
+        font-size: 0.95rem;
+    }
+    
+    .form-floating {
+        margin-bottom: 1.25rem;
+    }
+    
+    .form-control {
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        padding: 0.75rem;
+        font-size: 0.95rem;
+    }
+    
+    .form-control:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+    }
+    
+    .btn-login {
+        background: #0d6efd;
+        border: none;
+        border-radius: 6px;
+        padding: 0.75rem;
+        font-size: 1rem;
+        font-weight: 500;
+        margin-top: 1rem;
+        transition: background 0.3s ease;
+    }
+    
+    .btn-login:hover {
+        background: #0b5ed7;
+    }
+    
+    .checkbox-container {
+        margin: 1rem 0 1.5rem 0;
+    }
+    
+    .checkbox-container label {
+        font-size: 0.9rem;
+        color: #495057;
+        cursor: pointer;
+    }
+    
+    .login-footer {
+        text-align: center;
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #e9ecef;
+    }
+    
+    .login-footer a {
+        color: #0d6efd;
+        text-decoration: none;
+        font-size: 0.9rem;
+    }
+    
+    .login-footer a:hover {
+        text-decoration: underline;
+    }
+    
+    .text-danger {
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+    }
+</style>
+
+<div class="login-container">
+    <div class="login-card">
+        <div class="login-header">
+            <h1>Welcome Back</h1>
+            <p>Please log in to your account</p>
+        </div>
+        
+        <form id="account" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+            
+            <div class="form-floating">
+                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                <label asp-for="Input.Email" class="form-label">Email</label>
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+            
+            <div class="form-floating">
+                <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
+                <label asp-for="Input.Password" class="form-label">Password</label>
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+            
+            <div class="checkbox-container">
+                <label asp-for="Input.RememberMe" class="form-label">
+                    <input class="form-check-input" asp-for="Input.RememberMe" />
+                    @Html.DisplayNameFor(m => m.Input.RememberMe)
+                </label>
+            </div>
+            
+            <button id="login-submit" type="submit" class="w-100 btn btn-primary btn-login">Log in</button>
+            
+            <div class="login-footer">
+                <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
+                <span class="mx-2">•</span>
+                <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Create account</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+} *@
+
+
+
+
+
+
+
+
+
+
+@* @page
+@model LoginModel
 
 @{
     ViewData["Title"] = "Log in";
@@ -80,4 +507,7 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-}
+} *@
+
+
+

@@ -1,5 +1,6 @@
 using property_lease_saas.Models.Repositories;
 using property_lease_saas.Models.Entities;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace property_lease_saas.Services;
 
@@ -19,7 +20,12 @@ public class MaintenanceService
         _fileStorage = fileStorage;
     }
 
+
     // ================= TENANT =================
+    public IMaintenanceApplicationRepository GetAppRepo()
+    {
+        return _appRepo;
+    }
     public async Task CreateRequestAsync(
         Guid leaseId,
         Guid propertyId,
@@ -68,10 +74,11 @@ public class MaintenanceService
             MechanicId = mechanicId,
             ProposedBill = bill,
             Notes = notes,
-            IsAccepted = true,
+            IsAccepted = false,
             AppliedAt = DateTime.UtcNow
         };
-
+        var req = await _maintenanceRepo.GetByIdAsync(requestId);
+        req.Applications.Add(app);
         await _appRepo.AddAsync(app);
     }
 

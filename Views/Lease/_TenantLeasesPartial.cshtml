@@ -1,0 +1,38 @@
+@model IEnumerable<property_lease_saas.Models.Entities.Lease>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info mb-0">
+        No active leases found.
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Property</th>
+                    <th>Rent</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var lease in Model)
+                {
+                    <tr>
+                        <td>@lease.Property?.Title</td>
+                        <td>Rs. @lease.RentAmount.ToString("N0")</td>
+                        <td>@lease.StartDate.ToString("dd MMM yyyy")</td>
+                        <td>@lease.EndDate.ToString("dd MMM yyyy")</td>
+                        <td>
+                            <span class="badge bg-success">Active</span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

@@ -11,4 +11,5 @@ public interface IMaintenanceApplicationRepository
 
     Task<List<MaintenanceApplication>> ForRequestAsync(Guid requestId);
     Task<List<MaintenanceApplication>> ForMechanicAsync(string mechanicId);
+    Task<List<MaintenanceApplication>> ForLandlord(string landlordId);
 }

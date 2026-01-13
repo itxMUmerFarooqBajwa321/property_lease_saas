@@ -1,0 +1,76 @@
+@model IEnumerable<property_lease_saas.Models.Entities.LeaseRequest>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info mb-0">
+        No pending lease requests.
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Property</th>
+                    <th>Tenant</th>
+                    <th>Requested On</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var request in Model)
+                {
+                    <tr>
+                        <td>@request.Property?.Title</td>
+                        <td>@request.TenantId</td>
+                        <td>@request.RequestedAt.ToString("dd MMM yyyy")</td>
+                        <td>
+                            <span class="badge 
+                                @(request.Status == LeaseRequestStatus.Pending ? "bg-warning" :
+                                  request.Status == LeaseRequestStatus.Approved ? "bg-success" : "bg-danger")">
+                                @request.Status
+                            </span>
+                        </td>
+                        <td>
+                            @if (request.Status == LeaseRequestStatus.Pending)
+                            {
+                                <!-- APPROVE FORM -->
+                                <form asp-controller="Lease" asp-action="Approve" method="post" class="d-inline ajax-form">
+                                    @Html.AntiForgeryToken()
+                                    <!-- Make sure name matches controller parameter -->
+                                    <input type="hidden" name="leaseRequestId" value="@request.Id" />
+                                    <button type="submit" class="btn btn-sm btn-success">
+                                        Approve
+                                    </button>
+                                </form>
+
+                                <!-- REJECT FORM -->
+                                <form asp-controller="Lease" asp-action="Reject" method="post" class="d-inline ajax-form">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="leaseRequestId" value="@request.Id" />
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        Reject
+                                    </button>
+                                </form>
+                                
+                                <!-- Debug button to see the ID -->
+                                <button type="button" class="btn btn-sm btn-info" 
+                                        onclick="console.log('LeaseRequest ID: @request.Id')">
+                                    Debug ID
+                                </button>
+                            }
+                            else if (request.Status == LeaseRequestStatus.Approved && request.LeaseId.HasValue)
+                            {
+                                <span class="text-success">
+                                    <i class="bi bi-check-circle"></i> Approved
+                                </span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

@@ -230,6 +230,9 @@ namespace property_lease_saas.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<Guid?>("LeaseRequestId")
+                        .HasColumnType("TEXT");
+
                     b.Property<Guid>("PropertyId")
                         .HasColumnType("TEXT");
 
@@ -248,7 +251,17 @@ namespace property_lease_saas.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("EndDate");
+
+                    b.HasIndex("LandlordId");
+
                     b.HasIndex("PropertyId");
+
+                    b.HasIndex("StartDate");
+
+                    b.HasIndex("Status");
+
+                    b.HasIndex("TenantId");
 
                     b.ToTable("Leases");
                 });
@@ -261,6 +274,9 @@ namespace property_lease_saas.Migrations
 
                     b.Property<string>("LandlordId")
                         .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("LeaseId")
                         .HasColumnType("TEXT");
 
                     b.Property<Guid>("PropertyId")
@@ -278,7 +294,18 @@ namespace property_lease_saas.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("LandlordId");
+
+                    b.HasIndex("LeaseId")
+                        .IsUnique();
+
                     b.HasIndex("PropertyId");
+
+                    b.HasIndex("RequestedAt");
+
+                    b.HasIndex("Status");
+
+                    b.HasIndex("TenantId");
 
                     b.ToTable("LeaseRequests");
                 });
@@ -367,6 +394,8 @@ namespace property_lease_saas.Migrations
 
                     b.HasIndex("PropertyId");
 
+                    b.HasIndex("Status");
+
                     b.ToTable("MaintenanceRequests");
                 });
 
@@ -405,6 +434,12 @@ namespace property_lease_saas.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("IsPublished");
+
+                    b.HasIndex("IsTaken");
+
+                    b.HasIndex("LandlordId");
 
                     b.ToTable("Properties");
                 });
@@ -514,18 +549,26 @@ namespace property_lease_saas.Migrations
                 {
                     b.HasOne("property_lease_saas.Models.Entities.Property", "Property")
                         .WithMany()
-                        .HasForeignKey("PropertyId");
+                        .HasForeignKey("PropertyId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Property");
                 });
 
             modelBuilder.Entity("property_lease_saas.Models.Entities.LeaseRequest", b =>
                 {
+                    b.HasOne("property_lease_saas.Models.Entities.Lease", "Lease")
+                        .WithOne("LeaseRequest")
+                        .HasForeignKey("property_lease_saas.Models.Entities.LeaseRequest", "LeaseId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("property_lease_saas.Models.Entities.Property", "Property")
                         .WithMany()
                         .HasForeignKey("PropertyId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Lease");
 
                     b.Navigation("Property");
                 });
@@ -551,8 +594,7 @@ namespace property_lease_saas.Migrations
                     b.HasOne("property_lease_saas.Models.Entities.Property", null)
                         .WithMany()
                         .HasForeignKey("PropertyId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("property_lease_saas.Models.Entities.PropertyDocument", b =>
@@ -575,6 +617,11 @@ namespace property_lease_saas.Migrations
                         .IsRequired();
 
                     b.Navigation("Property");
+                });
+
+            modelBuilder.Entity("property_lease_saas.Models.Entities.Lease", b =>
+                {
+                    b.Navigation("LeaseRequest");
                 });
 
             modelBuilder.Entity("property_lease_saas.Models.Entities.MaintenanceRequest", b =>

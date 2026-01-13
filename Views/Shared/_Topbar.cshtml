@@ -1,3 +1,12 @@
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    var currentUser = await UserManager.GetUserAsync(User);
+    var userId = currentUser?.Id;
+    var userName = currentUser?.FullName ?? User.Identity?.Name;
+}
+
 <header class="bg-white border-bottom shadow-sm py-2 px-4 d-flex justify-content-between align-items-center">
     <div class="d-flex align-items-center">
         <button class="btn btn-outline-secondary d-md-none me-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarOffcanvas" aria-controls="sidebarOffcanvas">
@@ -5,81 +14,282 @@
         </button>
         <h4 class="mb-0">@ViewBag.Title</h4>
     </div>
+    
     <div class="d-flex align-items-center">
-        <input type="text" class="form-control me-2" placeholder="Search..." style="width: 200px;">
-        <button class="btn btn-outline-secondary me-2" type="button">
-            <i class="bi bi-bell"></i>
-        </button>
-        @if (User.FindFirst("UserType")?.Value == "Landlord")
-        {
-            <div class="d-flex align-items-center">
-                <div class="dropdown me-2">
-                    <button class="btn btn-outline-secondary dropdown-toggle" type="button"
-                            id="newDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-plus"></i> New
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="newDropdown">
-                        <li><a class="dropdown-item" asp-controller="Properties" asp-action="Create">Property</a></li>
-                        <li><a class="dropdown-item" asp-controller="Units" asp-action="Create">Unit</a></li>
-                        <li><a class="dropdown-item" asp-controller="Leases" asp-action="Create">Lease</a></li>
-                        <li><a class="dropdown-item" asp-controller="Payments" asp-action="CreateInvoice">Invoice</a></li>
-                        <li><a class="dropdown-item" asp-controller="Maintenance" asp-action="Create">Ticket</a></li>
-                    </ul>
+        <!-- Search Box -->
+        <div class="input-group me-3" style="width: 250px;">
+            <span class="input-group-text bg-light border-end-0">
+                <i class="bi bi-search text-muted"></i>
+            </span>
+            <input type="text" class="form-control border-start-0" placeholder="Search properties, tenants..." aria-label="Search">
+        </div>
+        
+        <!-- Notification Bell with Dropdown -->
+        <div class="dropdown me-3">
+            <button class="btn btn-outline-secondary position-relative" type="button"
+                    id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false"
+                    aria-label="Notifications">
+                <i class="bi bi-bell fs-5"></i>
+                <span id="notificationBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display: none; font-size: 0.6rem;">
+                    0
+                </span>
+            </button>
+            
+            <!-- Notification Dropdown Menu -->
+            <div class="dropdown-menu dropdown-menu-end p-0 shadow-lg" aria-labelledby="notificationDropdown" style="min-width: 380px; max-width: 380px;">
+                <div class="d-flex justify-content-between align-items-center p-3 border-bottom bg-light">
+                    <h6 class="mb-0 fw-bold">Notifications</h6>
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" 
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-filter"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#" data-filter="all">All</a></li>
+                            <li><a class="dropdown-item" href="#" data-filter="unread">Unread</a></li>
+                            <li><a class="dropdown-item" href="#" data-filter="leases">Leases</a></li>
+                        </ul>
+                    </div>
                 </div>
-
-                <div class="dropdown">
-                    <button class="btn btn-outline-secondary dropdown-toggle" type="button"
-                            id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-person-circle"></i> Profile
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="profileDropdown">
-                        <li>
-                            <a class="dropdown-item" asp-controller="Users" asp-action="Profile">Profile</a>
-                        </li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li>
-                            <a class="dropdown-item" asp-controller="Lease" asp-action="Requests">Requests</a>
-                        </li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li>
-                            <a class="dropdown-item" asp-controller="Settings" asp-action="Index">Settings</a>
-                        </li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li>
-                            <a class="dropdown-item" asp-controller="Logout" asp-action="Index">Logout</a>
-                        </li>
-                    </ul>
+                
+                <div id="notificationDropdownContent" class="p-2" style="max-height: 400px; overflow-y: auto;">
+                    <!-- Loading State -->
+                    <div id="notificationLoading" class="text-center p-4">
+                        <div class="spinner-border spinner-border-sm text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="text-muted mt-2 mb-0">Loading notifications...</p>
+                    </div>
+                
+                    <!-- Empty State -->
+                    <div id="notificationEmpty" class="text-center p-5" style="display: none;">
+                        <i class="bi bi-bell-slash fs-1 text-muted mb-3"></i>
+                        <p class="text-muted mb-0">No notifications yet</p>
+                        <small class="text-muted">You'll see notifications here</small>
+                    </div>
+                    
+                    <!-- Notifications List -->
+                    <div id="notificationList" class="list-group list-group-flush" style="display: none;">
+                        <!-- Notifications will be dynamically inserted here -->
+                    </div>
+                </div>
+                
+                <div class="p-2 border-top bg-light">
+                    <div class="d-flex justify-content-between">
+                        <a href="/Notification/MarkAllAsRead" class="btn btn-sm btn-outline-secondary" id="markAllReadBtn">
+                            <i class="bi bi-check-all me-1"></i> Mark all as read
+                        </a>
+                        <a href="/Notification/All" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-list-ul me-1"></i> View All
+                        </a>
+                    </div>
                 </div>
             </div>
-
-        }
-        else
+        </div>
+        
+        <!-- New Action Dropdown (Landlord Only) -->
+        @if (User.FindFirst("UserType")?.Value == "Landlord")
         {
-            <div class="dropdown">
-                <button class="btn btn-outline-secondary dropdown-toggle" type="button"
-                        id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="bi bi-person-circle"></i> Profile
+            <div class="dropdown me-3">
+                <button class="btn btn-primary dropdown-toggle" type="button"
+                        id="newDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-plus-circle me-1"></i> New
                 </button>
-
-                <ul class="dropdown-menu" aria-labelledby="profileDropdown">
-                    <li>
-                        <a class="dropdown-item" asp-controller="Users" asp-action="Profile">Profile</a>
-                    </li>
-
+                <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="newDropdown">
+                    <li><h6 class="dropdown-header">Create New</h6></li>
                     <li><hr class="dropdown-divider"></li>
-
                     <li>
-                        <a class="dropdown-item" asp-controller="Settings" asp-action="Index">Settings</a>
+                        <a class="dropdown-item" asp-controller="Properties" asp-action="Create">
+                            <i class="bi bi-house-add me-2"></i> Property
+                        </a>
                     </li>
-
-                    <li><hr class="dropdown-divider"></li>
-
                     <li>
-                        <a class="dropdown-item" asp-controller="Logout" asp-action="Index">Logout</a>
+                        <a class="dropdown-item" asp-controller="Units" asp-action="Create">
+                            <i class="bi bi-building-add me-2"></i> Unit
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" asp-controller="Leases" asp-action="Create">
+                            <i class="bi bi-file-earmark-text me-2"></i> Lease
+                        </a>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <a class="dropdown-item" asp-controller="Payments" asp-action="CreateInvoice">
+                            <i class="bi bi-receipt me-2"></i> Invoice
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" asp-controller="Maintenance" asp-action="Create">
+                            <i class="bi bi-ticket-detailed me-2"></i> Maintenance Ticket
+                        </a>
                     </li>
                 </ul>
             </div>
-
         }
+        
+        <!-- User Profile Dropdown -->
+        <div class="dropdown">
+            <button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center" type="button"
+                    id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <div class="me-2 text-start" style="line-height: 1.2;">
+                    <div class="small fw-bold">@userName</div>
+                    <div class="x-small text-muted">@User.FindFirst("UserType")?.Value</div>
+                </div>
+                <i class="bi bi-person-circle fs-4"></i>
+            </button>
+            
+            <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="profileDropdown">
+                <li>
+                    <a class="dropdown-item" asp-controller="Users" asp-action="Profile">
+                        <i class="bi bi-person me-2"></i> My Profile
+                    </a>
+                </li>
+                
+                @if (User.FindFirst("UserType")?.Value == "Landlord")
+                {
+                    <li>
+                        <a class="dropdown-item" asp-controller="Lease" asp-action="Requests">
+                            <i class="bi bi-envelope-paper me-2"></i> Lease Requests
+                            <span id="requestCountBadge" class="badge bg-warning float-end" style="display: none;">0</span>
+                        </a>
+                    </li>
+                }
+                else if (User.FindFirst("UserType")?.Value == "Tenant")
+                {
+                    <li>
+                        <a class="dropdown-item" asp-controller="Lease" asp-action="Index">
+                            <i class="bi bi-file-text me-2"></i> My Leases
+                        </a>
+                    </li>
+                }
+                
+                <li><hr class="dropdown-divider"></li>
+                
+                <li>
+                    <a class="dropdown-item" asp-controller="Dashboard" asp-action="Index">
+                        <i class="bi bi-speedometer2 me-2"></i> Dashboard
+                    </a>
+                </li>
+                
+                <li><hr class="dropdown-divider"></li>
+                
+                <li>
+                    <a class="dropdown-item" asp-controller="Settings" asp-action="Index">
+                        <i class="bi bi-gear me-2"></i> Settings
+                    </a>
+                </li>
+                
+                <li><hr class="dropdown-divider"></li>
+                
+                <li>
+                    <a class="dropdown-item text-danger" href="Identity/Account/Logout">
+                        <i class="bi bi-box-arrow-right me-2"></i> Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
     </div>
 </header>
+
+<!-- Floating Notification Toasts (for new notifications) -->
+<div id="notificationToastContainer" class="position-fixed top-0 end-0 p-3" style="z-index: 1060; margin-top: 70px;">
+    <!-- Toasts will appear here -->
+</div>
+
+<!-- Hidden data attributes for JavaScript -->
+<div id="signalRData" 
+     data-user-id="@userId"
+     data-user-type="@User.FindFirst("UserType")?.Value"
+     data-user-name="@userName"
+     style="display: none;">
+</div>
+
+<!-- Add this script section at the end -->
+@section Scripts {
+    <!-- SignalR Client Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.min.js"></script>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- Notification JavaScript -->
+    <script src="~/js/signalR-notifications.js" asp-append-version="true"></script>
+    
+    <script>
+        // Initialize tooltips
+        $(function () {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            });
+        });
+        
+        // Mark all as read functionality
+        $('#markAllReadBtn').click(function(e) {
+            e.preventDefault();
+            $.ajax({
+                url: '/Notification/MarkAllAsRead',
+                type: 'POST',
+                success: function() {
+                    $('#notificationBadge').hide();
+                    $('.notification-item').removeClass('unread');
+                    showToast('All notifications marked as read', 'success');
+                }
+            });
+        });
+        
+        // Notification filtering
+        $('[data-filter]').click(function(e) {
+            e.preventDefault();
+            var filter = $(this).data('filter');
+            filterNotifications(filter);
+        });
+        
+        function filterNotifications(filter) {
+            $('.notification-item').each(function() {
+                var item = $(this);
+                var type = item.data('type');
+                
+                if (filter === 'all') {
+                    item.show();
+                } else if (filter === 'unread') {
+                    item.toggle(item.hasClass('unread'));
+                } else if (filter === 'leases') {
+                    item.toggle(type.includes('Lease'));
+                }
+            });
+        }
+        
+        // Toast function for showing messages
+        function showToast(message, type = 'info') {
+            const toastId = 'toast-' + Date.now();
+            const bgClass = type === 'success' ? 'bg-success' : 
+                           type === 'error' ? 'bg-danger' : 
+                           type === 'warning' ? 'bg-warning' : 'bg-info';
+            
+            const toastHtml = `
+                <div id="${toastId}" class="toast align-items-center text-white ${bgClass} border-0" role="alert">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            ${message}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                    </div>
+                </div>
+            `;
+            
+            $('#notificationToastContainer').append(toastHtml);
+            const toastEl = document.getElementById(toastId);
+            const toast = new bootstrap.Toast(toastEl);
+            toast.show();
+            
+            $(toastEl).on('hidden.bs.toast', function() {
+                $(this).remove();
+            });
+        }
+    </script>
+}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.min.js"></script>
+<script src="~/js/signalR-notifications.js"></script>

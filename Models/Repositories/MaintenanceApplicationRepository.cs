@@ -44,4 +44,13 @@
                 .OrderByDescending(a => a.AppliedAt)
                 .ToListAsync();
         }
+
+        public async Task<List<MaintenanceApplication>> ForLandlord(string landlordId)
+        {
+            return await _context.MaintenanceApplications
+            .Include(a => a.MaintenanceRequest)
+            .Where(a => a.MaintenanceRequest.LandlordId == landlordId)
+            .OrderByDescending(a => a.AppliedAt)
+            .ToListAsync();
+        }
     }

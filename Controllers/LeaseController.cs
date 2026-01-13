@@ -1,6 +1,6 @@
+using property_lease_saas.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using property_lease_saas.Infrastructure.Extensions;
 using property_lease_saas.Services;
 using property_lease_saas.Models.Entities;
 
@@ -34,58 +34,107 @@ public class LeaseController : Controller
         return RedirectToAction("Available", "Properties");
     }
 
-    // GET: Tenant sees all lease requests (Pending / Approved / Rejected)
+    // ===========================================
+    // TENANT ACTIONS
+    // ===========================================
+    
+    // GET: Tenant sees their active LEASES
     [Authorize(Policy = "TenantOnly")]
     public async Task<IActionResult> Index()
     {
-        var leases = await _service.ForTenantAsync(User.UserId());
-        return View(leases);
+        // This should return LEASES, not LeaseRequests
+        var leases = await _service.GetTenantLeasesAsync(User.UserId());
+        return View(leases); // Expects IEnumerable<Lease>
     }
 
-    /* ============================
-       LANDLORD
-       ============================ */
+    // GET: Tenant sees their lease REQUESTS (pending/approved/rejected)
+    [Authorize(Policy = "TenantOnly")]
+    public async Task<IActionResult> MyRequests()
+    {
+        var leaseRequests = await _service.GetTenantLeaseRequestsAsync(User.UserId());
+        return View("TenantRequests", leaseRequests); // Expects IEnumerable<LeaseRequest>
+    }
 
-    // GET: Landlord sees all incoming requests
+    // ===========================================
+    // LANDLORD ACTIONS
+    // ===========================================
+    
+    // GET: Landlord sees incoming lease REQUESTS
     [Authorize(Policy = "LandlordOnly")]
     public async Task<IActionResult> Requests()
     {
-        var leases = await _service.ForLandlordAsync(User.UserId());
-        return View(leases);
+        // This should return LeaseRequests
+        var leaseRequests = await _service.GetLandlordLeaseRequestsAsync(User.UserId());
+        return View(leaseRequests); // Expects IEnumerable<LeaseRequest>
     }
 
-    // GET: Landlord sees only approved (leased) properties
+    // GET: Landlord sees approved LEASES
     [Authorize(Policy = "LandlordOnly")]
     public async Task<IActionResult> MyLeasedProperties()
     {
-        var leases = await _service.ForLandlordAsync(User.UserId());
-
-        var approvedLeases = leases
-            .Where(l => l.Status == LeaseStatus.Approved)
-            .ToList();
-
-        return View(approvedLeases);
+        // This should return Leases
+        var leases = await _service.GetLandlordLeasesAsync(User.UserId());
+        return View(leases); // Expects IEnumerable<Lease>
     }
 
-    /* ============================
-       LANDLORD ACTIONS
-       ============================ */
+    // ===========================================
+    // LANDLORD ACTIONS (Approve/Reject)
+    // ===========================================
+    
+    [Authorize(Policy = "LandlordOnly")]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Approve(Guid leaseRequestId)
+    {
+        try
+    {
+        await _service.ApproveAsync(leaseRequestId);
+        TempData["Success"] = "Lease request approved successfully.";
+    }
+    catch (InvalidOperationException ex)
+    {
+        Console.WriteLine($"DEBUG: Error approving lease: {ex.Message}");
+        TempData["Error"] = ex.Message;
+    }
+    
+    return RedirectToAction(nameof(Requests));
+    }
 
     [Authorize(Policy = "LandlordOnly")]
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Approve(Guid leaseId)
+    public async Task<IActionResult> Reject(Guid leaseRequestId)
     {
-        await _service.ApproveAsync(leaseId);
-        return RedirectToAction("Available", "Properties");
-    }
-
-    [Authorize(Policy = "LandlordOnly")]
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Reject(Guid leaseId)
-    {
-        await _service.RejectAsync(leaseId);
+        await _service.RejectAsync(leaseRequestId);
+        TempData["Success"] = "Lease request rejected.";
         return RedirectToAction(nameof(Requests));
+    }
+
+    // ===========================================
+    // AJAX PARTIAL VIEWS
+    // ===========================================
+    
+    // AJAX endpoint for landlord's requests partial view
+    [Authorize(Policy = "LandlordOnly")]
+    public async Task<IActionResult> GetRequestsPartial()
+    {
+        var leaseRequests = await _service.GetLandlordLeaseRequestsAsync(User.UserId());
+        return PartialView("_RequestsPartial", leaseRequests); // Expects IEnumerable<LeaseRequest>
+    }
+
+    // AJAX endpoint for tenant's leases partial view  
+    [Authorize(Policy = "TenantOnly")]
+    public async Task<IActionResult> GetTenantLeasesPartial()
+    {
+        var leases = await _service.GetTenantLeasesAsync(User.UserId());
+        return PartialView("_TenantLeasesPartial", leases); // Expects IEnumerable<Lease>
+    }
+    
+    // AJAX endpoint for tenant's lease requests partial view
+    [Authorize(Policy = "TenantOnly")]
+    public async Task<IActionResult> GetTenantRequestsPartial()
+    {
+        var leaseRequests = await _service.GetTenantLeaseRequestsAsync(User.UserId());
+        return PartialView("_TenantRequestsPartial", leaseRequests); // Expects IEnumerable<LeaseRequest>
     }
 }

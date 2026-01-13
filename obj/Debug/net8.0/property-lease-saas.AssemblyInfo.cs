@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("property-lease-saas")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1b333705ead65121f7ecdabf91359c584b067288")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+77367c5d9fb431d68b8b287a51c5cc04babe35a6")]
 [assembly: System.Reflection.AssemblyProductAttribute("property-lease-saas")]
 [assembly: System.Reflection.AssemblyTitleAttribute("property-lease-saas")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -10,6 +10,7 @@ namespace property_lease_saas.Controllers;
 [Authorize(Policy = "LandlordOnly")]
 public class LandlordMaintenanceController : Controller
 {
+    // _service.IMaintenanceApplicationRepository.ForLandlord(User.UserId)
     private readonly MaintenanceService _service;
     private readonly IPropertyRepository _propertyRepository;
 
@@ -23,8 +24,11 @@ public class LandlordMaintenanceController : Controller
 
     public async Task<IActionResult> Requests()
     {
+        
         var landlordId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var data = await _service.ForLandlordAsync(landlordId);
+        var data= await _service.GetAppRepo().ForLandlord(landlordId);
+
+        ViewBag.MaintenanceRequests = await _service.ForLandlordAsync(landlordId);
         
         // Pass landlord's properties to ViewBag for the form
         ViewBag.Properties = await _propertyRepository.GetByLandlordAsync(landlordId);
