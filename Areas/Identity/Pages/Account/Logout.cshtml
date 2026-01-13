@@ -1,4 +1,218 @@
-﻿
+﻿@page
+@model property_lease_saas.Areas.Identity.Pages.Account.LogoutModel
+@{
+    ViewData["Title"] = "Log out";
+}
+
+<style>
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    .logout-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+    }
+    
+    .logout-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        padding: 3.5rem;
+        max-width: 480px;
+        width: 100%;
+        position: relative;
+        overflow: hidden;
+        text-align: center;
+        animation: fadeIn 0.6s ease-out;
+    }
+    
+    .logout-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .logout-icon {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 1.5rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+    }
+    
+    .logout-icon svg {
+        width: 40px;
+        height: 40px;
+        stroke: white;
+        stroke-width: 2;
+        fill: none;
+    }
+    
+    .logout-header h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 1rem;
+        letter-spacing: -0.5px;
+    }
+    
+    .logout-message {
+        color: #6c757d;
+        font-size: 1rem;
+        margin-bottom: 2rem;
+        line-height: 1.6;
+    }
+    
+    .btn-logout {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 1rem 2.5rem;
+        font-size: 1.05rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        color: white;
+        text-decoration: none;
+        display: inline-block;
+    }
+    
+    .btn-logout:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 25px rgba(102, 126, 234, 0.5);
+        color: white;
+    }
+    
+    .btn-logout:active {
+        transform: translateY(0);
+    }
+    
+    .btn-secondary-link {
+        background: transparent;
+        border: 2px solid #667eea;
+        color: #667eea;
+        border-radius: 12px;
+        padding: 1rem 2.5rem;
+        font-size: 1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        text-decoration: none;
+        display: inline-block;
+        margin-top: 1rem;
+    }
+    
+    .btn-secondary-link:hover {
+        background: rgba(102, 126, 234, 0.1);
+        transform: translateY(-2px);
+        color: #667eea;
+    }
+    
+    .success-icon {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 1.5rem;
+        background: linear-gradient(135deg, #52c41a 0%, #73d13d 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 10px 30px rgba(82, 196, 26, 0.3);
+    }
+    
+    .success-icon svg {
+        width: 45px;
+        height: 45px;
+        stroke: white;
+        stroke-width: 3;
+        fill: none;
+    }
+    
+    .button-group {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+    
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<div class="logout-container">
+    <div class="logout-card">
+        @{
+            if (User.Identity?.IsAuthenticated ?? false)
+            {
+                <div class="logout-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                </div>
+                <div class="logout-header">
+                    <h1>Sign Out</h1>
+                </div>
+                <p class="logout-message">
+                    Are you sure you want to log out of your account? You can always sign back in anytime.
+                </p>
+                <div class="button-group">
+                    <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post" style="margin: 0;">
+                        <button type="submit" class="btn-logout w-100">Confirm Logout</button>
+                    </form>
+                    <a href="/" class="btn-secondary-link w-100">Cancel</a>
+                </div>
+            }
+            else
+            {
+                <div class="success-icon">
+                    <svg viewBox="0 0 24 24">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                </div>
+                <div class="logout-header">
+                    <h1>Logged Out</h1>
+                </div>
+                <p class="logout-message">
+                    You have successfully logged out of your account. Thank you for using our service!
+                </p>
+                <div class="button-group">
+                    <a href="/" class="btn-logout w-100">Return to Home</a>
+                    <a asp-page="./Login" class="btn-secondary-link w-100">Sign In Again</a>
+                </div>
+            }
+        }
+    </div>
+</div>
 
 
 
@@ -10,7 +224,7 @@
 
 
 
-
+@* 
 @page
 @model property_lease_saas.Areas.Identity.Pages.Account.LogoutModel
 @{
@@ -31,4 +245,4 @@
             <p>You have successfully logged out of the application.</p>
         }
     }
-</header>
+</header> *@
