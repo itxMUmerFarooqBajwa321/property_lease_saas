@@ -1,0 +1,288 @@
+@model List<property_lease_saas.Models.Entities.RentPayment>
+@{
+    ViewData["Title"] = "Received Rent Payments";
+    var stats = ViewBag.Stats as Dictionary<string, object>;
+    var totalReceived = (decimal)(stats?["TotalReceived"] ?? 0);
+    var pendingPayments = (int)(stats?["PendingRentPayments"] ?? 0);
+    var pendingAmount = (decimal)(stats?["PendingRentAmount"] ?? 0);
+    var overduePayments = (int)(stats?["OverduePayments"] ?? 0);
+    var overdueAmount = (decimal)(stats?["OverdueAmount"] ?? 0);
+}
+
+<link rel="stylesheet" href="~/css/dashboard.css" />
+
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <div>
+            <h1 class="dashboard-title">
+                <i class="bi bi-wallet2 me-2"></i>Received Rent Payments
+            </h1>
+            <p class="dashboard-subtitle">Track rent payments from tenants</p>
+        </div>
+        <div class="dashboard-actions">
+            <a href="/Payment/OverduePayments" class="btn btn-outline-danger">
+                <i class="bi bi-exclamation-triangle me-2"></i>Overdue (@overduePayments)
+            </a>
+            <a href="/Dashboard/Index" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-2"></i>Back
+            </a>
+        </div>
+    </div>
+
+    <!-- Payment Stats -->
+    <div class="stats-grid">
+        <div class="stat-card stat-card-success">
+            <div class="stat-icon">
+                <i class="bi bi-cash-stack"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-label">Total Received</div>
+                <div class="stat-value">Rs. @totalReceived.ToString("N0")</div>
+                <div class="stat-change positive">
+                    <i class="bi bi-arrow-up"></i> All time
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card stat-card-warning">
+            <div class="stat-icon">
+                <i class="bi bi-hourglass-split"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-label">Pending</div>
+                <div class="stat-value">@pendingPayments</div>
+                <div class="stat-change">
+                    <i class="bi bi-currency-rupee"></i> Rs. @pendingAmount.ToString("N0")
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card stat-card-danger">
+            <div class="stat-icon">
+                <i class="bi bi-exclamation-triangle"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-label">Overdue</div>
+                <div class="stat-value">@overduePayments</div>
+                <div class="stat-change">
+                    <i class="bi bi-currency-rupee"></i> Rs. @overdueAmount.ToString("N0")
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="dashboard-card mb-3">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <select class="form-select" id="statusFilter">
+                        <option value="">All Status</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Processing">Processing</option>
+                        <option value="Failed">Failed</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" id="propertyFilter">
+                        <option value="">All Properties</option>
+                        @foreach (var property in Model.Select(p => p.Lease?.Property).Distinct())
+                        {
+                            @if (property != null)
+                            {
+                                <option value="@property.Id">@property.Title</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <input type="date" class="form-control" id="fromDate" placeholder="From Date" />
+                </div>
+                <div class="col-md-3">
+                    <input type="date" class="form-control" id="toDate" placeholder="To Date" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment List -->
+    <div class="dashboard-card">
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="bi bi-list-ul me-2"></i>Payment Records
+            </h3>
+        </div>
+        <div class="card-body">
+            @if (!Model.Any())
+            {
+                <div class="empty-state">
+                    <i class="bi bi-inbox"></i>
+                    <p>No payment records found</p>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover" id="paymentsTable">
+                        <thead>
+                            <tr>
+                                <th>Tenant</th>
+                                <th>Property</th>
+                                <th>Payment For</th>
+                                <th>Amount</th>
+                                <th>Due Date</th>
+                                <th>Payment Date</th>
+                                <th>Method</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var payment in Model)
+                            {
+                                var isOverdue = payment.Status == property_lease_saas.Models.Entities.PaymentStatus.Pending 
+                                              && payment.DueDate < DateTime.Now;
+                                
+                                <tr class="@(isOverdue ? "table-danger" : payment.IsLate ? "table-warning" : "")"
+                                    data-status="@payment.Status"
+                                    data-property="@payment.Lease?.Property?.Id">
+                                    <td>
+                                        <strong>@payment.TenantName</strong>
+                                        @if (isOverdue)
+                                        {
+                                            <br />
+                                            <small class="text-danger">
+                                                <i class="bi bi-exclamation-triangle"></i> Overdue
+                                            </small>
+                                        }
+                                    </td>
+                                    <td>@payment.Lease?.Property?.Title</td>
+                                    <td>@payment.PaymentFor</td>
+                                    <td>
+                                        <strong>Rs. @payment.Amount.ToString("N0")</strong>
+                                        @if (payment.LateFee > 0)
+                                        {
+                                            <br />
+                                            <small class="text-warning">+ Rs. @payment.LateFee.ToString("N0") late fee</small>
+                                        }
+                                    </td>
+                                    <td>@payment.DueDate.ToString("MMM dd, yyyy")</td>
+                                    <td>
+                                        @if (payment.Status == property_lease_saas.Models.Entities.PaymentStatus.Completed)
+                                        {
+                                            @payment.PaymentDate.ToString("MMM dd, yyyy")
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">-</span>
+                                        }
+                                    </td>
+                                    <td>@payment.PaymentMethod</td>
+                                    <td>
+                                        <span class="badge @GetStatusBadge(payment.Status)">
+                                            @payment.Status
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a href="/Payment/PaymentDetails/@payment.Id?type=rent" 
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        @if (payment.Status == property_lease_saas.Models.Entities.PaymentStatus.Pending)
+                                        {
+                                            <button class="btn btn-sm btn-success" 
+                                                    onclick="confirmPayment('@payment.Id')">
+                                                <i class="bi bi-check-circle"></i>
+                                            </button>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@functions {
+    private string GetStatusBadge(property_lease_saas.Models.Entities.PaymentStatus status)
+    {
+        return status switch
+        {
+            property_lease_saas.Models.Entities.PaymentStatus.Pending => "badge-warning",
+            property_lease_saas.Models.Entities.PaymentStatus.Processing => "badge-info",
+            property_lease_saas.Models.Entities.PaymentStatus.Completed => "badge-success",
+            property_lease_saas.Models.Entities.PaymentStatus.Failed => "badge-danger",
+            property_lease_saas.Models.Entities.PaymentStatus.Cancelled => "badge-secondary",
+            _ => "badge-secondary"
+        };
+    }
+}
+
+<script>
+function confirmPayment(paymentId) {
+    const transactionId = prompt('Enter transaction/confirmation ID (optional):');
+    
+    if (transactionId === null) return; // Cancelled
+    
+    if (!confirm('Confirm that you have received this payment?')) {
+        return;
+    }
+
+    fetch('/Payment/ConfirmRentPayment', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+            paymentId: paymentId, 
+            transactionId: transactionId 
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            location.reload();
+        } else {
+            alert(data.message);
+        }
+    })
+    .catch(error => {
+        alert('An error occurred');
+        console.error('Error:', error);
+    });
+}
+
+// Filters
+document.getElementById('statusFilter')?.addEventListener('change', filterTable);
+document.getElementById('propertyFilter')?.addEventListener('change', filterTable);
+document.getElementById('fromDate')?.addEventListener('change', filterTable);
+document.getElementById('toDate')?.addEventListener('change', filterTable);
+
+function filterTable() {
+    const status = document.getElementById('statusFilter').value;
+    const property = document.getElementById('propertyFilter').value;
+    const fromDate = document.getElementById('fromDate').value;
+    const toDate = document.getElementById('toDate').value;
+
+    const rows = document.querySelectorAll('#paymentsTable tbody tr');
+    
+    rows.forEach(row => {
+        let show = true;
+        
+        if (status && row.dataset.status !== status) {
+            show = false;
+        }
+        
+        if (property && row.dataset.property !== property) {
+            show = false;
+        }
+        
+        row.style.display = show ? '' : 'none';
+    });
+}
+</script>

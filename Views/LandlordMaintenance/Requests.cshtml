@@ -1,9 +1,11 @@
+@* views/landlordmaintenance/requests.cshtml *@
 @model IEnumerable<property_lease_saas.Models.Entities.MaintenanceApplication>
 
 @{
     ViewData["Title"] = "Maintenance Requests";
     var properties = ViewBag.Properties as IEnumerable<property_lease_saas.Models.Entities.Property>;
-    var maintenanceRequests = ViewBag.MaintenanceRequests as IEnumerable<property_lease_saas.Models.Entities.MaintenanceRequest>;
+    var maintenanceRequests = ViewBag.MaintenanceRequests as
+    IEnumerable<property_lease_saas.Models.Entities.MaintenanceRequest>;
 }
 
 <div class="container mt-4">
@@ -19,11 +21,13 @@
             <form asp-action="Create" method="post">
                 <div class="mb-3">
                     <label for="Title" class="form-label">Title</label>
-                    <input type="text" class="form-control" id="Title" name="Title" required placeholder="Enter request title" />
+                    <input type="text" class="form-control" id="Title" name="Title" required
+                        placeholder="Enter request title" />
                 </div>
                 <div class="mb-3">
                     <label for="Description" class="form-label">Description</label>
-                    <textarea class="form-control" id="Description" name="Description" rows="3" required placeholder="Enter detailed description"></textarea>
+                    <textarea class="form-control" id="Description" name="Description" rows="3" required
+                        placeholder="Enter detailed description"></textarea>
                 </div>
                 <div class="mb-3">
                     <label for="PropertyId" class="form-label">Property</label>
@@ -43,10 +47,11 @@
                     </select>
                 </div>
 
-                <button type="submit" class="btn btn-primary" @(properties == null || !properties.Any() ? "disabled" : "")>
+                <button type="submit" class="btn btn-primary" @(properties == null || !properties.Any() ? "disabled" :
+                                                                                  "")>
                     Create Request
                 </button>
-                
+
                 @if (properties == null || !properties.Any())
                 {
                     <small class="text-muted d-block mt-2">
@@ -75,9 +80,8 @@
 
                 <div class="accordion-item mb-3 shadow-sm">
                     <h2 class="accordion-header" id="@headingId">
-                        <button class="accordion-button collapsed" type="button"
-                                data-bs-toggle="collapse"
-                                data-bs-target="#@collapseId">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#@collapseId">
                             <div class="w-100 d-flex justify-content-between align-items-center">
                                 <div>
                                     <strong>@request.Title</strong>
@@ -92,8 +96,7 @@
                         </button>
                     </h2>
 
-                    <div id="@collapseId" class="accordion-collapse collapse"
-                         data-bs-parent="#maintenanceAccordion">
+                    <div id="@collapseId" class="accordion-collapse collapse" data-bs-parent="#maintenanceAccordion">
                         <div class="accordion-body">
 
                             <!-- Request Details -->
@@ -104,8 +107,9 @@
 
                             <!-- Actions -->
                             <div class="d-flex gap-2 mb-3">
-                                @if (request.Status == property_lease_saas.Models.Entities.MaintenanceRequestStatus.Pending)
-                                { 
+                                @if (request.Status == property_lease_saas.Models.Entities.MaintenanceRequestStatus.Pending ||
+                                                        request.Status == property_lease_saas.Models.Entities.MaintenanceRequestStatus.Requested)
+                                {
                                     <form asp-action="Publish" method="post">
                                         <input type="hidden" name="id" value="@request.Id" />
                                         <button class="btn btn-outline-primary btn-sm">
@@ -140,8 +144,9 @@
                                     <table class="table table-bordered table-hover align-middle">
                                         <thead class="table-light">
                                             <tr>
-                                                <th>Mechanic</th>
-                                                <th>Proposed Bill</th>
+                                                <th>Mechanic Id</th>
+                                                @* <th>Mechanic Email</th> *@
+                                                            <th>Proposed Bill</th>
                                                 <th>Notes</th>
                                                 <th>Applied At</th>
                                                 <th>Action</th>
@@ -153,7 +158,8 @@
                                             {
                                                 <tr>
                                                     <td>@app.MechanicId</td>
-                                                    <td>Rs. @app.ProposedBill</td>
+                                                    @* <td>@mechanic email</td> *@
+                                                                    <td>Rs. @app.ProposedBill</td>
                                                     <td>@app.Notes</td>
                                                     <td>@app.AppliedAt.ToString("dd MMM yyyy")</td>
                                                     <td>
@@ -181,11 +187,21 @@
                             <!-- Evidence -->
                             @if (!string.IsNullOrEmpty(request.CompletionImagePath))
                             {
-                                <hr />
-                                <h6 class="fw-semibold">Completion Evidence</h6>
-                                <img src="@request.CompletionImagePath"
-                                     class="img-fluid rounded border"
-                                     style="max-height: 250px;" />
+                                <div class="xl col-6">
+                                    <div>
+                                        <hr />
+                                        <h6 class="fw-semibold">Completion Evidence</h6>
+                                        <img src="@request.CompletionImagePath" class="img-fluid rounded border"
+                                            style="max-height: 250px;" />
+                                    </div>
+                                    <div>
+                                        <hr />
+                                        <h6 class="fw-semibold">Receipt</h6>
+                                        <img src="@request.ReceiptPath" class="img-fluid rounded border"
+                                            style="max-height: 250px;" />
+                                    </div>
+                                </div>
+
                             }
                         </div>
                     </div>

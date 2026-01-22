@@ -79,6 +79,11 @@ builder.Services.AddScoped<IFileStorage, LocalFileStorage>();
 builder.Services.AddScoped<IMaintenanceRepository, MaintenanceRepository>();
 builder.Services.AddScoped<IMaintenanceApplicationRepository, MaintenanceApplicationRepository>();
 builder.Services.AddScoped<MaintenanceService>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
+builder.Services.AddScoped<DashboardService>();  
+builder.Services.AddScoped<IMechanicApplicationService, MechanicApplicationService>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
 
 var app = builder.Build();
 
@@ -105,7 +110,8 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Dashboard}/{action=Index}/{id?}");
-
+    //pattern: "Identity/Account/Login");
+    //pattern: "{area:exists}/{controller=Account}/{action=Login}/{id?}");
 app.MapRazorPages(); // 🔴 REQUIRED for /Identity/*
 
 // Add SignalR Hub route

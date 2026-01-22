@@ -72,8 +72,9 @@
 
 
 
+@* views/landlordmaintenance/applications.cshtml *@
 
-
+@*
 @using property_lease_saas.Models.Entities
 @model IEnumerable<MaintenanceRequest>
 
@@ -200,4 +201,877 @@
             </div>
         </div>
     }
+</div> *@
+
+
+@* 
+
+@using property_lease_saas.Models.Entities
+@model IEnumerable<MaintenanceRequest>
+
+@{
+    ViewData["Title"] = "Maintenance Requests";
+    var properties = ViewBag.Properties as IEnumerable<Property>;
+}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-semibold mb-0">Maintenance Requests</h2>
+        <!-- NEW: Add Request Button -->
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createRequestModal">
+            <i class="bi bi-plus-circle me-2"></i>Create New Request
+        </button>
+    </div>
+
+    <!-- Empty State -->
+    @if (!Model.Any())
+    {
+        <div class="card shadow-sm">
+            <div class="card-body text-center py-5">
+                <i class="bi bi-tools text-muted" style="font-size: 4rem;"></i>
+                <h5 class="mt-3 text-muted">No Maintenance Requests</h5>
+                <p class="text-muted">Create your first maintenance request to get started</p>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createRequestModal">
+                    <i class="bi bi-plus-circle me-2"></i>Create Request
+                </button>
+            </div>
+        </div>
+    }
+
+    <!-- REQUEST LIST -->
+    @foreach (var request in Model)
+    {
+        <div class="card shadow-sm mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <div>
+                    <strong>@request.Title</strong>
+                    <small class="text-muted ms-2">
+                        <i class="bi bi-calendar3 me-1"></i>@request.CreatedAt.ToString("dd MMM yyyy")
+                    </small>
+                </div>
+                <span class="badge @GetStatusBadgeClass(request.Status)">@request.Status</span>
+            </div>
+
+            <div class="card-body">
+                <p class="mb-2">@request.Description</p>
+
+                <!-- ACTIONS -->
+                <div class="mt-3">
+                    @if (request.Status == MaintenanceRequestStatus.Requested || request.Status == MaintenanceRequestStatus.Pending)
+                    {
+                        <form asp-action="Publish" method="post" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@request.Id" />
+                            <button class="btn btn-success btn-sm">
+                                <i class="bi bi-megaphone me-1"></i>Publish to Mechanics
+                            </button>
+                        </form>
+                    }
+
+                    @if (request.Status == MaintenanceRequestStatus.Completed)
+                    {
+                        <form asp-action="Verify" method="post" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@request.Id" />
+                            <button class="btn btn-primary btn-sm">
+                                <i class="bi bi-check-circle me-1"></i>Verify Completion
+                            </button>
+                        </form>
+                    }
+
+                    @if (request.Status == MaintenanceRequestStatus.Verified)
+                    {
+                        <span class="badge bg-success">
+                            <i class="bi bi-check-all me-1"></i>Verified & Closed
+                        </span>
+                    }
+                </div>
+
+                <!-- APPLICATIONS -->
+                @if (request.Applications.Any())
+                {
+                    <hr class="my-3" />
+                    <h6 class="fw-semibold mb-3">
+                        <i class="bi bi-people me-2"></i>Mechanic Applications
+                        <span class="badge bg-info ms-2">@request.Applications.Count</span>
+                    </h6>
+
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Mechanic</th>
+                                    <th>Proposed Bill</th>
+                                    <th>Notes</th>
+                                    <th>Applied On</th>
+                                    <th>Status</th>
+                                    <th class="text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var app in request.Applications)
+                            {
+                                <tr>
+                                    <td>
+                                        <i class="bi bi-person-badge me-1"></i>
+                                        <strong>@app.MechanicId.Substring(0, 8)...</strong>
+                                    </td>
+                                    <td class="text-nowrap">
+                                        <strong class="text-success">Rs. @app.ProposedBill.ToString("N0")</strong>
+                                    </td>
+                                    <td>@app.Notes</td>
+                                    <td class="text-nowrap">@app.AppliedAt.ToString("dd MMM yyyy")</td>
+                                    <td>
+                                        @if (app.IsAccepted)
+                                        {
+                                            <span class="badge bg-success">
+                                                <i class="bi bi-check-circle me-1"></i>Accepted
+                                            </span>
+                                        }
+                                        else if (request.AssignedMechanicId != null)
+                                        {
+                                            <span class="badge bg-secondary">
+                                                <i class="bi bi-x-circle me-1"></i>Not Selected
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-warning text-dark">
+                                                <i class="bi bi-clock me-1"></i>Pending
+                                            </span>
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        @if (!app.IsAccepted && request.AssignedMechanicId == null && request.Status == MaintenanceRequestStatus.Published)
+                                        {
+                                            <form asp-action="Accept" method="post" class="d-inline">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="applicationId" value="@app.Id" />
+                                                <button class="btn btn-sm btn-success" onclick="return confirm('Accept this mechanic for the job?')">
+                                                    <i class="bi bi-check-lg me-1"></i>Accept
+                                                </button>
+                                            </form>
+                                        }
+                                        else if (app.IsAccepted)
+                                        {
+                                            <span class="text-success">
+                                                <i class="bi bi-check-circle-fill"></i>
+                                            </span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else if (request.Status == MaintenanceRequestStatus.Published)
+                {
+                    <div class="alert alert-info mt-3 mb-0">
+                        <i class="bi bi-info-circle me-2"></i>
+                        <strong>Published:</strong> Waiting for mechanics to apply...
+                    </div>
+                }
+            </div>
+        </div>
+    }
 </div>
+
+<!-- CREATE REQUEST MODAL -->
+<div class="modal fade" id="createRequestModal" tabindex="-1" aria-labelledby="createRequestModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <form asp-action="Create" method="post" id="createRequestForm">
+                @Html.AntiForgeryToken()
+                
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="createRequestModalLabel">
+                        <i class="bi bi-tools me-2"></i>Create Maintenance Request
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <!-- Property Selection -->
+                        <div class="col-12">
+                            <label for="propertyId" class="form-label fw-semibold">
+                                <i class="bi bi-house me-1"></i>Property <span class="text-danger">*</span>
+                            </label>
+                            <select name="propertyId" id="propertyId" class="form-select form-select-lg" required>
+                                <option value="" disabled selected>-- Select a Property --</option>
+                                @if (properties != null && properties.Any())
+                                {
+                                    @foreach (var property in properties)
+                                    {
+                                        <option value="@property.Id">
+                                            @property.Title - @property.Address
+                                        </option>
+                                    }
+                                }
+                                else
+                                {
+                                    <option disabled>No properties available</option>
+                                }
+                            </select>
+                            @if (properties == null || !properties.Any())
+                            {
+                                <small class="text-muted">
+                                    <i class="bi bi-exclamation-triangle me-1"></i>
+                                    You need to add properties before creating maintenance requests.
+                                </small>
+                            }
+                        </div>
+
+                        <!-- Title -->
+                        <div class="col-12">
+                            <label for="title" class="form-label fw-semibold">
+                                <i class="bi bi-card-heading me-1"></i>Title <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" 
+                                   name="title" 
+                                   id="title" 
+                                   class="form-control form-control-lg" 
+                                   placeholder="e.g., Leaking faucet in kitchen" 
+                                   required 
+                                   maxlength="100" />
+                            <small class="text-muted">Brief description of the issue</small>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="col-12">
+                            <label for="description" class="form-label fw-semibold">
+                                <i class="bi bi-text-paragraph me-1"></i>Description <span class="text-danger">*</span>
+                            </label>
+                            <textarea name="description" 
+                                      id="description" 
+                                      class="form-control" 
+                                      rows="4" 
+                                      placeholder="Provide detailed information about the maintenance issue..." 
+                                      required 
+                                      maxlength="500"></textarea>
+                            <small class="text-muted">
+                                <span id="charCount">0</span>/500 characters
+                            </small>
+                        </div>
+
+                        <!-- Info Alert -->
+                        <div class="col-12">
+                            <div class="alert alert-info mb-0">
+                                <i class="bi bi-info-circle me-2"></i>
+                                <strong>Note:</strong> After creating the request, you can publish it to allow mechanics to apply for the job.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i>Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary" @(properties == null || !properties.Any() ? "disabled" : "")>
+                        <i class="bi bi-check-circle me-1"></i>Create Request
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@functions {
+    private string GetStatusBadgeClass(MaintenanceRequestStatus status)
+    {
+        return status switch
+        {
+            MaintenanceRequestStatus.Requested => "bg-secondary",
+            MaintenanceRequestStatus.Pending => "bg-secondary",
+            MaintenanceRequestStatus.Published => "bg-info",
+            MaintenanceRequestStatus.Assigned => "bg-warning text-dark",
+            MaintenanceRequestStatus.InProgress => "bg-warning text-dark",
+            MaintenanceRequestStatus.Completed => "bg-primary",
+            MaintenanceRequestStatus.Verified => "bg-success",
+            MaintenanceRequestStatus.Rejected => "bg-danger",
+            _ => "bg-dark"
+        };
+    }
+}
+
+@section Scripts {
+    <script>
+        // Character counter for description
+        document.getElementById('description').addEventListener('input', function() {
+            const charCount = this.value.length;
+            document.getElementById('charCount').textContent = charCount;
+            
+            // Change color when approaching limit
+            const countElement = document.getElementById('charCount');
+            if (charCount > 450) {
+                countElement.classList.add('text-danger');
+                countElement.classList.remove('text-warning');
+            } else if (charCount > 400) {
+                countElement.classList.add('text-warning');
+                countElement.classList.remove('text-danger');
+            } else {
+                countElement.classList.remove('text-danger', 'text-warning');
+            }
+        });
+
+        // Form validation before submit
+        document.getElementById('createRequestForm').addEventListener('submit', function(e) {
+            const propertyId = document.getElementById('propertyId').value;
+            const title = document.getElementById('title').value.trim();
+            const description = document.getElementById('description').value.trim();
+
+            if (!propertyId) {
+                e.preventDefault();
+                alert('Please select a property');
+                return false;
+            }
+
+            if (!title || title.length < 5) {
+                e.preventDefault();
+                alert('Title must be at least 5 characters long');
+                return false;
+            }
+
+            if (!description || description.length < 10) {
+                e.preventDefault();
+                alert('Description must be at least 10 characters long');
+                return false;
+            }
+
+            return true;
+        });
+
+        // Reset form when modal is closed
+        document.getElementById('createRequestModal').addEventListener('hidden.bs.modal', function () {
+            document.getElementById('createRequestForm').reset();
+            document.getElementById('charCount').textContent = '0';
+            document.getElementById('charCount').classList.remove('text-danger', 'text-warning');
+        });
+
+        // Success message handling
+        @if (TempData["Success"] != null)
+        {
+            <text>
+            document.addEventListener('DOMContentLoaded', function() {
+                const alertDiv = document.createElement('div');
+                alertDiv.className = 'alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3';
+                alertDiv.style.zIndex = '9999';
+                alertDiv.innerHTML = `
+                    <i class="bi bi-check-circle me-2"></i>
+                    <strong>Success!</strong> @TempData["Success"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                `;
+                document.body.appendChild(alertDiv);
+                
+                setTimeout(() => {
+                    alertDiv.remove();
+                }, 5000);
+            });
+            </text>
+        }
+
+        // Error message handling
+        @if (TempData["Error"] != null)
+        {
+            <text>
+            document.addEventListener('DOMContentLoaded', function() {
+                const alertDiv = document.createElement('div');
+                alertDiv.className = 'alert alert-danger alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3';
+                alertDiv.style.zIndex = '9999';
+                alertDiv.innerHTML = `
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    <strong>Error!</strong> @TempData["Error"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                `;
+                document.body.appendChild(alertDiv);
+                
+                setTimeout(() => {
+                    alertDiv.remove();
+                }, 5000);
+            });
+            </text>
+        }
+    </script>
+} *@
+
+
+
+@using property_lease_saas.Models.Entities
+@model IEnumerable<MaintenanceRequest>
+
+@{
+    ViewData["Title"] = "Maintenance Requests";
+    var properties = ViewBag.Properties as IEnumerable<Property>;
+}
+
+<div class="container-fluid mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-semibold mb-1">Maintenance Requests</h2>
+            <p class="text-muted mb-0">Manage property maintenance and mechanic applications</p>
+        </div>
+        <button class="btn btn-primary btn-lg shadow-sm" data-bs-toggle="modal" data-bs-target="#createRequestModal">
+            <i class="bi bi-plus-circle me-2"></i>Create New Request
+        </button>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-primary bg-opacity-10 rounded p-3">
+                                <i class="bi bi-folder text-primary fs-4"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="text-muted mb-0">Total Requests</h6>
+                            <h3 class="mb-0">@Model.Count()</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-warning bg-opacity-10 rounded p-3">
+                                <i class="bi bi-clock-history text-warning fs-4"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="text-muted mb-0">In Progress</h6>
+                            <h3 class="mb-0">@Model.Count(r => r.Status == MaintenanceRequestStatus.InProgress)</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-info bg-opacity-10 rounded p-3">
+                                <i class="bi bi-people text-info fs-4"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="text-muted mb-0">Applications</h6>
+                            <h3 class="mb-0">@Model.Sum(r => r.Applications.Count)</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-success bg-opacity-10 rounded p-3">
+                                <i class="bi bi-check-circle text-success fs-4"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="text-muted mb-0">Completed</h6>
+                            <h3 class="mb-0">@Model.Count(r => r.Status == MaintenanceRequestStatus.Verified)</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Empty State -->
+    @if (!Model.Any())
+    {
+        <div class="card border-0 shadow-sm">
+            <div class="card-body text-center py-5">
+                <i class="bi bi-tools text-muted" style="font-size: 5rem; opacity: 0.3;"></i>
+                <h4 class="mt-4 text-muted">No Maintenance Requests</h4>
+                <p class="text-muted">Create your first maintenance request to get started</p>
+                <button class="btn btn-primary btn-lg mt-3" data-bs-toggle="modal" data-bs-target="#createRequestModal">
+                    <i class="bi bi-plus-circle me-2"></i>Create Your First Request
+                </button>
+            </div>
+        </div>
+    }
+
+    <!-- REQUEST CARDS -->
+    <div class="row g-4">
+        @foreach (var request in Model.OrderByDescending(r => r.CreatedAt))
+        {
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-start py-3">
+                        <div class="flex-grow-1">
+                            <h5 class="mb-1 fw-bold">@request.Title</h5>
+                            <small class="text-muted">
+                                <i class="bi bi-calendar3 me-1"></i>@request.CreatedAt.ToString("MMM dd, yyyy")
+                                @if (request.CompletedAt.HasValue)
+                                {
+                                    <span class="ms-2">
+                                        <i class="bi bi-check-circle me-1"></i>Completed: @request.CompletedAt.Value.ToString("MMM dd, yyyy")
+                                    </span>
+                                }
+                            </small>
+                        </div>
+                        <span class="badge @GetStatusBadgeClass(request.Status) px-3 py-2">
+                            @request.Status
+                        </span>
+                    </div>
+
+                    <div class="card-body">
+                        <p class="text-muted mb-3">
+                            @(request.Description.Length > 100 ? request.Description.Substring(0, 100) + "..." : request.Description)
+                        </p>
+
+                        <!-- Applications Summary -->
+                        @if (request.Applications.Any())
+                        {
+                            <div class="alert alert-light border mb-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-people-fill text-primary fs-5 me-2"></i>
+                                    <div class="flex-grow-1">
+                                        <strong>@request.Applications.Count</strong> mechanic application@(request.Applications.Count != 1 ? "s" : "")
+                                        @if (request.Applications.Any(a => a.IsAccepted))
+                                        {
+                                            <span class="badge bg-success ms-2">
+                                                <i class="bi bi-check-circle me-1"></i>1 Accepted
+                                            </span>
+                                        }
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-primary" 
+                                            data-bs-toggle="collapse" 
+                                            data-bs-target="#apps-@request.Id">
+                                        <i class="bi bi-eye me-1"></i>View
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Applications List (Collapsible) -->
+                            <div class="collapse" id="apps-@request.Id">
+                                <div class="list-group mb-3">
+                                    @foreach (var app in request.Applications.OrderByDescending(a => a.AppliedAt))
+                                    {
+                                        <div class="list-group-item">
+                                            <div class="d-flex justify-content-between align-items-start">
+                                                <div class="flex-grow-1">
+                                                    <div class="fw-bold text-truncate">
+                                                        <i class="bi bi-person-badge me-1"></i>
+                                                        Mechanic: @app.MechanicId.Substring(0, 12)...
+                                                    </div>
+                                                    <div class="text-success fw-bold mt-1">
+                                                        Rs. @app.ProposedBill.ToString("N0")
+                                                    </div>
+                                                    <small class="text-muted">
+                                                        Applied: @app.AppliedAt.ToString("MMM dd, yyyy")
+                                                    </small>
+                                                </div>
+                                                <div class="text-end">
+                                                    @if (app.IsAccepted)
+                                                    {
+                                                        <span class="badge bg-success mb-2">
+                                                            <i class="bi bi-check-circle"></i> Accepted
+                                                        </span>
+                                                    }
+                                                    else if (request.AssignedMechanicId != null)
+                                                    {
+                                                        <span class="badge bg-secondary mb-2">Not Selected</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="badge bg-warning text-dark mb-2">Pending</span>
+                                                    }
+                                                    <br />
+                                                    <button class="btn btn-sm btn-outline-info" 
+                                                            onclick="viewApplicationDetail('@app.Id', '@request.Id')">
+                                                        <i class="bi bi-info-circle me-1"></i>Details
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                        else if (request.Status == MaintenanceRequestStatus.Published)
+                        {
+                            <div class="alert alert-info mb-3">
+                                <i class="bi bi-info-circle me-2"></i>
+                                Published - Waiting for mechanics to apply
+                            </div>
+                        }
+
+                        <!-- Evidence Section -->
+                        @if (!string.IsNullOrEmpty(request.CompletionImagePath))
+                        {
+                            <div class="alert alert-success border mb-3">
+                                <i class="bi bi-image me-2"></i>
+                                <strong>Evidence uploaded</strong> - Completion photo available
+                            </div>
+                        }
+                    </div>
+
+                    <div class="card-footer bg-white border-top d-flex justify-content-between align-items-center py-3">
+                        <button class="btn btn-outline-primary" onclick="viewRequestDetail('@request.Id')">
+                            <i class="bi bi-eye me-1"></i>View Full Details
+                        </button>
+
+                        <div class="btn-group">
+                            @if (request.Status == MaintenanceRequestStatus.Requested || request.Status == MaintenanceRequestStatus.Pending)
+                            {
+                                <form asp-action="Publish" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@request.Id" />
+                                    <button class="btn btn-success" onclick="return confirm('Publish this request to mechanics?')">
+                                        <i class="bi bi-megaphone me-1"></i>Publish
+                                    </button>
+                                </form>
+                            }
+
+                            @if (request.Status == MaintenanceRequestStatus.Completed)
+                            {
+                                <form asp-action="Verify" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@request.Id" />
+                                    <button class="btn btn-primary" onclick="return confirm('Verify this completed work?')">
+                                        <i class="bi bi-check-circle me-1"></i>Verify
+                                    </button>
+                                </form>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- CREATE REQUEST MODAL -->
+<div class="modal fade" id="createRequestModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow">
+            <form asp-action="Create" method="post" id="createRequestForm">
+                @Html.AntiForgeryToken()
+                
+                <div class="modal-header bg-primary text-white border-0">
+                    <h5 class="modal-title">
+                        <i class="bi bi-tools me-2"></i>Create Maintenance Request
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                
+                <div class="modal-body p-4">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label for="propertyId" class="form-label fw-semibold">
+                                <i class="bi bi-house me-1"></i>Property <span class="text-danger">*</span>
+                            </label>
+                            <select name="propertyId" id="propertyId" class="form-select form-select-lg" required>
+                                <option value="" disabled selected>-- Select a Property --</option>
+                                @if (properties != null && properties.Any())
+                                {
+                                    @foreach (var property in properties)
+                                    {
+                                        <option value="@property.Id">
+                                            @property.Title - @property.Address
+                                        </option>
+                                    }
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="title" class="form-label fw-semibold">
+                                <i class="bi bi-card-heading me-1"></i>Title <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" 
+                                   name="title" 
+                                   id="title" 
+                                   class="form-control form-control-lg" 
+                                   placeholder="e.g., Leaking faucet in kitchen" 
+                                   required 
+                                   maxlength="100" />
+                        </div>
+
+                        <div class="col-12">
+                            <label for="description" class="form-label fw-semibold">
+                                <i class="bi bi-text-paragraph me-1"></i>Description <span class="text-danger">*</span>
+                            </label>
+                            <textarea name="description" 
+                                      id="description" 
+                                      class="form-control" 
+                                      rows="4" 
+                                      placeholder="Provide detailed information about the maintenance issue..." 
+                                      required 
+                                      maxlength="500"></textarea>
+                            <small class="text-muted">
+                                <span id="charCount">0</span>/500 characters
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="modal-footer border-0 bg-light">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i>Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-circle me-1"></i>Create Request
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- REQUEST DETAIL MODAL -->
+<div class="modal fade" id="requestDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-primary text-white border-0">
+                <h5 class="modal-title">
+                    <i class="bi bi-file-earmark-text me-2"></i>Request Details
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4" id="requestDetailContent">
+                <div class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- APPLICATION DETAIL MODAL -->
+<div class="modal fade" id="applicationDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-info text-white border-0">
+                <h5 class="modal-title">
+                    <i class="bi bi-person-badge me-2"></i>Application Details
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4" id="applicationDetailContent">
+                <div class="text-center py-5">
+                    <div class="spinner-border text-info" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    private string GetStatusBadgeClass(MaintenanceRequestStatus status)
+    {
+        return status switch
+        {
+            MaintenanceRequestStatus.Requested => "bg-secondary",
+            MaintenanceRequestStatus.Pending => "bg-secondary",
+            MaintenanceRequestStatus.Published => "bg-info",
+            MaintenanceRequestStatus.Assigned => "bg-warning text-dark",
+            MaintenanceRequestStatus.InProgress => "bg-warning text-dark",
+            MaintenanceRequestStatus.Completed => "bg-primary",
+            MaintenanceRequestStatus.Verified => "bg-success",
+            MaintenanceRequestStatus.Rejected => "bg-danger",
+            _ => "bg-dark"
+        };
+    }
+}
+
+@section Scripts {
+    <script>
+        // Character counter
+        document.getElementById('description')?.addEventListener('input', function() {
+            document.getElementById('charCount').textContent = this.value.length;
+        });
+
+        // View Request Detail
+        async function viewRequestDetail(requestId) {
+            const modal = new bootstrap.Modal(document.getElementById('requestDetailModal'));
+            modal.show();
+            
+            try {
+                const response = await fetch(`/LandlordMaintenance/GetRequestDetail?id=${requestId}`);
+                const html = await response.text();
+                document.getElementById('requestDetailContent').innerHTML = html;
+            } catch (error) {
+                document.getElementById('requestDetailContent').innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        Error loading request details
+                    </div>
+                `;
+            }
+        }
+
+        // View Application Detail
+        async function viewApplicationDetail(applicationId, requestId) {
+            const modal = new bootstrap.Modal(document.getElementById('applicationDetailModal'));
+            modal.show();
+            
+            try {
+                const response = await fetch(`/LandlordMaintenance/GetApplicationDetail?applicationId=${applicationId}&requestId=${requestId}`);
+                const html = await response.text();
+                document.getElementById('applicationDetailContent').innerHTML = html;
+            } catch (error) {
+                document.getElementById('applicationDetailContent').innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        Error loading application details
+                    </div>
+                `;
+            }
+        }
+
+        // Success/Error Toast Messages
+        @if (TempData["Success"] != null)
+        {
+            <text>
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: '@TempData["Success"]',
+                timer: 3000,
+                showConfirmButton: false,
+                toast: true,
+                position: 'top-end'
+            });
+            </text>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <text>
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: '@TempData["Error"]',
+                timer: 4000,
+                showConfirmButton: true,
+                toast: true,
+                position: 'top-end'
+            });
+            </text>
+        }
+    </script>
+
+    <!-- SweetAlert2 for better notifications -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+}

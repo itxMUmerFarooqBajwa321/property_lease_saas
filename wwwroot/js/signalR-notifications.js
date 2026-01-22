@@ -201,23 +201,46 @@ class NotificationManager {
     
     getNotificationTypeClass(type) {
         switch(type) {
+            // Lease notifications
             case 'LeaseRequestCreated': return 'bg-warning';
             case 'LeaseRequestApproved': return 'bg-success';
             case 'LeaseRequestRejected': return 'bg-danger';
+            
+            // Maintenance notifications
+            case 'MaintenanceRequestCreated': return 'bg-info';
+            case 'MaintenanceRequestPublished': return 'bg-primary';
+            case 'MaintenanceApplicationReceived': return 'bg-warning';
+            case 'MaintenanceApplicationAccepted': return 'bg-success';
+            case 'MaintenanceWorkStarted': return 'bg-info';
+            case 'MaintenanceWorkCompleted': return 'bg-success';
+            case 'MaintenanceWorkVerified': return 'bg-success';
+            
             default: return 'bg-primary';
         }
     }
-    
+
     getNotificationIcon(type) {
         switch(type) {
+            // Lease notifications
             case 'LeaseRequestCreated': return 'bi-envelope-plus';
             case 'LeaseRequestApproved': return 'bi-check-circle';
             case 'LeaseRequestRejected': return 'bi-x-circle';
+            
+            // Maintenance notifications
+            case 'MaintenanceRequestCreated': return 'bi-tools';
+            case 'MaintenanceRequestPublished': return 'bi-megaphone';
+            case 'MaintenanceApplicationReceived': return 'bi-person-check';
+            case 'MaintenanceApplicationAccepted': return 'bi-check-circle';
+            case 'MaintenanceWorkStarted': return 'bi-play-circle';
+            case 'MaintenanceWorkCompleted': return 'bi-check-all';
+            case 'MaintenanceWorkVerified': return 'bi-patch-check';
+            
             default: return 'bi-bell';
         }
     }
-    
+
     getActionButtons(notification) {
+        // Lease notifications
         if (notification.type === 'LeaseRequestCreated') {
             return `
                 <div class="mt-2 pt-2 border-top">
@@ -226,6 +249,53 @@ class NotificationManager {
                 </div>
             `;
         }
+        
+        // Maintenance notifications for landlord
+        if (notification.type === 'MaintenanceRequestCreated' || 
+            notification.type === 'MaintenanceApplicationReceived' ||
+            notification.type === 'MaintenanceWorkCompleted') {
+            return `
+                <div class="mt-2 pt-2 border-top">
+                    <a href="/LandlordMaintenance/Requests" class="btn btn-sm btn-outline-light me-1">View Requests</a>
+                    <button onclick="notificationManager.markAsRead('${notification.requestId}')" class="btn btn-sm btn-outline-light">Dismiss</button>
+                </div>
+            `;
+        }
+        
+        // Maintenance notifications for mechanic
+        if (notification.type === 'MaintenanceRequestPublished') {
+            return `
+                <div class="mt-2 pt-2 border-top">
+                    <a href="/MechanicMaintenance/Available" class="btn btn-sm btn-outline-light me-1">View Jobs</a>
+                    <button onclick="notificationManager.markAsRead('${notification.requestId}')" class="btn btn-sm btn-outline-light">Dismiss</button>
+                </div>
+            `;
+        }
+        
+        if (notification.type === 'MaintenanceApplicationAccepted' ||
+            notification.type === 'MaintenanceWorkStarted') {
+            return `
+                <div class="mt-2 pt-2 border-top">
+                    <a href="/MechanicMaintenance/MyJobs" class="btn btn-sm btn-outline-light me-1">View My Jobs</a>
+                    <button onclick="notificationManager.markAsRead('${notification.requestId}')" class="btn btn-sm btn-outline-light">Dismiss</button>
+                </div>
+            `;
+        }
+        
+        // Maintenance notifications for tenant
+        if (notification.type === 'MaintenanceRequestPublished' ||
+            notification.type === 'MaintenanceApplicationAccepted' ||
+            notification.type === 'MaintenanceWorkStarted' ||
+            notification.type === 'MaintenanceWorkCompleted' ||
+            notification.type === 'MaintenanceWorkVerified') {
+            return `
+                <div class="mt-2 pt-2 border-top">
+                    <a href="/TenantMaintenance/MyRequests" class="btn btn-sm btn-outline-light me-1">View My Requests</a>
+                    <button onclick="notificationManager.markAsRead('${notification.requestId}')" class="btn btn-sm btn-outline-light">Dismiss</button>
+                </div>
+            `;
+        }
+        
         return '';
     }
     
@@ -392,3 +462,5 @@ class NotificationManager {
 $(document).ready(function() {
     window.notificationManager = new NotificationManager();
 });
+
+

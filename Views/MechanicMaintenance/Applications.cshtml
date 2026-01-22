@@ -1,0 +1,517 @@
+@using property_lease_saas.Models.Entities
+@{
+    ViewData["Title"] = "My Applications & Jobs";
+
+    var allApplications = ViewData["AllApplications"] as List<MaintenanceApplication> ?? new();
+    var totalApplications = (int)(ViewData["TotalApplications"] ?? 0);
+    var acceptedApplications = (int)(ViewData["AcceptedApplications"] ?? 0);
+    var pendingApplications = (int)(ViewData["PendingApplications"] ?? 0);
+    var rejectedApplications = (int)(ViewData["RejectedApplications"] ?? 0);
+
+    var assignedJobs = ViewData["AssignedJobs"] as List<MaintenanceRequest> ?? new();
+    var totalAssignedJobs = (int)(ViewData["TotalAssignedJobs"] ?? 0);
+    var inProgressJobs = (int)(ViewData["InProgressJobs"] ?? 0);
+    var completedJobs = (int)(ViewData["CompletedJobs"] ?? 0);
+    var awaitingStart = (int)(ViewData["AwaitingStart"] ?? 0);
+
+    var availableJobs = ViewData["AvailableJobs"] as List<MaintenanceRequest> ?? new();
+    var totalAvailableJobs = (int)(ViewData["TotalAvailableJobs"] ?? 0);
+
+    var totalEarnings = (decimal)(ViewData["TotalEarnings"] ?? 0);
+    var pendingEarnings = (decimal)(ViewData["PendingEarnings"] ?? 0);
+}
+
+<link rel="stylesheet" href="~/css/mechanic-applications.css" />
+
+<div class="mechanic-dashboard">
+    <!-- Header -->
+    <div class="dashboard-header">
+        <div>
+            <h1 class="dashboard-title">
+                <i class="bi bi-tools me-2"></i>Mechanic Dashboard
+            </h1>
+            <p class="dashboard-subtitle">Welcome back, @ViewBag.MechanicName! Manage your applications and jobs</p>
+        </div>
+        <div class="dashboard-actions">
+            <a href="#availableJobsSection" class="btn btn-outline-primary">
+                <i class="bi bi-search me-2"></i>Browse Jobs
+            </a>
+            <a href="/MechanicMaintenance/MyJobs" class="btn btn-primary">
+                <i class="bi bi-list-check me-2"></i>My Active Jobs
+            </a>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="stats-grid">
+        <div class="stat-card stat-primary">
+            <div class="stat-icon">
+                <i class="bi bi-briefcase"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-label">Total Applications</div>
+                <div class="stat-value">@totalApplications</div>
+                <div class="stat-detail">
+                    <span class="text-success"><i class="bi bi-check-circle"></i> @acceptedApplications accepted</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card stat-success">
+            <div class="stat-icon">
+                <i class="bi bi-check-circle"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-label">Assigned Jobs</div>
+                <div class="stat-value">@totalAssignedJobs</div>
+                <div class="stat-detail">
+                    <span class="text-warning"><i class="bi bi-gear"></i> @inProgressJobs in progress</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card stat-info">
+            <div class="stat-icon">
+                <i class="bi bi-list-stars"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-label">Available Jobs</div>
+                <div class="stat-value">@totalAvailableJobs</div>
+                <div class="stat-detail">
+                    <span class="text-muted"><i class="bi bi-arrow-right"></i> Ready to apply</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card stat-warning">
+            <div class="stat-icon">
+                <i class="bi bi-currency-rupee"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-label">Total Earnings</div>
+                <div class="stat-value">Rs. @totalEarnings.ToString("N0")</div>
+                <div class="stat-detail">
+                    <span class="text-info"><i class="bi bi-clock"></i> Rs. @pendingEarnings.ToString("N0")
+                        pending</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab Navigation -->
+    <ul class="nav nav-tabs custom-tabs mb-4" id="applicationsTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="assigned-tab" data-bs-toggle="tab" data-bs-target="#assigned"
+                type="button">
+                <i class="bi bi-briefcase me-2"></i>Assigned Jobs
+                <span class="badge bg-primary ms-1">@totalAssignedJobs</span>
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="applications-tab" data-bs-toggle="tab" data-bs-target="#applications"
+                type="button">
+                <i class="bi bi-file-earmark-text me-2"></i>My Applications
+                <span class="badge bg-secondary ms-1">@totalApplications</span>
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="available-tab" data-bs-toggle="tab" data-bs-target="#available" type="button">
+                <i class="bi bi-search me-2"></i>Available Jobs
+                <span class="badge bg-success ms-1">@totalAvailableJobs</span>
+            </button>
+        </li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content" id="applicationsTabContent">
+        <!-- ASSIGNED JOBS TAB -->
+        <div class="tab-pane fade show active" id="assigned" role="tabpanel">
+            @if (!assignedJobs.Any())
+            {
+                <div class="empty-state-card">
+                    <i class="bi bi-inbox"></i>
+                    <h4>No Assigned Jobs</h4>
+                    <p>You don't have any assigned jobs yet. Browse available jobs and submit applications!</p>
+                    <a href="#available" data-bs-toggle="tab" class="btn btn-primary">
+                        <i class="bi bi-search me-2"></i>Browse Available Jobs
+                    </a>
+                </div>
+            }
+            else
+            {
+                <div class="jobs-grid">
+                    @foreach (var job in assignedJobs)
+                    {
+                        <div class="job-card @GetJobCardClass(job.Status)">
+                            <div class="job-card-header">
+                                <div class="job-status-badge @GetStatusBadgeClass(job.Status)">
+                                    <i class="bi @GetStatusIcon(job.Status)"></i>
+                                    @job.Status
+                                </div>
+                                <div class="job-date">
+                                    <i class="bi bi-calendar3"></i>
+                                    @job.CreatedAt.ToString("MMM dd, yyyy")
+                                </div>
+                            </div>
+
+                            <div class="job-card-body">
+                                <h4 class="job-title">@job.Title</h4>
+                                <p class="job-description">@job.Description</p>
+
+                                <div class="job-meta">
+                                    <div class="job-meta-item">
+                                        <i class="bi bi-building"></i>
+                                        <span>Property ID: @job.PropertyId.ToString().Substring(0, 8)...</span>
+                                    </div>
+                                    @if (job.CompletedAt.HasValue)
+                                    {
+                                        <div class="job-meta-item">
+                                            <i class="bi bi-check-circle"></i>
+                                            <span>Completed: @job.CompletedAt.Value.ToString("MMM dd, yyyy")</span>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="job-card-footer">
+                                @if (job.Status == MaintenanceRequestStatus.Assigned)
+                                {
+                                    <form asp-action="Start" method="post" class="w-100">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="requestId" value="@job.Id" />
+                                        <button type="submit" class="btn btn-primary w-100"
+                                            onclick="return confirm('Start working on this job?')">
+                                            <i class="bi bi-play-circle me-2"></i>Start Work
+                                        </button>
+                                    </form>
+                                }
+                                else if (job.Status == MaintenanceRequestStatus.InProgress)
+                                {
+                                    <button class="btn btn-success w-100" data-bs-toggle="modal"
+                                        data-bs-target="#completeModal-@job.Id">
+                                        <i class="bi bi-check-circle me-2"></i>Mark as Complete
+                                    </button>
+                                }
+                                else if (job.Status == MaintenanceRequestStatus.Completed)
+                                {
+                                    <div class="alert alert-info mb-0">
+                                        <i class="bi bi-hourglass-split me-2"></i>Awaiting landlord verification
+                                    </div>
+                                }
+                                else if (job.Status == MaintenanceRequestStatus.Verified)
+                                {
+                                    <div class="alert alert-success mb-0">
+                                        <i class="bi bi-check-all me-2"></i>Job verified and completed!
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- Complete Job Modal -->
+                        @if (job.Status == MaintenanceRequestStatus.InProgress)
+                        {
+                            <div class="modal fade" id="completeModal-@job.Id" tabindex="-1">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <form asp-action="Complete" method="post" enctype="multipart/form-data">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="requestId" value="@job.Id" />
+
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">
+                                                    <i class="bi bi-check-circle me-2"></i>Complete Job
+                                                </h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+
+                                            <div class="modal-body">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">
+                                                        <i class="bi bi-receipt me-1"></i>Receipt / Bill <span
+                                                            class="text-danger">*</span>
+                                                    </label>
+                                                    <input type="file" name="receipt" class="form-control" accept="image/*,.pdf"
+                                                        required />
+                                                    <small class="text-muted">Upload receipt or bill for parts/services</small>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">
+                                                        <i class="bi bi-image me-1"></i>Completion Photo <span
+                                                            class="text-danger">*</span>
+                                                    </label>
+                                                    <input type="file" name="completionImage" class="form-control" accept="image/*"
+                                                        required />
+                                                    <small class="text-muted">Photo showing completed work</small>
+                                                </div>
+
+                                                <div class="alert alert-warning">
+                                                    <i class="bi bi-info-circle me-2"></i>
+                                                    <strong>Note:</strong> After submission, the landlord will review and verify
+                                                    your work.
+                                                </div>
+                                            </div>
+
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">Cancel</button>
+                                                <button type="submit" class="btn btn-success">
+                                                    <i class="bi bi-check-circle me-2"></i>Submit Completion
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            }
+        </div>
+
+        <!-- MY APPLICATIONS TAB -->
+        <div class="tab-pane fade" id="applications" role="tabpanel">
+            @if (!allApplications.Any())
+            {
+                <div class="empty-state-card">
+                    <i class="bi bi-file-earmark-text"></i>
+                    <h4>No Applications Yet</h4>
+                    <p>You haven't submitted any applications. Browse available jobs to get started!</p>
+                    <a href="#available" data-bs-toggle="tab" class="btn btn-primary">
+                        <i class="bi bi-search me-2"></i>Browse Available Jobs
+                    </a>
+                </div>
+            }
+            else
+            {
+                <div class="applications-list">
+                    @foreach (var app in allApplications)
+                    {
+                        var isAccepted = app.IsAccepted;
+                        var isPending = !app.IsAccepted && app.MaintenanceRequest.AssignedMechanicId == null;
+                        var isRejected = !app.IsAccepted && app.MaintenanceRequest.AssignedMechanicId != null &&
+                        app.MaintenanceRequest.AssignedMechanicId != ViewBag.UserId;
+
+                        <div
+                            class="application-card @(isAccepted ? "application-accepted" : isPending ? "application-pending" : "application-rejected")">
+                            <div class="application-header">
+                                <div>
+                                    <h5 class="application-title">@app.MaintenanceRequest?.Title</h5>
+                                    <p class="application-date">
+                                        <i class="bi bi-calendar3"></i>
+                                        Applied on @app.AppliedAt.ToString("MMMM dd, yyyy")
+                                    </p>
+                                </div>
+                                <div class="application-status">
+                                    @if (isAccepted)
+                                    {
+                                        <span class="badge badge-success-lg">
+                                            <i class="bi bi-check-circle me-1"></i>Accepted
+                                        </span>
+                                    }
+                                    else if (isPending)
+                                    {
+                                        <span class="badge badge-warning-lg">
+                                            <i class="bi bi-clock me-1"></i>Pending
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-danger-lg">
+                                            <i class="bi bi-x-circle me-1"></i>Not Selected
+                                        </span>
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="application-body">
+                                <div class="application-details">
+                                    <div class="detail-item">
+                                        <span class="detail-label">Proposed Bill:</span>
+                                        <span class="detail-value text-success fw-bold">Rs.
+                                            @app.ProposedBill.ToString("N0")</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">Request Status:</span>
+                                        <span class="detail-value">@app.MaintenanceRequest?.Status</span>
+                                    </div>
+                                </div>
+
+                                <div class="application-notes">
+                                    <strong class="d-block mb-2">
+                                        <i class="bi bi-sticky me-1"></i>Your Notes:
+                                    </strong>
+                                    <p class="notes-text">@app.Notes</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+
+        <!-- AVAILABLE JOBS TAB -->
+        <div class="tab-pane fade" id="available" role="tabpanel">
+            <div id="availableJobsSection">
+@if (!availableJobs.Any())
+{
+                    <div class="empty-state-card">
+                        <i class="bi bi-search"></i>
+                        <h4>No Available Jobs</h4>
+                        <p>There are no published jobs available at the moment. Check back later!</p>
+                    </div>
+}
+else
+{
+                    <div class="available-jobs-grid">
+    @foreach (var job in availableJobs)
+    {
+                            <div class="available-job-card">
+                                <div class="job-badge">
+                                    <i class="bi bi-star-fill"></i>
+                                    New Opportunity
+                                </div>
+
+                                <div class="job-content">
+                                    <h4 class="job-title">@job.Title</h4>
+                                    <p class="job-description">@job.Description</p>
+
+                                    <div class="job-info">
+                                        <div class="info-item">
+                                            <i class="bi bi-calendar3"></i>
+                                            <span>Posted: @job.CreatedAt.ToString("MMM dd, yyyy")</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <i class="bi bi-building"></i>
+                                            <span>Property ID: @job.PropertyId.ToString().Substring(0, 8)...</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="job-actions">
+                                    <button class="btn btn-primary w-100" data-bs-toggle="modal"
+                                        data-bs-target="#applyModal-@job.Id">
+                                        <i class="bi bi-send me-2"></i>Apply for This Job
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Apply Modal -->
+                            <div class="modal fade" id="applyModal-@job.Id" tabindex="-1">
+                                <div class="modal-dialog modal-dialog-centered modal-lg">
+                                    <div class="modal-content">
+                                        <form asp-action="Apply" method="post">
+        @Html.AntiForgeryToken()
+                                            <input type="hidden" name="requestId" value="@job.Id" />
+
+                                            <div class="modal-header bg-primary text-white">
+                                                <h5 class="modal-title">
+                                                    <i class="bi bi-send me-2"></i>Apply for Job
+                                                </h5>
+                                                <button type="button" class="btn-close btn-close-white"
+                                                    data-bs-dismiss="modal"></button>
+                                            </div>
+
+                                            <div class="modal-body">
+                                                <div class="job-summary mb-4 p-3 bg-light rounded">
+                                                    <h6 class="fw-bold mb-2">@job.Title</h6>
+                                                    <p class="mb-0 text-muted">@job.Description</p>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">
+                                                        <i class="bi bi-currency-rupee me-1"></i>Proposed Bill (Rs.) <span
+                                                            class="text-danger">*</span>
+                                                    </label>
+                                                    <input type="number" name="bill" class="form-control form-control-lg"
+                                                        placeholder="Enter your proposed amount" min="1" step="0.01" required />
+                                                    <small class="text-muted">Enter the total cost including parts and
+                                                        labor</small>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">
+                                                        <i class="bi bi-sticky me-1"></i>Application Notes <span
+                                                            class="text-danger">*</span>
+                                                    </label>
+                                                    <textarea name="notes" class="form-control" rows="4"
+                                                placeholder="Explain your approach, timeline, and any relevant experience..."
+                                                required minlength="10"></textarea>
+                                                    <small class="text-muted">Minimum 10 characters</small>
+                                                </div>
+
+                                                <div class="alert alert-info">
+                                                    <i class="bi bi-info-circle me-2"></i>
+                                                    <strong>Tip:</strong> Be detailed and professional in your application to
+                                                    increase your chances of being selected!
+                                                </div>
+                                            </div><div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                <i class="bi bi-x-circle me-1"></i>Cancel
+                                            </button>
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="bi bi-send me-1"></i>Submit Application
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            
+        </div>
+        
+@functions {
+private string GetJobCardClass(MaintenanceRequestStatus status)
+{
+return status switch
+{
+MaintenanceRequestStatus.Assigned => "job-card-warning",
+MaintenanceRequestStatus.InProgress => "job-card-primary",
+MaintenanceRequestStatus.Completed => "job-card-info",
+MaintenanceRequestStatus.Verified => "job-card-success",
+_ => ""
+};
+}
+private string GetStatusBadgeClass(MaintenanceRequestStatus status)
+{
+    return status switch
+    {
+        MaintenanceRequestStatus.Assigned => "status-warning",
+        MaintenanceRequestStatus.InProgress => "status-primary",
+        MaintenanceRequestStatus.Completed => "status-info",
+        MaintenanceRequestStatus.Verified => "status-success",
+        _ => "status-secondary"
+    };
+}
+
+private string GetStatusIcon(MaintenanceRequestStatus status)
+{
+    return status switch
+    {
+        MaintenanceRequestStatus.Assigned => "bi-hourglass-split",
+        MaintenanceRequestStatus.InProgress => "bi-gear",
+        MaintenanceRequestStatus.Completed => "bi-check-circle",
+        MaintenanceRequestStatus.Verified => "bi-patch-check-fill",
+        _ => "bi-question-circle"
+    };
+}
+}
+@if (TempData["Error"] != null)
+    {
+        <text>
+        Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: '@TempData["Error"]',
+            timer: 4000,
+            showConfirmButton: true,
+            toast: true,
+            position: 'top-end'
+        });
+        </text>
+    }
+</script>
+}

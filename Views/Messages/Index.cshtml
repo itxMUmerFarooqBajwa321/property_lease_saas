@@ -1,8 +1,42 @@
-@{
+<script>
+    let connection = new signalR.HubConnectionBuilder()
+    .withUrl("/ChatHub")
+    .build();
+
+    connection.start();
+
+    connection.invoke("SendMessage","1","2","hi, i'm umer.", Date.now());
+
+    connection.on("ReceiveMessage", msg => console.log(msg));
+
+    
+</script>
+
+<form >
+    <input type="text" name="Message" id="message"/>
+    <input type="hidden" name="SenderId"/>
+    <input type="hidden" name="ReceiverId"/>
+    <input type="hidden" name="d"> 
+</form>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@* @{
     ViewBag.Title = "Messages";
 }
 
-<div class="container-fluid">
+<div class="container-fluid">Views/TenantMaintenance/ChatHub.cshtml
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h1 class="h3 mb-0">Messages</h1>
@@ -80,4 +114,4 @@
             </div>
         </div>
     </div>
-</div>
+</div> *@

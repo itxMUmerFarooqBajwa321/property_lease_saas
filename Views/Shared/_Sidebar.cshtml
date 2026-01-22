@@ -22,6 +22,8 @@
                         asp-action="Index">Documents</a></li>
                 <li class="nav-item"><a class="nav-link text-white" asp-controller="Settings"
                         asp-action="Index">Settings</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Payment"
+                        asp-action="MyRentPayments">My Payments</a></li>
             </ul>
         </div>
     </nav>
@@ -45,13 +47,19 @@
                 <li class="nav-item"><a class="nav-link text-white" asp-controller="Lease" asp-action="MyLeasedProperties">Leases</a>
                 </li>
                 <li class="nav-item"><a class="nav-link text-white" asp-controller="LandlordMaintenance"
-                        asp-action="Requests">Maintenance</a></li>
+                        asp-action="Applications">Maintenance</a></li>
 
                 <li class="nav-item mb-3"><small class="text-muted">Finance</small></li>
                 <li class="nav-item"><a class="nav-link text-white" asp-controller="Payments"
                         asp-action="Index">Payments</a></li>
                 <li class="nav-item"><a class="nav-link text-white" asp-controller="Reports" asp-action="Index">Reports</a>
                 </li>
+
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Payment"
+                        asp-action="ReceivedrentPayments">Rent Payments</a></li>
+                
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Payment"
+                        asp-action="PaidMaintenancePayments">Maintenance Payments</a></li>
 
                 <li class="nav-item mb-3"><small class="text-muted">Communication</small></li>
                 <li class="nav-item"><a class="nav-link text-white" asp-controller="Messages"
@@ -60,6 +68,7 @@
                         asp-action="Index">Documents</a></li>
 
                 <li class="nav-item mb-3"><small class="text-muted">Admin</small></li>
+                
                 <li class="nav-item"><a class="nav-link text-white" asp-controller="Settings"
                         asp-action="Index">Settings</a></li>
             </ul>
@@ -87,6 +96,8 @@
                         asp-action="Index">Documents</a></li>
                 <li class="nav-item"><a class="nav-link text-white" asp-controller="Settings"
                         asp-action="Index">Settings</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Payment"
+                        asp-action="MyEarnings">Earnings</a></li>
             </ul>
         </div>
     </nav>
@@ -121,9 +132,10 @@
                         asp-action="Index">Documents</a></li>
                 <li class="nav-item"><a class="nav-link text-white" asp-controller="Settings"
                         asp-action="Index">Settings</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Payment"
+                        asp-action="MyRentPayments">My Payments</a></li>
             </ul>
         }
-
         @if (User.FindFirst("UserType")?.Value == "Landlord")
         {
             <ul class="nav flex-column">
@@ -138,7 +150,7 @@
                 <li class="nav-item"><a class="nav-link text-white" asp-controller="Lease" asp-action="MyLeasedProperties">Leases</a>
                 </li>
                 <li class="nav-item"><a class="nav-link text-white" asp-controller="LandlordMaintenance"
-                        asp-action="Requests">Maintenance</a></li>
+                        asp-action="Applications">Maintenance</a></li>
 
                 <li class="nav-item mb-3"><small class="text-muted">Finance</small></li>
                 <li class="nav-item"><a class="nav-link text-white" asp-controller="Payments"
@@ -146,6 +158,12 @@
                 <li class="nav-item"><a class="nav-link text-white" asp-controller="Reports" asp-action="Index">Reports</a>
                 </li>
 
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Payment"
+                        asp-action="ReceivedrentPayments">Rent Payments</a></li>
+                
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Payment"
+                        asp-action="PaidMaintenancePayments">Maintenance Payments</a></li>
+                        
                 <li class="nav-item mb-3"><small class="text-muted">Communication</small></li>
                 <li class="nav-item"><a class="nav-link text-white" asp-controller="Messages"
                         asp-action="Index">Messages</a></li>
@@ -175,6 +193,8 @@
                         asp-action="Index">Documents</a></li>
                 <li class="nav-item"><a class="nav-link text-white" asp-controller="Settings"
                         asp-action="Index">Settings</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Payment"
+                        asp-action="MyEarnings">Earnings</a></li>
             </ul>
         }
 

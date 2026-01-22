@@ -2,7 +2,7 @@ using property_lease_saas.Data;
 using property_lease_saas.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using property_lease_saas.Services; // Add this
-using property_lease_saas.Hubs;
+// using property_lease_saas.Hubs;
 public class LeaseService
 {
     private readonly ApplicationDbContext _context;
@@ -22,6 +22,7 @@ public class LeaseService
     // Method to request lease (from your controller)
     public async Task RequestAsync(Guid propertyId, string tenantId)
     {
+        Console.WriteLine("Enter in LeaseService::RequestAsync()");
         var property = await _context.Properties
             .FirstOrDefaultAsync(p => p.Id == propertyId);
         
@@ -30,6 +31,8 @@ public class LeaseService
         
         if (property.IsTaken)
             throw new InvalidOperationException("Property is already taken.");
+
+
 
         var leaseRequest = new LeaseRequest
         {
@@ -53,6 +56,8 @@ public class LeaseService
             leaseRequest.Id, 
             tenantId, 
             tenantName);
+        Console.WriteLine("Exit from LeaseService::RequestAsync()");
+        
     }
 
     // Method to approve lease

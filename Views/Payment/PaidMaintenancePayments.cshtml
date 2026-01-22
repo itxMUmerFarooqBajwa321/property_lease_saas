@@ -1,0 +1,214 @@
+@model List<property_lease_saas.Models.Entities.MaintenancePayment>
+@{
+    ViewData["Title"] = "Maintenance Payments";
+    var stats = ViewBag.Stats as Dictionary<string, object>;
+    var totalPaid = (decimal)(stats?["TotalPaidToMechanics"] ?? 0);
+    var pendingPayments = (int)(stats?["PendingMaintenancePayments"] ?? 0);
+    var pendingAmount = (decimal)(stats?["PendingMaintenanceAmount"] ?? 0);
+}
+
+<link rel="stylesheet" href="~/css/dashboard.css" />
+
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <div>
+            <h1 class="dashboard-title">
+                <i class="bi bi-receipt me-2"></i>Maintenance Payments
+            </h1>
+            <p class="dashboard-subtitle">Track payments to mechanics for maintenance work</p>
+        </div>
+        <div class="dashboard-actions">
+            <a href="/Dashboard/Index" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Payment Stats -->
+    <div class="stats-grid">
+        <div class="stat-card stat-card-danger">
+            <div class="stat-icon">
+                <i class="bi bi-arrow-down-circle"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-label">Total Paid to Mechanics</div>
+                <div class="stat-value">Rs. @totalPaid.ToString("N0")</div>
+                <div class="stat-change">
+                    <i class="bi bi-receipt"></i> All time
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card stat-card-warning">
+            <div class="stat-icon">
+                <i class="bi bi-hourglass-split"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-label">Pending Payments</div>
+                <div class="stat-value">@pendingPayments</div>
+                <div class="stat-change">
+                    <i class="bi bi-currency-rupee"></i> Rs. @pendingAmount.ToString("N0")
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card stat-card-info">
+            <div class="stat-icon">
+                <i class="bi bi-list-check"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-label">Total Payments</div>
+                <div class="stat-value">@Model.Count</div>
+                <div class="stat-change">
+                    <i class="bi bi-check-circle"></i> @Model.Count(p => p.Status == property_lease_saas.Models.Entities.PaymentStatus.Completed) completed
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment List -->
+    <div class="dashboard-card">
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="bi bi-list-ul me-2"></i>Payment History
+            </h3>
+        </div>
+        <div class="card-body">
+            @if (!Model.Any())
+            {
+                <div class="empty-state">
+                    <i class="bi bi-inbox"></i>
+                    <p>No maintenance payments yet</p>
+                    <p class="text-muted">Payments will appear here after work verification</p>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Work Description</th>
+                                <th>Mechanic</th>
+                                <th>Amount</th>
+                                <th>Payment Date</th>
+                                <th>Method</th>
+                                <th>Transaction ID</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var payment in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <strong>@payment.WorkDescription</strong>
+                                        @if (!string.IsNullOrEmpty(payment.Notes))
+                                        {
+                                            <br />
+                                            <small class="text-muted">@payment.Notes</small>
+                                        }
+                                    </td>
+                                    <td>@payment.MechanicName</td>
+                                    <td>
+                                        <strong class="text-danger">Rs. @payment.Amount.ToString("N0")</strong>
+                                    </td>
+                                    <td>
+                                        @if (payment.Status == property_lease_saas.Models.Entities.PaymentStatus.Completed)
+                                        {
+                                            @payment.PaymentDate.ToString("MMM dd, yyyy")
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">Pending</span>
+                                        }
+                                    </td>
+                                    <td>@payment.PaymentMethod</td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(payment.TransactionId))
+                                        {
+                                            <code>@payment.TransactionId</code>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">-</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <span class="badge @GetStatusBadge(payment.Status)">
+                                            @payment.Status
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a href="/Payment/PaymentDetails/@payment.Id?type=maintenance" 
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-eye"></i> View
+                                        </a>
+                                        @if (payment.Status == property_lease_saas.Models.Entities.PaymentStatus.Pending)
+                                        {
+                                            <button class="btn btn-sm btn-outline-danger" 
+                                                    onclick="cancelPayment('@payment.Id')">
+                                                <i class="bi bi-x-circle"></i>
+                                            </button>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr class="table-danger fw-bold">
+                                <td colspan="2" class="text-end">Total Paid:</td>
+                                <td colspan="6">Rs. @totalPaid.ToString("N0")</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@functions {
+    private string GetStatusBadge(property_lease_saas.Models.Entities.PaymentStatus status)
+    {
+        return status switch
+        {
+            property_lease_saas.Models.Entities.PaymentStatus.Pending => "badge-warning",
+            property_lease_saas.Models.Entities.PaymentStatus.Processing => "badge-info",
+            property_lease_saas.Models.Entities.PaymentStatus.Completed => "badge-success",
+            property_lease_saas.Models.Entities.PaymentStatus.Failed => "badge-danger",
+            property_lease_saas.Models.Entities.PaymentStatus.Cancelled => "badge-secondary",
+            _ => "badge-secondary"
+        };
+    }
+}
+
+<script>
+function cancelPayment(paymentId) {
+    if (!confirm('Are you sure you want to cancel this payment?')) {
+        return;
+    }
+
+    fetch('/Payment/CancelPayment', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id: paymentId, type: 'maintenance' })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            location.reload();
+        } else {
+            alert(data.message);
+        }
+    })
+    .catch(error => {
+        alert('An error occurred');
+        console.error('Error:', error);
+    });
+}
+</script>

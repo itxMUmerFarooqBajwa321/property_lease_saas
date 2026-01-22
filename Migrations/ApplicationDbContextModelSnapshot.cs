@@ -15,7 +15,7 @@ namespace property_lease_saas.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.22");
+            modelBuilder.HasAnnotation("ProductVersion", "8.0.23");
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -343,13 +343,87 @@ namespace property_lease_saas.Migrations
                     b.ToTable("MaintenanceApplications");
                 });
 
+            modelBuilder.Entity("property_lease_saas.Models.Entities.MaintenancePayment", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LandlordId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LandlordName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("MaintenanceApplicationId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("MaintenanceRequestId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("MechanicId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("MechanicName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Notes")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("PaymentDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PaymentMethod")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("TransactionId")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("WorkDescription")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LandlordId");
+
+                    b.HasIndex("MaintenanceApplicationId");
+
+                    b.HasIndex("MaintenanceRequestId");
+
+                    b.HasIndex("MechanicId");
+
+                    b.HasIndex("Status");
+
+                    b.ToTable("MaintenancePayments");
+                });
+
             modelBuilder.Entity("property_lease_saas.Models.Entities.MaintenanceRequest", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid?>("AssignedMechanicId")
+                    b.Property<string>("AssignedMechanicId")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("CompletedAt")
@@ -390,13 +464,56 @@ namespace property_lease_saas.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AssignedMechanicId");
+
+                    b.HasIndex("LandlordId");
+
                     b.HasIndex("LeaseId");
 
                     b.HasIndex("PropertyId");
 
                     b.HasIndex("Status");
 
+                    b.HasIndex("TenantId");
+
                     b.ToTable("MaintenanceRequests");
+                });
+
+            modelBuilder.Entity("property_lease_saas.Models.Entities.PaymentReminder", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("DueDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsPaid")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsSent")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid>("LeaseId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("SentAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LeaseId");
+
+                    b.ToTable("PaymentReminders");
                 });
 
             modelBuilder.Entity("property_lease_saas.Models.Entities.Property", b =>
@@ -494,6 +611,84 @@ namespace property_lease_saas.Migrations
                     b.ToTable("PropertyImages");
                 });
 
+            modelBuilder.Entity("property_lease_saas.Models.Entities.RentPayment", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("DueDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsLate")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("LandlordId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LandlordName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("LateFee")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<Guid>("LeaseId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Notes")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("PaymentDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PaymentFor")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PaymentMethod")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TenantName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TransactionId")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LandlordId");
+
+                    b.HasIndex("LeaseId");
+
+                    b.HasIndex("Status");
+
+                    b.HasIndex("TenantId");
+
+                    b.ToTable("RentPayments");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -584,8 +779,38 @@ namespace property_lease_saas.Migrations
                     b.Navigation("MaintenanceRequest");
                 });
 
+            modelBuilder.Entity("property_lease_saas.Models.Entities.MaintenancePayment", b =>
+                {
+                    b.HasOne("property_lease_saas.Models.Entities.MaintenanceApplication", "MaintenanceApplication")
+                        .WithMany()
+                        .HasForeignKey("MaintenanceApplicationId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("property_lease_saas.Models.Entities.MaintenanceRequest", "MaintenanceRequest")
+                        .WithMany()
+                        .HasForeignKey("MaintenanceRequestId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("MaintenanceApplication");
+
+                    b.Navigation("MaintenanceRequest");
+                });
+
             modelBuilder.Entity("property_lease_saas.Models.Entities.MaintenanceRequest", b =>
                 {
+                    b.HasOne("property_lease_saas.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("AssignedMechanicId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("property_lease_saas.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("LandlordId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("property_lease_saas.Models.Entities.Lease", null)
                         .WithMany()
                         .HasForeignKey("LeaseId")
@@ -594,7 +819,24 @@ namespace property_lease_saas.Migrations
                     b.HasOne("property_lease_saas.Models.Entities.Property", null)
                         .WithMany()
                         .HasForeignKey("PropertyId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("property_lease_saas.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId")
                         .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("property_lease_saas.Models.Entities.PaymentReminder", b =>
+                {
+                    b.HasOne("property_lease_saas.Models.Entities.Lease", "Lease")
+                        .WithMany()
+                        .HasForeignKey("LeaseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Lease");
                 });
 
             modelBuilder.Entity("property_lease_saas.Models.Entities.PropertyDocument", b =>
@@ -617,6 +859,17 @@ namespace property_lease_saas.Migrations
                         .IsRequired();
 
                     b.Navigation("Property");
+                });
+
+            modelBuilder.Entity("property_lease_saas.Models.Entities.RentPayment", b =>
+                {
+                    b.HasOne("property_lease_saas.Models.Entities.Lease", "Lease")
+                        .WithMany()
+                        .HasForeignKey("LeaseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Lease");
                 });
 
             modelBuilder.Entity("property_lease_saas.Models.Entities.Lease", b =>

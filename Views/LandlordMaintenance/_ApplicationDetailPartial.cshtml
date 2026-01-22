@@ -1,0 +1,129 @@
+---
+
+## **CREATE: `Views/LandlordMaintenance/_ApplicationDetailPartial.cshtml`**
+
+Create this new partial view:
+```cshtml
+@model property_lease_saas.Models.Entities.MaintenanceApplication
+
+@if (Model == null)
+{
+    <div class="alert alert-danger">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        Application not found
+    </div>
+}
+else
+{
+    var request = ViewBag.Request as property_lease_saas.Models.Entities.MaintenanceRequest;
+    var mechanic = ViewBag.Mechanic as property_lease_saas.Models.ApplicationUser;
+
+    <div class="row g-4">
+        <div class="col-12">
+            <!-- Mechanic Info Card -->
+            <div class="card border-0 bg-light">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-info bg-opacity-10 rounded-circle p-3 me-3">
+                            <i class="bi bi-person-badge text-info fs-2"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h5 class="mb-0 fw-bold">@mechanic?.FullName</h5>
+                            <p class="text-muted mb-0">@mechanic?.Email</p>
+                            <small class="text-muted">Mechanic ID: @Model.MechanicId.Substring(0, 12)...</small>
+                        </div>
+                        @if (Model.IsAccepted)
+                        {
+                            <span class="badge bg-success fs-6 px-3 py-2">
+                                <i class="bi bi-check-circle me-1"></i>Accepted
+                            </span>
+                        }
+                        else if (request?.AssignedMechanicId != null)
+                        {
+                            <span class="badge bg-secondary fs-6 px-3 py-2">Not Selected</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning text-dark fs-6 px-3 py-2">
+                                <i class="bi bi-clock me-1"></i>Pending
+                            </span>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Proposed Bill -->
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-currency-dollar text-success fs-1 mb-3"></i>
+                    <h6 class="text-muted mb-2">Proposed Bill</h6>
+                    <h3 class="fw-bold text-success mb-0">
+                        Rs. @Model.ProposedBill.ToString("N0")
+                    </h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Application Date -->
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-calendar-check text-primary fs-1 mb-3"></i>
+                    <h6 class="text-muted mb-2">Applied On</h6>
+                    <h5 class="fw-bold mb-0">
+                        @Model.AppliedAt.ToString("MMMM dd, yyyy")
+                    </h5>
+                    <small class="text-muted">@Model.AppliedAt.ToString("hh:mm tt")</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notes -->
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-light border-0">
+                    <h6 class="mb-0 fw-bold">
+                        <i class="bi bi-sticky me-2"></i>Notes from Mechanic
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <p class="mb-0">@Model.Notes</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Request Summary -->
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-light border-0">
+                    <h6 class="mb-0 fw-bold">
+                        <i class="bi bi-file-earmark-text me-2"></i>Related Request
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <h6 class="fw-bold">@request?.Title</h6>
+                    <p class="text-muted mb-0">@request?.Description</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Button -->
+        @if (!Model.IsAccepted && request?.AssignedMechanicId == null && request?.Status == property_lease_saas.Models.Entities.MaintenanceRequestStatus.Published)
+        {
+            <div class="col-12">
+                <form asp-controller="LandlordMaintenance" 
+                      asp-action="Accept" 
+                      method="post"
+                      onsubmit="return confirm('Are you sure you want to accept this mechanic for the job?');">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="applicationId" value="@Model.Id" />
+                    <button type="submit" class="btn btn-success btn-lg w-100">
+                        <i class="bi bi-check-circle me-2"></i>Accept This Application
+                    </button>
+                </form>
+            </div>
+        }
+    </div>
+}

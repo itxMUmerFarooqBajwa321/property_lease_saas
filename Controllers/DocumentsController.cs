@@ -1,3 +1,4 @@
+using property_lease_saas.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Mvc;

@@ -1,12 +1,13 @@
+using property_lease_saas.Infrastructure.Extensions;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using property_lease_saas.Data;
 using Microsoft.AspNetCore.Mvc;
-using property_lease_saas.Infrastructure.Extensions;
 using property_lease_saas.Models.Repositories;
 using property_lease_saas.Services;
 using property_lease_saas.Models.Entities;
+
 namespace property_lease_saas.Controllers
 {
     [Authorize]

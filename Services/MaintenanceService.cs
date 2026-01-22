@@ -1,6 +1,7 @@
-using property_lease_saas.Models.Repositories;
+using property_lease_saas.Data;
 using property_lease_saas.Models.Entities;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.EntityFrameworkCore;
+using property_lease_saas.Models.Repositories;
 
 namespace property_lease_saas.Services;
 
@@ -9,23 +10,35 @@ public class MaintenanceService
     private readonly IMaintenanceRepository _maintenanceRepo;
     private readonly IMaintenanceApplicationRepository _appRepo;
     private readonly IFileStorage _fileStorage;
+    private readonly INotificationService _notificationService;
+    private readonly ApplicationDbContext _context;
 
     public MaintenanceService(
         IMaintenanceRepository maintenanceRepo,
         IMaintenanceApplicationRepository appRepo,
-        IFileStorage fileStorage)
+        IFileStorage fileStorage,
+        INotificationService notificationService,
+        ApplicationDbContext context)
     {
         _maintenanceRepo = maintenanceRepo;
         _appRepo = appRepo;
         _fileStorage = fileStorage;
+        _notificationService = notificationService;
+        _context = context;
     }
 
+    public IMaintenanceRepository GetMaintenanceRepo()
+    {
+        return _maintenanceRepo;
+    }
 
     // ================= TENANT =================
     public IMaintenanceApplicationRepository GetAppRepo()
     {
         return _appRepo;
     }
+
+    // 1️⃣ TENANT CREATES REQUEST
     public async Task CreateRequestAsync(
         Guid leaseId,
         Guid propertyId,
@@ -48,9 +61,26 @@ public class MaintenanceService
         };
 
         await _maintenanceRepo.AddAsync(req);
+        
+        // ADD NOTIFICATION
+        var tenant = await _context.Users.FirstOrDefaultAsync(u => u.Id == tenantId);
+        var property = await _context.Properties.FirstOrDefaultAsync(p => p.Id == propertyId);
+        var tenantName = tenant?.FullName ?? "A tenant";
+        var propertyTitle = property?.Title ?? "your property";
+        
+        Console.WriteLine($"DEBUG: Sending maintenance request created notification");
+        
+        await _notificationService.NotifyMaintenanceRequestCreated(
+            req.Id, 
+            tenantId, 
+            tenantName, 
+            propertyTitle, 
+            landlordId);
     }
 
     // ================= LANDLORD =================
+    
+    // 2️⃣ LANDLORD PUBLISHES
     public async Task PublishAsync(Guid requestId)
     {
         var req = await _maintenanceRepo.GetByIdAsync(requestId);
@@ -58,9 +88,15 @@ public class MaintenanceService
 
         req.Status = MaintenanceRequestStatus.Published;
         await _maintenanceRepo.UpdateAsync(req);
+        
+        // ADD NOTIFICATION
+        Console.WriteLine($"DEBUG: Publishing maintenance request {requestId}");
+        await _notificationService.NotifyMaintenanceRequestPublished(requestId);
     }
 
     // ================= MECHANIC =================
+    
+    // 3️⃣ MECHANIC APPLIES
     public async Task ApplyAsync(
         Guid requestId,
         string mechanicId,
@@ -77,12 +113,28 @@ public class MaintenanceService
             IsAccepted = false,
             AppliedAt = DateTime.UtcNow
         };
+        
         var req = await _maintenanceRepo.GetByIdAsync(requestId);
         req.Applications.Add(app);
         await _appRepo.AddAsync(app);
+        
+        // ADD NOTIFICATION
+        var mechanic = await _context.Users.FirstOrDefaultAsync(u => u.Id == mechanicId);
+        var mechanicName = mechanic?.FullName ?? "A mechanic";
+        
+        Console.WriteLine($"DEBUG: Mechanic {mechanicName} applied for request {requestId}");
+        
+        await _notificationService.NotifyMaintenanceApplicationReceived(
+            app.Id, 
+            requestId, 
+            mechanicId, 
+            mechanicName, 
+            bill);
     }
 
     // ================= LANDLORD =================
+    
+    // 4️⃣ LANDLORD ACCEPTS MECHANIC
     public async Task AcceptMechanicAsync(Guid applicationId)
     {
         var app = await _appRepo.GetByIdAsync(applicationId);
@@ -91,14 +143,30 @@ public class MaintenanceService
         app.IsAccepted = true;
 
         var req = await _maintenanceRepo.GetByIdAsync(app.MaintenanceRequestId);
-        req.AssignedMechanicId = Guid.Parse(app.MechanicId);
+        
+        // CHANGE THIS LINE - remove Guid.Parse()
+        req.AssignedMechanicId = app.MechanicId;  // ✅ Changed from Guid.Parse(app.MechanicId)
+        
         req.Status = MaintenanceRequestStatus.Assigned;
 
         await _appRepo.UpdateAsync(app);
         await _maintenanceRepo.UpdateAsync(req);
+        
+        // Notification code...
+        var mechanic = await _context.Users.FirstOrDefaultAsync(u => u.Id == app.MechanicId);
+        var mechanicName = mechanic?.FullName ?? "Mechanic";
+        
+        Console.WriteLine($"DEBUG: Landlord accepted mechanic {mechanicName}");
+        
+        await _notificationService.NotifyMaintenanceApplicationAccepted(
+            req.Id, 
+            app.MechanicId, 
+            mechanicName);
     }
 
     // ================= MECHANIC =================
+    
+    // 5️⃣ MECHANIC STARTS WORK
     public async Task StartWorkAsync(Guid requestId)
     {
         var req = await _maintenanceRepo.GetByIdAsync(requestId);
@@ -107,9 +175,13 @@ public class MaintenanceService
 
         req.Status = MaintenanceRequestStatus.InProgress;
         await _maintenanceRepo.UpdateAsync(req);
+        
+        // ADD NOTIFICATION
+        Console.WriteLine($"DEBUG: Mechanic started work on request {requestId}");
+        await _notificationService.NotifyMaintenanceWorkStarted(requestId);
     }
 
-    // ================= MECHANIC (UPLOAD FILES) =================
+    // 6️⃣ MECHANIC COMPLETES WORK
     public async Task CompleteAsync(
         Guid requestId,
         IFormFile receipt,
@@ -131,9 +203,15 @@ public class MaintenanceService
         req.CompletedAt = DateTime.UtcNow;
 
         await _maintenanceRepo.UpdateAsync(req);
+        
+        // ADD NOTIFICATION
+        Console.WriteLine($"DEBUG: Mechanic completed work on request {requestId}");
+        await _notificationService.NotifyMaintenanceWorkCompleted(requestId);
     }
 
     // ================= LANDLORD =================
+    
+    // 7️⃣ LANDLORD VERIFIES
     public async Task VerifyAsync(Guid requestId)
     {
         var req = await _maintenanceRepo.GetByIdAsync(requestId);
@@ -142,10 +220,17 @@ public class MaintenanceService
 
         req.Status = MaintenanceRequestStatus.Verified;
         await _maintenanceRepo.UpdateAsync(req);
+        
+        // ADD NOTIFICATION
+        Console.WriteLine($"DEBUG: Landlord verified request {requestId}");
+        await _notificationService.NotifyMaintenanceWorkVerified(requestId);
     }
 
-    // ================= MECHANIC =================
-    public async Task UploadCompletionAsync(Guid requestId, IFormFile receipt, IFormFile completionImage)
+    // ================= MECHANIC (UPLOAD FILES) =================
+    public async Task UploadCompletionAsync(
+        Guid requestId,
+        IFormFile receipt,
+        IFormFile completionImage)
     {
         var request = await _maintenanceRepo.GetByIdAsync(requestId);
 
@@ -169,6 +254,10 @@ public class MaintenanceService
         request.CompletedAt = DateTime.UtcNow;
 
         await _maintenanceRepo.UpdateAsync(request);
+        
+        // ADD NOTIFICATION
+        Console.WriteLine($"DEBUG: Mechanic uploaded completion for request {requestId}");
+        await _notificationService.NotifyMaintenanceWorkCompleted(requestId);
     }
 
     // ================= QUERIES =================
@@ -197,26 +286,29 @@ public class MaintenanceService
     }
 
     // ================= LANDLORD-INITIATED REQUEST =================
-    // ================= LANDLORD-INITIATED REQUEST =================
-public async Task RequestAsync(
-    string landlordId,
-    string title,
-    string description,
-    Guid propertyId)
-{
-    var request = new MaintenanceRequest
+    public async Task RequestAsync(
+        string landlordId,
+        string title,
+        string description,
+        Guid propertyId)
     {
-        Id = Guid.NewGuid(),
-        Title = title,
-        Description = description,
-        PropertyId = propertyId,
-        LandlordId = landlordId,
-        TenantId = null, // No tenant for landlord-initiated requests
-        LeaseId = null, // No lease for landlord-initiated requests
-        Status = MaintenanceRequestStatus.Requested,
-        CreatedAt = DateTime.UtcNow
-    };
+        var request = new MaintenanceRequest
+        {
+            Id = Guid.NewGuid(),
+            Title = title,
+            Description = description,
+            PropertyId = propertyId,
+            LandlordId = landlordId,
+            TenantId = null, // No tenant for landlord-initiated requests
+            LeaseId = null, // No lease for landlord-initiated requests
+            Status = MaintenanceRequestStatus.Requested,
+            CreatedAt = DateTime.UtcNow
+        };
 
-    await _maintenanceRepo.AddAsync(request);
+        await _maintenanceRepo.AddAsync(request);
+        
+        // No notification needed since landlord created it themselves
+        Console.WriteLine($"DEBUG: Landlord created maintenance request {request.Id}");
+    }
 }
-}
+

@@ -8,6 +8,10 @@ public class MaintenanceRepository : IMaintenanceRepository
 {
     private readonly ApplicationDbContext _context;
 
+    public ApplicationDbContext GetAppDbContext()
+    {
+        return _context;
+    }
     public MaintenanceRepository(ApplicationDbContext context)
     {
         _context = context;
@@ -28,21 +32,25 @@ public class MaintenanceRepository : IMaintenanceRepository
     public async Task<MaintenanceRequest?> GetByIdAsync(Guid id)
     {
         return await _context.MaintenanceRequests
-            .Include(r => r.Applications)
+            .Include(r => r.Applications)  // Only include Applications
             .FirstOrDefaultAsync(r => r.Id == id);
     }
 
     public async Task<List<MaintenanceRequest>> GetForTenantAsync(string tenantId)
     {
         return await _context.MaintenanceRequests
+            .Include(r => r.Applications)
             .Where(r => r.TenantId == tenantId)
+            .OrderByDescending(r => r.CreatedAt)
             .ToListAsync();
     }
 
     public async Task<List<MaintenanceRequest>> GetForLandlordAsync(string landlordId)
     {
         return await _context.MaintenanceRequests
+            .Include(r => r.Applications)
             .Where(r => r.LandlordId == landlordId)
+            .OrderByDescending(r => r.CreatedAt)
             .ToListAsync();
     }
 
@@ -50,14 +58,17 @@ public class MaintenanceRepository : IMaintenanceRepository
     {
         return await _context.MaintenanceRequests
             .Where(r => r.Status == MaintenanceRequestStatus.Published)
+            .OrderByDescending(r => r.CreatedAt)
             .ToListAsync();
     }
 
     public async Task<List<MaintenanceRequest>> GetForMechanicAsync(string mechanicId)
     {
         return await _context.MaintenanceRequests
-            .Where(r => r.Applications.Any(a => a.MechanicId == mechanicId))
+            .Include(r => r.Applications)
+            .Where(r => r.AssignedMechanicId == mechanicId || 
+                        r.Applications.Any(a => a.MechanicId == mechanicId))
+            .OrderByDescending(r => r.CreatedAt)
             .ToListAsync();
     }
-
 }

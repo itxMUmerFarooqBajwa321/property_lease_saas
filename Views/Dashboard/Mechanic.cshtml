@@ -1,0 +1,442 @@
+@{
+    ViewData["Title"] = "Mechanic Dashboard";
+    
+    var totalApplications = (int)(ViewData["TotalApplications"] ?? 0);
+    var acceptedApplications = (int)(ViewData["AcceptedApplications"] ?? 0);
+    var pendingApplications = (int)(ViewData["PendingApplications"] ?? 0);
+    var totalAssignedJobs = (int)(ViewData["TotalAssignedJobs"] ?? 0);
+    var inProgressJobs = (int)(ViewData["InProgressJobs"] ?? 0);
+    var completedJobs = (int)(ViewData["CompletedJobs"] ?? 0);
+    var completedThisMonth = (int)(ViewData["CompletedThisMonth"] ?? 0);
+    var availableJobs = (int)(ViewData["AvailableJobs"] ?? 0);
+    var totalEarnings = (decimal)(ViewData["TotalEarnings"] ?? 0);
+    var pendingPayment = (decimal)(ViewData["PendingPayment"] ?? 0);
+    
+    var recentApplications = ViewData["RecentApplications"] as List<property_lease_saas.Models.Entities.MaintenanceApplication> ?? new();
+    var assignedJobs = ViewData["AssignedJobs"] as List<property_lease_saas.Models.Entities.MaintenanceRequest> ?? new();
+    var availableJobsList = ViewData["AvailableJobsList"] as List<property_lease_saas.Models.Entities.MaintenanceRequest> ?? new();
+}
+
+<link rel="stylesheet" href="~/css/dashboard.css" />
+
+<div class="dashboard-container">
+    <!-- Header -->
+    <div class="dashboard-header">
+        <div>
+            <h1 class="dashboard-title">
+                <i class="bi bi-tools me-2"></i>Mechanic Dashboard
+            </h1>
+            <p class="dashboard-subtitle">Welcome back, @ViewBag.UserName! Here's your work overview</p>
+        </div>
+        <div class="dashboard-actions">
+            <a href="/MechanicMaintenance/Available" class="btn btn-outline-primary">
+                <i class="bi bi-briefcase me-2"></i>Browse Jobs
+            </a>
+            <a href="/MechanicMaintenance/MyJobs" class="btn btn-primary">
+                <i class="bi bi-list-check me-2"></i>My Jobs
+            </a>
+        </div>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+        <div class="stat-card stat-card-primary">
+            <div class="stat-icon">
+                <i class="bi bi-file-earmark-text"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-label">Total Applications</div>
+                <div class="stat-value">@totalApplications</div>
+                <div class="stat-change positive">
+                    <i class="bi bi-check-circle"></i> @acceptedApplications accepted
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card stat-card-success">
+            <div class="stat-icon">
+                <i class="bi bi-briefcase"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-label">Assigned Jobs</div>
+                <div class="stat-value">@totalAssignedJobs</div>
+                <div class="stat-change">
+                    <i class="bi bi-gear"></i> @inProgressJobs in progress
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card stat-card-warning">
+            <div class="stat-icon">
+                <i class="bi bi-wrench"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-label">Available Jobs</div>
+                <div class="stat-value">@availableJobs</div>
+                <div class="stat-change">
+                    <i class="bi bi-arrow-up"></i> New opportunities
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card stat-card-info">
+            <div class="stat-icon">
+                <i class="bi bi-cash-stack"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-label">Total Earnings</div>
+                <div class="stat-value">Rs. @totalEarnings.ToString("N0")</div>
+                <div class="stat-change positive">
+                    <i class="bi bi-arrow-up"></i> @completedThisMonth completed this month
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Grid -->
+    <div class="content-grid">
+        <!-- Left Column -->
+        <div class="content-column-left">
+            <!-- Assigned Jobs -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="bi bi-list-check me-2"></i>My Active Jobs
+                    </h3>
+                    <a href="/MechanicMaintenance/MyJobs" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="card-body">
+                    @if (!assignedJobs.Any())
+                    {
+                        <div class="empty-state">
+                            <i class="bi bi-inbox"></i>
+                            <p>No assigned jobs yet</p>
+                            <a href="/MechanicMaintenance/Available" class="btn btn-primary mt-3">
+                                <i class="bi bi-search me-2"></i>Find Jobs
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="list-group list-group-flush">
+                            @foreach (var job in assignedJobs.Take(5))
+                            {
+                                <div class="list-item">
+                                    <div class="list-item-icon @GetJobIconClass(job.Status)">
+                                        <i class="bi @GetJobIcon(job.Status)"></i>
+                                    </div>
+                                    <div class="list-item-content">
+                                        <div class="list-item-title">@job.Title</div>
+                                        <div class="list-item-subtitle">
+                                            Created @job.CreatedAt.ToString("MMM dd, yyyy")
+                                            @if (job.CompletedAt.HasValue)
+                                            {
+                                                <span class="ms-2">
+                                                    <i class="bi bi-check-circle"></i> Completed @job.CompletedAt.Value.ToString("MMM dd")
+                                                </span>
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="list-item-action">
+                                        <span class="badge @GetJobStatusBadge(job.Status)">
+                                            @job.Status
+                                        </span>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Available Jobs -->
+            <div class="dashboard-card mt-4">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="bi bi-briefcase me-2"></i>Available Jobs
+                    </h3>
+                    <a href="/MechanicMaintenance/Available" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="card-body">
+                    @if (!availableJobsList.Any())
+                    {
+                        <div class="empty-state">
+                            <i class="bi bi-inbox"></i>
+                            <p>No available jobs at the moment</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="list-group list-group-flush">
+                            @foreach (var job in availableJobsList.Take(5))
+                            {
+                                <div class="list-item">
+                                    <div class="list-item-icon bg-warning-subtle">
+                                        <i class="bi bi-megaphone text-warning"></i>
+                                    </div>
+                                    <div class="list-item-content">
+                                        <div class="list-item-title">@job.Title</div>
+                                        <div class="list-item-subtitle">
+                                            Posted @job.CreatedAt.ToString("MMM dd, yyyy")
+                                        </div>
+                                    </div>
+                                    <div class="list-item-action">
+                                        <a href="/MechanicMaintenance/Apply/@job.Id" class="btn btn-sm btn-primary">
+                                            Apply
+                                        </a>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Recent Applications -->
+            <div class="dashboard-card mt-4">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="bi bi-file-earmark-text me-2"></i>Recent Applications
+                    </h3>
+                    <a href="/MechanicMaintenance/Applications" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="card-body">
+                    @if (!recentApplications.Any())
+                    {
+                        <div class="empty-state">
+                            <i class="bi bi-inbox"></i>
+                            <p>No applications submitted yet</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="list-group list-group-flush">
+                            @foreach (var app in recentApplications)
+                            {
+                                <div class="list-item">
+                                    <div class="list-item-icon @(app.IsAccepted ? "bg-success-subtle" : "bg-warning-subtle")">
+                                        <i class="bi @(app.IsAccepted ? "bi-check-circle text-success" : "bi-clock text-warning")"></i>
+                                    </div>
+                                    <div class="list-item-content">
+                                        <div class="list-item-title">@app.MaintenanceRequest?.Title</div>
+                                        <div class="list-item-subtitle">
+                                            Applied @app.AppliedAt.ToString("MMM dd, yyyy")
+                                            • Proposed: Rs. @app.ProposedBill.ToString("N0")
+                                        </div>
+                                    </div>
+                                    <div class="list-item-action">
+                                        <span class="badge @(app.IsAccepted ? "badge-success" : "badge-warning")">
+                                            @(app.IsAccepted ? "Accepted" : "Pending")
+                                        </span>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="content-column-right">
+            <!-- Quick Actions -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="bi bi-lightning-charge me-2"></i>Quick Actions
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="quick-actions-grid">
+                        <a href="/MechanicMaintenance/Available" class="quick-action-btn">
+                            <i class="bi bi-search"></i>
+                            <span>Find Jobs</span>
+                        </a>
+                        <a href="/MechanicMaintenance/MyJobs" class="quick-action-btn">
+                            <i class="bi bi-list-check"></i>
+                            <span>My Jobs</span>
+                        </a>
+                        <a href="/MechanicMaintenance/Applications" class="quick-action-btn">
+                            <i class="bi bi-file-earmark-text"></i>
+                            <span>Applications</span>
+                        </a>
+                        <a href="/Account/Profile" class="quick-action-btn">
+                            <i class="bi bi-person"></i>
+                            <span>My Profile</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Earnings Summary -->
+            <div class="dashboard-card mt-4">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="bi bi-wallet2 me-2"></i>Earnings Summary
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="list-item">
+                        <div class="list-item-icon bg-success-subtle">
+                            <i class="bi bi-cash-stack text-success"></i>
+                        </div>
+                        <div class="list-item-content">
+                            <div class="list-item-title">Total Earnings</div>
+                            <div class="list-item-subtitle">From @completedJobs completed jobs</div>
+                        </div>
+                        <div class="list-item-action">
+                            <div class="stat-value" style="font-size: 1.5rem;">Rs. @totalEarnings.ToString("N0")</div>
+                        </div>
+                    </div>
+                    <div class="list-item">
+                        <div class="list-item-icon bg-warning-subtle">
+                            <i class="bi bi-hourglass-split text-warning"></i>
+                        </div>
+                        <div class="list-item-content">
+                            <div class="list-item-title">Pending Payment</div>
+                            <div class="list-item-subtitle">Awaiting verification</div>
+                        </div>
+                        <div class="list-item-action">
+                            <div class="stat-value" style="font-size: 1.5rem;">Rs. @pendingPayment.ToString("N0")</div>
+                        </div>
+                    </div>
+                    <div class="list-item">
+                        <div class="list-item-icon bg-info-subtle">
+                            <i class="bi bi-calendar-check text-info"></i>
+                        </div>
+                        <div class="list-item-content">
+                            <div class="list-item-title">This Month</div>
+                            <div class="list-item-subtitle">Completed jobs</div>
+                        </div>
+                        <div class="list-item-action">
+                            <div class="stat-value" style="font-size: 1.5rem;">@completedThisMonth</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Performance Stats -->
+            <div class="dashboard-card mt-4">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="bi bi-bar-chart me-2"></i>Performance Stats
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <!-- Application Success Rate -->
+                    <div class="progress-container">
+                        <div class="progress-label">
+                            <span>Application Success Rate</span>
+                            <span>@(totalApplications > 0 ? Math.Round(acceptedApplications * 100.0 / totalApplications, 1) : 0)%</span>
+                        </div>
+                        <div class="progress-bar-wrapper">
+                            <div class="progress-bar" style="width: @(totalApplications > 0 ? (acceptedApplications * 100.0 / totalApplications) : 0)%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Job Completion Rate -->
+                    <div class="progress-container mt-3">
+                        <div class="progress-label">
+                            <span>Job Completion Rate</span>
+                            <span>@(totalAssignedJobs > 0 ? Math.Round(completedJobs * 100.0 / totalAssignedJobs, 1) : 0)%</span>
+                        </div>
+                        <div class="progress-bar-wrapper">
+                            <div class="progress-bar" style="width: @(totalAssignedJobs > 0 ? (completedJobs * 100.0 / totalAssignedJobs) : 0)%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alerts & Notifications -->
+            <div class="dashboard-card mt-4">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="bi bi-bell me-2"></i>Notifications
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert-list">
+                        @if (availableJobs > 0)
+                        {
+                            <div class="alert-item alert-warning">
+                                <i class="bi bi-briefcase"></i>
+                                <div>
+                                    <strong>@availableJobs New Job(s) Available</strong>
+                                    <p>Browse and apply to increase your earnings</p>
+                                </div>
+                            </div>
+                        }
+
+                        @if (inProgressJobs > 0)
+                        {
+                            <div class="alert-item alert-info">
+                                <i class="bi bi-gear"></i>
+                                <div>
+                                    <strong>@inProgressJobs Job(s) In Progress</strong>
+                                    <p>Complete them to get paid</p>
+                                </div>
+                            </div>
+                        }
+
+                        @if (pendingApplications > 0)
+                        {
+                            <div class="alert-item alert-secondary">
+                                <i class="bi bi-clock"></i>
+                                <div>
+                                    <strong>@pendingApplications Pending Application(s)</strong>
+                                    <p>Waiting for landlord decision</p>
+                                </div>
+                            </div>
+                        }
+
+                        @if (availableJobs == 0 && inProgressJobs == 0 && pendingApplications == 0)
+                        {
+                            <div class="empty-state">
+                                <i class="bi bi-check-circle text-success"></i>
+                                <p>All caught up! Check for new jobs.</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    private string GetJobIcon(property_lease_saas.Models.Entities.MaintenanceRequestStatus status)
+    {
+        return status switch
+        {
+            property_lease_saas.Models.Entities.MaintenanceRequestStatus.Assigned => "bi-person-check",
+            property_lease_saas.Models.Entities.MaintenanceRequestStatus.InProgress => "bi-gear",
+            property_lease_saas.Models.Entities.MaintenanceRequestStatus.Completed => "bi-check-circle",
+            property_lease_saas.Models.Entities.MaintenanceRequestStatus.Verified => "bi-patch-check",
+            _ => "bi-tools"
+        };
+    }
+
+    private string GetJobIconClass(property_lease_saas.Models.Entities.MaintenanceRequestStatus status)
+    {
+        return status switch
+        {
+            property_lease_saas.Models.Entities.MaintenanceRequestStatus.Assigned => "bg-info-subtle",
+            property_lease_saas.Models.Entities.MaintenanceRequestStatus.InProgress => "bg-warning-subtle",
+            property_lease_saas.Models.Entities.MaintenanceRequestStatus.Completed => "bg-primary-subtle",
+            property_lease_saas.Models.Entities.MaintenanceRequestStatus.Verified => "bg-success-subtle",
+            _ => "bg-secondary"
+        };
+    }
+
+    private string GetJobStatusBadge(property_lease_saas.Models.Entities.MaintenanceRequestStatus status)
+    {
+        return status switch
+        {
+            property_lease_saas.Models.Entities.MaintenanceRequestStatus.Assigned => "badge-info",
+            property_lease_saas.Models.Entities.MaintenanceRequestStatus.InProgress => "badge-warning",
+            property_lease_saas.Models.Entities.MaintenanceRequestStatus.Completed => "badge-primary",
+            property_lease_saas.Models.Entities.MaintenanceRequestStatus.Verified => "badge-success",
+            _ => "badge-secondary"
+        };
+    }
+}

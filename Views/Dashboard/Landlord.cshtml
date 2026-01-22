@@ -1,0 +1,371 @@
+@{
+    ViewData["Title"] = "Landlord Dashboard";
+    
+    var totalProperties = (int)(ViewData["TotalProperties"] ?? 0);
+    var occupiedProperties = (int)(ViewData["OccupiedProperties"] ?? 0);
+    var vacantProperties = (int)(ViewData["VacantProperties"] ?? 0);
+    var activeLeases = (int)(ViewData["ActiveLeases"] ?? 0);
+    var totalRevenue = (decimal)(ViewData["TotalRevenue"] ?? 0);
+    var pendingRequests = (int)(ViewData["PendingLeaseRequests"] ?? 0);
+    var activeMaintenance = (int)(ViewData["ActiveMaintenance"] ?? 0);
+    var completedMaintenance = (int)(ViewData["CompletedMaintenanceThisMonth"] ?? 0);
+    var pendingVerification = (int)(ViewData["PendingVerification"] ?? 0);
+    var expiringLeasesCount = (int)(ViewData["ExpiringLeasesCount"] ?? 0);
+    
+    var recentLeaseRequests = ViewData["RecentLeaseRequests"] as List<property_lease_saas.Models.Entities.LeaseRequest> ?? new();
+    var recentMaintenance = ViewData["RecentMaintenance"] as List<property_lease_saas.Models.Entities.MaintenanceRequest> ?? new();
+    var expiringLeases = ViewData["ExpiringLeases"] as List<property_lease_saas.Models.Entities.Lease> ?? new();
+}
+
+<link rel="stylesheet" href="~/css/dashboard.css" />
+
+<div class="dashboard-container">
+    <!-- Header -->
+    <div class="dashboard-header">
+        <div>
+            <h1 class="dashboard-title">
+                <i class="bi bi-speedometer2 me-2"></i>Landlord Dashboard
+            </h1>
+            <p class="dashboard-subtitle">Welcome back, @ViewBag.UserName! Here's your property overview</p>
+        </div>
+        <div class="dashboard-actions">
+            <button class="btn btn-outline-primary" onclick="window.print()">
+                <i class="bi bi-printer me-2"></i>Print Report
+            </button>
+            <a href="/Properties/Create" class="btn btn-primary">
+                <i class="bi bi-plus-circle me-2"></i>Add Property
+            </a>
+        </div>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+        <div class="stat-card stat-card-primary">
+            <div class="stat-icon">
+                <i class="bi bi-building"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-label">Total Properties</div>
+                <div class="stat-value">@totalProperties</div>
+                <div class="stat-change positive">
+                    <i class="bi bi-arrow-up"></i> @occupiedProperties occupied
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card stat-card-success">
+            <div class="stat-icon">
+                <i class="bi bi-cash-stack"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-label">Monthly Revenue</div>
+                <div class="stat-value">Rs. @totalRevenue.ToString("N0")</div>
+                <div class="stat-change positive">
+                    <i class="bi bi-arrow-up"></i> From @activeLeases leases
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card stat-card-warning">
+            <div class="stat-icon">
+                <i class="bi bi-envelope-paper"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-label">Pending Requests</div>
+                <div class="stat-value">@pendingRequests</div>
+                <div class="stat-change">
+                    <i class="bi bi-clock"></i> Needs attention
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card stat-card-info">
+            <div class="stat-icon">
+                <i class="bi bi-tools"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-label">Active Maintenance</div>
+                <div class="stat-value">@activeMaintenance</div>
+                <div class="stat-change">
+                    <i class="bi bi-check-circle"></i> @completedMaintenance completed this month
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Grid -->
+    <div class="content-grid">
+        <!-- Left Column -->
+        <div class="content-column-left">
+            <!-- Recent Lease Requests -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="bi bi-file-earmark-text me-2"></i>Recent Lease Requests
+                    </h3>
+                    <a href="/Lease/Requests" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="card-body">
+                    @if (!recentLeaseRequests.Any())
+                    {
+                        <div class="empty-state">
+                            <i class="bi bi-inbox"></i>
+                            <p>No lease requests yet</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="list-group list-group-flush">
+                            @foreach (var request in recentLeaseRequests)
+                            {
+                                <div class="list-item">
+                                    <div class="list-item-icon bg-primary-subtle">
+                                        <i class="bi bi-house-door text-primary"></i>
+                                    </div>
+                                    <div class="list-item-content">
+                                        <div class="list-item-title">@request.Property?.Title</div>
+                                        <div class="list-item-subtitle">
+                                            Requested @request.RequestedAt.ToString("MMM dd, yyyy")
+                                        </div>
+                                    </div>
+                                    <div class="list-item-action">
+                                        <span class="badge @GetStatusBadgeClass(request.Status)">
+                                            @request.Status
+                                        </span>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Recent Maintenance -->
+            <div class="dashboard-card mt-4">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="bi bi-tools me-2"></i>Recent Maintenance Requests
+                    </h3>
+                    <a href="/LandlordMaintenance/Applications" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="card-body">
+                    @if (!recentMaintenance.Any())
+                    {
+                        <div class="empty-state">
+                            <i class="bi bi-inbox"></i>
+                            <p>No maintenance requests</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="list-group list-group-flush">
+                            @foreach (var maintenance in recentMaintenance)
+                            {
+                                <div class="list-item">
+                                    <div class="list-item-icon @GetMaintenanceIconClass(maintenance.Status)">
+                                        <i class="bi @GetMaintenanceIcon(maintenance.Status)"></i>
+                                    </div>
+                                    <div class="list-item-content">
+                                        <div class="list-item-title">@maintenance.Title</div>
+                                        <div class="list-item-subtitle">
+                                            Created @maintenance.CreatedAt.ToString("MMM dd, yyyy")
+                                            @if (maintenance.Applications.Any())
+                                            {
+                                                <span class="ms-2">
+                                                    <i class="bi bi-people"></i> @maintenance.Applications.Count application(s)
+                                                </span>
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="list-item-action">
+                                        <span class="badge @GetMaintenanceStatusBadge(maintenance.Status)">
+                                            @maintenance.Status
+                                        </span>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="content-column-right">
+            <!-- Quick Actions -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="bi bi-lightning-charge me-2"></i>Quick Actions
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="quick-actions-grid">
+                        <a href="/Properties/Create" class="quick-action-btn">
+                            <i class="bi bi-building-add"></i>
+                            <span>Add Property</span>
+                        </a>
+                        <a href="/Lease/Requests" class="quick-action-btn">
+                            <i class="bi bi-file-earmark-check"></i>
+                            <span>View Requests</span>
+                        </a>
+                        <a href="/LandlordMaintenance/Applications" class="quick-action-btn">
+                            <i class="bi bi-tools"></i>
+                            <span>Maintenance</span>
+                        </a>
+                        <a href="/Properties/My" class="quick-action-btn">
+                            <i class="bi bi-search"></i>
+                            <span>View Properties</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alerts & Notifications -->
+            <div class="dashboard-card mt-4">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="bi bi-exclamation-triangle me-2"></i>Alerts & Notifications
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert-list">
+                        @if (pendingRequests > 0)
+                        {
+                            <div class="alert-item alert-warning">
+                                <i class="bi bi-envelope-paper"></i>
+                                <div>
+                                    <strong>@pendingRequests Pending Lease Request(s)</strong>
+                                    <p>Review and respond to tenant requests</p>
+                                </div>
+                            </div>
+                        }
+
+                        @if (pendingVerification > 0)
+                        {
+                            <div class="alert-item alert-info">
+                                <i class="bi bi-tools"></i>
+                                <div>
+                                    <strong>@pendingVerification Maintenance Awaiting Verification</strong>
+                                    <p>Work completed - needs your approval</p>
+                                </div>
+                            </div>
+                        }
+
+                        @if (expiringLeasesCount > 0)
+                        {
+                            <div class="alert-item alert-danger">
+                                <i class="bi bi-calendar-x"></i>
+                                <div>
+                                    <strong>@expiringLeasesCount Lease(s) Expiring Soon</strong>
+                                    <p>Within the next 60 days</p>
+                                </div>
+                            </div>
+                        }
+
+                        @if (vacantProperties > 0)
+                        {
+                            <div class="alert-item alert-secondary">
+                                <i class="bi bi-house-slash"></i>
+                                <div>
+                                    <strong>@vacantProperties Vacant Propert@(vacantProperties == 1 ? "y" : "ies")</strong>
+                                    <p>Available for new tenants</p>
+                                </div>
+                            </div>
+                        }
+
+                        @if (pendingRequests == 0 && pendingVerification == 0 && expiringLeasesCount == 0 && vacantProperties == 0)
+                        {
+                            <div class="empty-state">
+                                <i class="bi bi-check-circle text-success"></i>
+                                <p>All caught up! No alerts at the moment.</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Expiring Leases -->
+            @if (expiringLeases.Any())
+            {
+                <div class="dashboard-card mt-4">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="bi bi-calendar-event me-2"></i>Expiring Leases (60 Days)
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group list-group-flush">
+                            @foreach (var lease in expiringLeases)
+                            {
+                                var daysLeft = (lease.EndDate - DateTime.Now).Days;
+                                <div class="list-item">
+                                    <div class="list-item-icon bg-danger-subtle">
+                                        <i class="bi bi-calendar-x text-danger"></i>
+                                    </div>
+                                    <div class="list-item-content">
+                                        <div class="list-item-title">@lease.Property?.Title</div>
+                                        <div class="list-item-subtitle">
+                                            Expires @lease.EndDate.ToString("MMM dd, yyyy") (@daysLeft days)
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@functions {
+    private string GetStatusBadgeClass(property_lease_saas.Models.Entities.LeaseRequestStatus status)
+    {
+        return status switch
+        {
+            property_lease_saas.Models.Entities.LeaseRequestStatus.Pending => "badge-warning",
+            property_lease_saas.Models.Entities.LeaseRequestStatus.Approved => "badge-success",
+            property_lease_saas.Models.Entities.LeaseRequestStatus.Rejected => "badge-danger",
+            _ => "badge-secondary"
+        };
+    }
+
+    private string GetMaintenanceIcon(property_lease_saas.Models.Entities.MaintenanceRequestStatus status)
+    {
+        return status switch
+        {
+            property_lease_saas.Models.Entities.MaintenanceRequestStatus.Requested => "bi-hourglass-split",
+            property_lease_saas.Models.Entities.MaintenanceRequestStatus.Published => "bi-megaphone",
+            property_lease_saas.Models.Entities.MaintenanceRequestStatus.Assigned => "bi-person-check",
+            property_lease_saas.Models.Entities.MaintenanceRequestStatus.InProgress => "bi-gear",
+            property_lease_saas.Models.Entities.MaintenanceRequestStatus.Completed => "bi-check-circle",
+            property_lease_saas.Models.Entities.MaintenanceRequestStatus.Verified => "bi-patch-check",
+            _ => "bi-question-circle"
+        };
+    }
+
+    private string GetMaintenanceIconClass(property_lease_saas.Models.Entities.MaintenanceRequestStatus status)
+    {
+        return status switch
+        {
+            property_lease_saas.Models.Entities.MaintenanceRequestStatus.Requested => "bg-warning-subtle",
+            property_lease_saas.Models.Entities.MaintenanceRequestStatus.Published => "bg-info-subtle",
+            property_lease_saas.Models.Entities.MaintenanceRequestStatus.InProgress => "bg-primary-subtle",
+            property_lease_saas.Models.Entities.MaintenanceRequestStatus.Verified => "bg-success-subtle",
+            _ => "bg-secondary"
+        };
+    }
+
+    private string GetMaintenanceStatusBadge(property_lease_saas.Models.Entities.MaintenanceRequestStatus status)
+    {
+        return status switch
+        {
+            property_lease_saas.Models.Entities.MaintenanceRequestStatus.Requested => "badge-warning",
+            property_lease_saas.Models.Entities.MaintenanceRequestStatus.Published => "badge-info",
+            property_lease_saas.Models.Entities.MaintenanceRequestStatus.InProgress => "badge-primary",
+            property_lease_saas.Models.Entities.MaintenanceRequestStatus.Verified => "badge-success",
+            _ => "badge-secondary"
+        };
+    }
+}

@@ -1,0 +1,234 @@
+@model List<property_lease_saas.Models.Entities.MaintenancePayment>
+@{
+    ViewData["Title"] = "My Earnings";
+    var stats = ViewBag.Stats as Dictionary<string, object>;
+    var totalEarnings = (decimal)(stats?["TotalEarnings"] ?? 0);
+    var pendingPayments = (int)(stats?["PendingPayments"] ?? 0);
+    var pendingAmount = (decimal)(stats?["PendingAmount"] ?? 0);
+    var totalPayments = (int)(stats?["TotalPayments"] ?? 0);
+    var completedPayments = (int)(stats?["CompletedPayments"] ?? 0);
+}
+
+<link rel="stylesheet" href="~/css/dashboard.css" />
+
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <div>
+            <h1 class="dashboard-title">
+                <i class="bi bi-wallet2 me-2"></i>My Earnings
+            </h1>
+            <p class="dashboard-subtitle">Track your maintenance work payments</p>
+        </div>
+        <div class="dashboard-actions">
+            <a href="/Dashboard/Index" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Earnings Stats -->
+    <div class="stats-grid">
+        <div class="stat-card stat-card-success">
+            <div class="stat-icon">
+                <i class="bi bi-cash-coin"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-label">Total Earnings</div>
+                <div class="stat-value">Rs. @totalEarnings.ToString("N0")</div>
+                <div class="stat-change positive">
+                    <i class="bi bi-check-circle"></i> @completedPayments completed
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card stat-card-warning">
+            <div class="stat-icon">
+                <i class="bi bi-hourglass-split"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-label">Pending Payments</div>
+                <div class="stat-value">@pendingPayments</div>
+                <div class="stat-change">
+                    <i class="bi bi-currency-rupee"></i> Rs. @pendingAmount.ToString("N0")
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card stat-card-info">
+            <div class="stat-icon">
+                <i class="bi bi-receipt"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-label">Total Payments</div>
+                <div class="stat-value">@totalPayments</div>
+                <div class="stat-change">
+                    <i class="bi bi-bar-chart"></i> All time
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Earnings Breakdown -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="bi bi-pie-chart me-2"></i>Payment Status Breakdown
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="progress-container">
+                        <div class="progress-label">
+                            <span>Completed</span>
+                            <span>@completedPayments payments</span>
+                        </div>
+                        <div class="progress-bar-wrapper">
+                            <div class="progress-bar" style="width: @(totalPayments > 0 ? (completedPayments * 100.0 / totalPayments) : 0)%; background: var(--success);"></div>
+                        </div>
+                    </div>
+                    <div class="progress-container mt-3">
+                        <div class="progress-label">
+                            <span>Pending</span>
+                            <span>@pendingPayments payments</span>
+                        </div>
+                        <div class="progress-bar-wrapper">
+                            <div class="progress-bar" style="width: @(totalPayments > 0 ? (pendingPayments * 100.0 / totalPayments) : 0)%; background: var(--warning);"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="bi bi-info-circle me-2"></i>Payment Information
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info mb-0">
+                        <h6><i class="bi bi-lightbulb me-2"></i>Payment Process</h6>
+                        <ul class="mb-0">
+                            <li>Payments are initiated after work verification</li>
+                            <li>Landlords confirm payment completion</li>
+                            <li>You can track all payment statuses here</li>
+                            <li>Contact landlord for payment inquiries</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment List -->
+    <div class="dashboard-card">
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="bi bi-list-ul me-2"></i>Payment History
+            </h3>
+        </div>
+        <div class="card-body">
+            @if (!Model.Any())
+            {
+                <div class="empty-state">
+                    <i class="bi bi-inbox"></i>
+                    <p>No payment records found</p>
+                    <p class="text-muted">Complete jobs to start earning</p>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Work Description</th>
+                                <th>Landlord</th>
+                                <th>Amount</th>
+                                <th>Payment Date</th>
+                                <th>Method</th>
+                                <th>Transaction ID</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var payment in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <strong>@payment.WorkDescription</strong>
+                                        @if (!string.IsNullOrEmpty(payment.Notes))
+                                        {
+                                            <br />
+                                            <small class="text-muted">@payment.Notes</small>
+                                        }
+                                    </td>
+                                    <td>@payment.LandlordName</td>
+                                    <td>
+                                        <strong class="text-success">Rs. @payment.Amount.ToString("N0")</strong>
+                                    </td>
+                                    <td>
+                                        @if (payment.Status == property_lease_saas.Models.Entities.PaymentStatus.Completed)
+                                        {
+                                            @payment.PaymentDate.ToString("MMM dd, yyyy")
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">Pending</span>
+                                        }
+                                    </td>
+                                    <td>@payment.PaymentMethod</td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(payment.TransactionId))
+                                        {
+                                            <code>@payment.TransactionId</code>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">-</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <span class="badge @GetStatusBadge(payment.Status)">
+                                            @payment.Status
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a href="/Payment/PaymentDetails/@payment.Id?type=maintenance" 
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-eye"></i> View
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr class="table-success fw-bold">
+                                <td colspan="2" class="text-end">Total Completed:</td>
+                                <td colspan="6">Rs. @totalEarnings.ToString("N0")</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@functions {
+    private string GetStatusBadge(property_lease_saas.Models.Entities.PaymentStatus status)
+    {
+        return status switch
+        {
+            property_lease_saas.Models.Entities.PaymentStatus.Pending => "badge-warning",
+            property_lease_saas.Models.Entities.PaymentStatus.Processing => "badge-info",
+            property_lease_saas.Models.Entities.PaymentStatus.Completed => "badge-success",
+            property_lease_saas.Models.Entities.PaymentStatus.Failed => "badge-danger",
+            property_lease_saas.Models.Entities.PaymentStatus.Cancelled => "badge-secondary",
+            _ => "badge-secondary"
+        };
+    }
+}

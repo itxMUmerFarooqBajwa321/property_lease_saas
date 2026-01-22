@@ -1,4 +1,4 @@
-@{
+@* @{
     ViewBag.Title = "Dashboard";
 }
 
@@ -272,4 +272,45 @@
             </div>
         </div>
     }
+</div> *@
+
+
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<link rel="stylesheet" href="~/css/dashboard.css" />
+
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <div>
+            <h1 class="dashboard-title">
+                <i class="bi bi-speedometer2 me-2"></i>Dashboard
+            </h1>
+            <p class="dashboard-subtitle">Welcome to Property Lease Management System</p>
+        </div>
+    </div>
+
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-8">
+            <div class="dashboard-card">
+                <div class="card-body text-center" style="padding: 3rem;">
+                    <i class="bi bi-shield-lock" style="font-size: 4rem; color: #6b7280; margin-bottom: 1.5rem;"></i>
+                    <h2>Access Denied</h2>
+                    <p class="text-muted mb-4">
+                        Unable to determine user type. Please ensure you're logged in correctly.
+                    </p>
+                    <div class="d-flex gap-3 justify-content-center">
+                        <a href="/Account/Login" class="btn btn-primary">
+                            <i class="bi bi-box-arrow-in-right me-2"></i>Login
+                        </a>
+                        <a href="/" class="btn btn-outline-secondary">
+                            <i class="bi bi-house me-2"></i>Go Home
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

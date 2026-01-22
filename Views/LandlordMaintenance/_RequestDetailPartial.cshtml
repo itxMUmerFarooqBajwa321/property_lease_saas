@@ -1,0 +1,255 @@
+@model property_lease_saas.Models.Entities.MaintenanceRequest
+@using property_lease_saas.Models.Entities
+
+@if (Model == null)
+{
+    <div class="alert alert-danger">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        Request not found
+    </div>
+}
+else
+{
+    var property = ViewBag.Property as Property;
+    var landlord = ViewBag.Landlord as property_lease_saas.Models.ApplicationUser;
+    var tenant = ViewBag.Tenant as property_lease_saas.Models.ApplicationUser;
+    var mechanic = ViewBag.Mechanic as property_lease_saas.Models.ApplicationUser;
+
+    <div class="row g-4">
+        <!-- Left Column: Request Info -->
+        <div class="col-lg-8">
+            <!-- Status Banner -->
+            <div class="alert @GetAlertClass(Model.Status) border-0 shadow-sm mb-4">
+                <div class="d-flex align-items-center">
+                    <i class="bi @GetStatusIcon(Model.Status) fs-3 me-3"></i>
+                    <div>
+                        <h6 class="mb-0 fw-bold">Status: @Model.Status</h6>
+                        <small>@GetStatusDescription(Model.Status)</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Request Details Card -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-light border-0">
+                    <h6 class="mb-0 fw-bold">
+                        <i class="bi bi-file-earmark-text me-2"></i>Request Information
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <h4 class="fw-bold mb-3">@Model.Title</h4>
+                    <p class="text-muted">@Model.Description</p>
+
+                    <hr class="my-3" />
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="small text-muted mb-1">Created Date</label>
+                            <div class="fw-semibold">
+                                <i class="bi bi-calendar3 me-2 text-primary"></i>
+                                @Model.CreatedAt.ToString("MMMM dd, yyyy")
+                            </div>
+                        </div>
+                        @if (Model.CompletedAt.HasValue)
+                        {
+                            <div class="col-md-6">
+                                <label class="small text-muted mb-1">Completed Date</label>
+                                <div class="fw-semibold">
+                                    <i class="bi bi-check-circle me-2 text-success"></i>
+                                    @Model.CompletedAt.Value.ToString("MMMM dd, yyyy")
+                                </div>
+                            </div>
+                        }
+                        <div class="col-md-6">
+                            <label class="small text-muted mb-1">Property</label>
+                            <div class="fw-semibold">
+                                <i class="bi bi-house me-2 text-primary"></i>
+                                @property?.Title
+                            </div>
+                            <small class="text-muted">@property?.Address
+                            </small>
+                        </div>
+                        @if (tenant != null)
+                        {
+                            <div class="col-md-6">
+                                <label class="small text-muted mb-1">Requested By (Tenant)</label>
+                                <div class="fw-semibold">
+                                    <i class="bi bi-person me-2 text-primary"></i>
+                                    @tenant.FullName
+                                </div>
+                                <small class="text-muted">@tenant.Email</small>
+                            </div>
+                        }
+                        @if (mechanic != null)
+                        {
+                            <div class="col-md-6">
+                                <label class="small text-muted mb-1">Assigned Mechanic</label>
+                                <div class="fw-semibold">
+                                    <i class="bi bi-tools me-2 text-warning"></i>
+                                    @mechanic.FullName
+                                </div>
+                                <small class="text-muted">@mechanic.Email</small>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+<!-- Evidence/Completion Images -->
+        @if (!string.IsNullOrEmpty(Model.CompletionImagePath) || !string.IsNullOrEmpty(Model.ReceiptPath))
+        {
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-light border-0">
+                    <h6 class="mb-0 fw-bold">
+                        <i class="bi bi-images me-2"></i>Evidence & Documentation
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        @if (!string.IsNullOrEmpty(Model.CompletionImagePath))
+                        {
+                            <div class="col-md-6">
+                                <label class="small text-muted mb-2 d-block">Completion Photo</label>
+                                <a href="@Model.CompletionImagePath" target="_blank" data-lightbox="evidence">
+                                    <img src="@Model.CompletionImagePath" 
+                                         class="img-fluid rounded border shadow-sm" 
+                                         style="max-height: 300px; width: 100%; object-fit: cover;" 
+                                         alt="Completion Evidence" />
+                                </a>
+                                <a href="@Model.CompletionImagePath" 
+                                   download 
+                                   class="btn btn-sm btn-outline-primary mt-2 w-100">
+                                    <i class="bi bi-download me-1"></i>Download
+                                </a>
+                            </div>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.ReceiptPath))
+                        {
+                            <div class="col-md-6">
+                                <label class="small text-muted mb-2 d-block">Receipt</label>
+                                <a href="@Model.ReceiptPath" target="_blank" data-lightbox="evidence">
+                                    <img src="@Model.ReceiptPath" 
+                                         class="img-fluid rounded border shadow-sm" 
+                                         style="max-height: 300px; width: 100%; object-fit: cover;" 
+                                         alt="Receipt" />
+                                </a>
+                                <a href="@Model.ReceiptPath" 
+                                   download 
+                                   class="btn btn-sm btn-outline-primary mt-2 w-100">
+                                    <i class="bi bi-download me-1"></i>Download
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Right Column: Applications -->
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm sticky-top" style="top: 20px;">
+            <div class="card-header bg-light border-0">
+                <h6 class="mb-0 fw-bold">
+                    <i class="bi bi-people me-2"></i>Applications 
+                    <span class="badge bg-primary">@Model.Applications.Count</span>
+                </h6>
+            </div>
+            <div class="card-body p-0" style="max-height: 500px; overflow-y: auto;">
+                @if (!Model.Applications.Any())
+                {
+                    <div class="p-4 text-center text-muted">
+                        <i class="bi bi-inbox fs-1 mb-3 d-block opacity-25"></i>
+                        <p class="mb-0">No applications yet</p>
+                    </div>
+                }
+                else
+                {
+                    <div class="list-group list-group-flush">
+                        @foreach (var app in Model.Applications.OrderByDescending(a => a.AppliedAt))
+                        {
+                            <div class="list-group-item @(app.IsAccepted ? "bg-success bg-opacity-10" : "")">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <div>
+                                        <div class="fw-bold text-truncate" style="max-width: 150px;">
+                                            Mechanic #@app.MechanicId.Substring(0, 8)
+                                        </div>
+                                        <small class="text-muted">
+                                            @app.AppliedAt.ToString("MMM dd, yyyy")
+                                        </small>
+                                    </div>
+                                    @if (app.IsAccepted)
+                                    {
+                                        <span class="badge bg-success">
+                                            <i class="bi bi-check-circle"></i>
+                                        </span>
+                                    }
+                                </div>
+                                <div class="fw-bold text-success mb-2">
+                                    Rs. @app.ProposedBill.ToString("N0")
+                                </div>
+                                <p class="small mb-2 text-muted">@app.Notes</p>
+                                @if (!app.IsAccepted && Model.AssignedMechanicId == null && Model.Status == MaintenanceRequestStatus.Published)
+                                {
+                                    <form asp-controller="LandlordMaintenance" 
+                                          asp-action="Accept" 
+                                          method="post" 
+                                          class="d-inline w-100"
+                                          onsubmit="return confirm('Accept this mechanic?');">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="applicationId" value="@app.Id" />
+                                        <button class="btn btn-sm btn-success w-100">
+                                            <i class="bi bi-check-lg me-1"></i>Accept
+                                        </button>
+                                    </form>
+                                }
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+}
+@functions {
+private string GetAlertClass(MaintenanceRequestStatus status)
+{
+return status switch
+{
+MaintenanceRequestStatus.Requested or MaintenanceRequestStatus.Pending => "alert-secondary",
+MaintenanceRequestStatus.Published => "alert-info",
+MaintenanceRequestStatus.Assigned or MaintenanceRequestStatus.InProgress => "alert-warning",
+MaintenanceRequestStatus.Completed => "alert-primary",
+MaintenanceRequestStatus.Verified => "alert-success",
+_ => "alert-dark"
+};
+}
+private string GetStatusIcon(MaintenanceRequestStatus status)
+{
+    return status switch
+    {
+        MaintenanceRequestStatus.Requested or MaintenanceRequestStatus.Pending => "bi-hourglass-split",
+        MaintenanceRequestStatus.Published => "bi-megaphone",
+        MaintenanceRequestStatus.Assigned => "bi-person-check",
+        MaintenanceRequestStatus.InProgress => "bi-gear",
+        MaintenanceRequestStatus.Completed => "bi-check-circle",
+        MaintenanceRequestStatus.Verified => "bi-patch-check-fill",
+        _ => "bi-question-circle"
+    };
+}
+
+private string GetStatusDescription(MaintenanceRequestStatus status)
+{
+    return status switch
+    {
+        MaintenanceRequestStatus.Requested => "Request created and waiting to be published",
+        MaintenanceRequestStatus.Pending => "Request is pending review",
+        MaintenanceRequestStatus.Published => "Published and visible to mechanics",
+        MaintenanceRequestStatus.Assigned => "Mechanic has been assigned",
+        MaintenanceRequestStatus.InProgress => "Work is currently in progress",
+        MaintenanceRequestStatus.Completed => "Work completed, awaiting verification",
+        MaintenanceRequestStatus.Verified => "Work has been verified and approved",
+        _ => "Unknown status"
+    };
+}
+}

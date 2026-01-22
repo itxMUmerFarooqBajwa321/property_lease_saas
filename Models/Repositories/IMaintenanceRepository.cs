@@ -5,6 +5,7 @@ namespace property_lease_saas.Models.Repositories;
 
 public interface IMaintenanceRepository
 {
+    public ApplicationDbContext GetAppDbContext();
     Task AddAsync(MaintenanceRequest request);
     Task UpdateAsync(MaintenanceRequest request);
     Task<MaintenanceRequest?> GetByIdAsync(Guid id);

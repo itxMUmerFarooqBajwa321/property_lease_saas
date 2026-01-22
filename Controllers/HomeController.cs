@@ -1,3 +1,4 @@
+using property_lease_saas.Infrastructure.Extensions;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using property_lease_saas.Models;
@@ -17,7 +18,8 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
-        return View();
+        //return View();
+            return RedirectToPage("/Account/Login", new { area = "Identity" });            
     }
 
     public IActionResult Privacy()

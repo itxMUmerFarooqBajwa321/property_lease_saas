@@ -1,0 +1,179 @@
+@model property_lease_saas.Models.Entities.MaintenancePayment
+@{
+    ViewData["Title"] = "Pay Mechanic";
+    var maintenanceRequest = ViewBag.MaintenanceRequest as property_lease_saas.Models.Entities.MaintenanceRequest;
+    var application = ViewBag.Application as property_lease_saas.Models.Entities.MaintenanceApplication;
+}
+
+<link rel="stylesheet" href="~/css/dashboard.css" />
+
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <div>
+            <h1 class="dashboard-title">
+                <i class="bi bi-wallet2 me-2"></i>Pay Mechanic
+            </h1>
+            <p class="dashboard-subtitle">Complete payment for maintenance work</p>
+        </div>
+        <div class="dashboard-actions">
+            <a href="/Payment/PaidMaintenancePayments" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-2"></i>Back
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="bi bi-cash-stack me-2"></i>Payment Details
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <form asp-action="CreateMaintenancePayment" method="post">
+                        <input type="hidden" asp-for="MaintenanceRequestId" value="@maintenanceRequest?.Id" />
+                        <input type="hidden" asp-for="MaintenanceApplicationId" value="@application?.Id" />
+                        <input type="hidden" asp-for="Amount" value="@application?.ProposedBill" />
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Maintenance Work</label>
+                            <p class="form-control-static">@maintenanceRequest?.Title</p>
+                            @if (!string.IsNullOrEmpty(maintenanceRequest?.Description))
+                            {
+                                <small class="text-muted">@maintenanceRequest.Description</small>
+                            }
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Mechanic</label>
+                            <p class="form-control-static">@application?.Mechanic?.FullName</p>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Agreed Amount</label>
+                            <p class="form-control-static">
+                                <span class="h4 text-success">Rs. @application?.ProposedBill.ToString("N0")</span>
+                            </p>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="PaymentMethod" class="form-label">Payment Method</label>
+                            <select asp-for="PaymentMethod" class="form-select" required>
+                                <option value="">Select Payment Method</option>
+                                <option value="Cash">Cash</option>
+                                <option value="BankTransfer">Bank Transfer</option>
+                                <option value="Card">Credit/Debit Card</option>
+                                <option value="MobileMoney">Mobile Money (JazzCash/EasyPaisa)</option>
+                                <option value="Cheque">Cheque</option>
+                            </select>
+                            <span asp-validation-for="PaymentMethod" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="TransactionId" class="form-label">Transaction ID / Reference Number</label>
+                            <input asp-for="TransactionId" class="form-control" placeholder="Enter transaction reference" />
+                            <small class="form-text text-muted">Required for bank transfers and online payments</small>
+                            <span asp-validation-for="TransactionId" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Notes" class="form-label">Payment Notes (Optional)</label>
+                            <textarea asp-for="Notes" class="form-control" rows="3" placeholder="Any additional notes or comments"></textarea>
+                            <span asp-validation-for="Notes" class="text-danger"></span>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle me-2"></i>
+                            <strong>Payment Notice:</strong> Once you submit this payment, the mechanic will be notified. 
+                            Please ensure you have transferred the amount before confirming.
+                        </div>
+
+                        <div class="d-flex gap-3">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="bi bi-cash-coin me-2"></i>Process Payment
+                            </button>
+                            <a href="/Payment/PaidMaintenancePayments" class="btn btn-outline-secondary btn-lg">
+                                Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <!-- Work Summary -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="bi bi-clipboard-check me-2"></i>Work Summary
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="text-muted small">Status</label>
+                        <p class="mb-0">
+                            <span class="badge badge-success">@maintenanceRequest?.Status</span>
+                        </p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="text-muted small">Started</label>
+                        <p class="mb-0">@maintenanceRequest?.CreatedAt.ToString("MMM dd, yyyy")</p>
+                    </div>
+                    @if (maintenanceRequest?.CompletedAt.HasValue == true)
+                    {
+                        <div class="mb-3">
+                            <label class="text-muted small">Completed</label>
+                            <p class="mb-0">@maintenanceRequest.CompletedAt.Value.ToString("MMM dd, yyyy")</p>
+                        </div>
+                    }
+                    <div class="mb-3">
+                        <label class="text-muted small">Proposed Bill</label>
+                        <p class="mb-0 h5 text-success">Rs. @application?.ProposedBill.ToString("N0")</p>
+                    </div>
+                    @if (!string.IsNullOrEmpty(application?.Comments))
+                    {
+                        <div class="mb-3">
+                            <label class="text-muted small">Mechanic Comments</label>
+                            <p class="mb-0 small">@application.Comments</p>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Payment Tips -->
+            <div class="dashboard-card mt-3">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="bi bi-lightbulb me-2"></i>Payment Tips
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle text-success me-2"></i>
+                            Verify work completion first
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle text-success me-2"></i>
+                            Keep payment receipts
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle text-success me-2"></i>
+                            Provide transaction references
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle text-success me-2"></i>
+                            Confirm payment with mechanic
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
