@@ -24,26 +24,26 @@ namespace property_lease_saas.Controllers
             _repo = repo;
         }
 
+        [Authorize(Policy = "LandlordOnly")]
         public async Task<IActionResult> My()
         {
-            if (!User.IsLandlord()) return Forbid();
             return View(await _repo.GetByLandlordAsync(User.UserId()));
         }
 
+        [Authorize(Policy = "LandlordOnly")]
         public IActionResult Create()
         {
-            if (!User.IsLandlord()) return Forbid();
             return View();
         }
 
+
+        [Authorize(Policy = "LandlordOnly")]
         [HttpPost]
         public async Task<IActionResult> Create(
             Property property,
             List<IFormFile> images,
             List<IFormFile> documents)
         {
-            if (!User.IsLandlord()) return Forbid();
-
             property.LandlordId = User.UserId();
             await _service.CreateAsync(property, images, documents);
 
@@ -58,6 +58,8 @@ namespace property_lease_saas.Controllers
         }
 
         // GET: Properties/Delete/5
+    
+    [Authorize(Policy = "LandlordOnly")]
     public async Task<IActionResult> Delete(Guid id)
     {
         var property = await _repo.GetByIdAsync(id);
@@ -69,11 +71,18 @@ namespace property_lease_saas.Controllers
     }
 
     // POST: Properties/Delete/5
-    [HttpPost, ActionName("Delete")]
+    [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(Guid id)
     {
-        await _repo.DeleteAsync(id);
+        var p1= await _repo.GetByIdAsync(id);
+
+        // if (p1==null) ViewBag.message="Not a property!"; // not an existing property 
+        // if(p1.IsTaken) ViewBag.message="Property is at lease!" ; // property is at lease
+
+        // if(ViewBag.message != "Not a property!" && ViewBag.message !="Property is at lease!") 
+            await _repo.DeleteAsync(id);
+
         return RedirectToAction(nameof(My));
     }
 

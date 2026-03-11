@@ -23,7 +23,7 @@ public class PaymentController : Controller
     #region Rent Payments (Tenant -> Landlord)
 
     // Tenant: View their payments
-    [Authorize (Policy ="TenantOnly")]
+    [Authorize(Policy = "TenantOnly")]
     public async Task<IActionResult> MyRentPayments()
     {
         var userId = User.UserId();
@@ -34,32 +34,82 @@ public class PaymentController : Controller
         return View(payments);
     }
 
+    [HttpGet]
     // Tenant: Make a payment
-    [Authorize (Policy ="TenantOnly")]
+    [Authorize(Policy = "TenantOnly")]
     public async Task<IActionResult> MakeRentPayment(string leaseId)
     {
+        // Validate input
+        if (string.IsNullOrEmpty(leaseId))
+        {
+            TempData["Error"] = "Lease ID is required";
+            return RedirectToAction("MyRentPayments");
+        }
+
+        // Try to parse as Guid
+        if (!Guid.TryParse(leaseId, out var leaseGuid))
+        {
+            // If not a Guid, maybe it's stored without hyphens
+            if (leaseId.Length == 32) // Guid without hyphens is 32 chars
+            {
+                var formattedId = $"{leaseId.Substring(0, 8)}-{leaseId.Substring(8, 4)}-{leaseId.Substring(12, 4)}-{leaseId.Substring(16, 4)}-{leaseId.Substring(20)}";
+                if (Guid.TryParse(formattedId, out leaseGuid))
+                {
+                    Console.WriteLine($"DEBUG: Successfully parsed without-hyphens GUID: {leaseId} -> {leaseGuid}");
+                }
+            }
+
+            if (leaseGuid == Guid.Empty)
+            {
+                TempData["Error"] = "Invalid Lease ID format";
+                return RedirectToAction("MyRentPayments");
+            }
+        }
+
+        // Now query with Guid
         var lease = await _context.Leases
             .Include(l => l.Property)
             .Include(l => l.LeaseRequest)
-            .FirstOrDefaultAsync(l => l.Id.ToString() == leaseId);
+            .FirstOrDefaultAsync(l => l.Id == leaseGuid);
 
-        if (lease == null || lease.TenantId != User.UserId())
+        if (lease == null)
         {
-            TempData["Error"] = "Lease not found or unauthorized";
+            TempData["Error"] = $"Lease not found. Looking for ID: {leaseGuid}";
+            return RedirectToAction("MyRentPayments");
+        }
+
+        if (lease.TenantId != User.UserId())
+        {
+            TempData["Error"] = "You are not authorized to make payments for this lease";
             return RedirectToAction("MyRentPayments");
         }
 
         ViewBag.Lease = lease;
-        return View();
+
+        var payment = new RentPayment
+        {
+            LeaseId = lease.Id,
+            Amount = lease.RentAmount,
+            DueDate = DateTime.Now.AddDays(7)
+        };
+
+        return View(payment);
     }
 
     [HttpPost]
-    [Authorize (Policy ="TenantOnly")]
+    [Authorize(Policy = "TenantOnly")]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> MakeRentPayment(RentPayment payment)
     {
         var lease = await _context.Leases
             .Include(l => l.Property)
             .FirstOrDefaultAsync(l => l.Id == payment.LeaseId);
+
+        if (!ModelState.IsValid)
+        {
+            ViewBag.Lease = lease;
+            return View(payment);
+        }
 
         if (lease == null || lease.TenantId != User.UserId())
         {
@@ -72,6 +122,9 @@ public class PaymentController : Controller
         payment.LandlordId = lease.LandlordId;
         payment.LandlordName = lease.Property?.LandlordId ?? "";
         payment.Amount = lease.RentAmount;
+        payment.PaymentDate = DateTime.Now;
+        payment.Status = PaymentStatus.Pending; // Or Completed based on your logic
+
 
         await _paymentService.CreateRentPaymentAsync(payment);
 
@@ -80,7 +133,7 @@ public class PaymentController : Controller
     }
 
     // Landlord: View received payments
-    [Authorize (Policy ="LandlordOnly")]
+    [Authorize(Policy = "LandlordOnly")]
     public async Task<IActionResult> ReceivedRentPayments()
     {
         var userId = User.UserId();
@@ -92,7 +145,7 @@ public class PaymentController : Controller
     }
 
     // Landlord: View overdue payments
-    [Authorize (Policy ="LandlordOnly")]
+    [Authorize(Policy = "LandlordOnly")]
     public async Task<IActionResult> OverduePayments()
     {
         var userId = User.UserId();
@@ -102,19 +155,19 @@ public class PaymentController : Controller
 
     // Landlord: Confirm payment received
     [HttpPost]
-    [Authorize (Policy ="LandlordOnly")]
+    [Authorize(Policy = "LandlordOnly")]
     public async Task<IActionResult> ConfirmRentPayment(string paymentId, string transactionId)
     {
         var payment = await _paymentService.GetRentPaymentByIdAsync(paymentId);
-        
+
         if (payment == null || payment.LandlordId != User.UserId())
         {
             return Json(new { success = false, message = "Payment not found or unauthorized" });
         }
 
         var result = await _paymentService.UpdateRentPaymentStatusAsync(
-            paymentId, 
-            PaymentStatus.Completed, 
+            paymentId,
+            PaymentStatus.Completed,
             transactionId
         );
 
@@ -131,7 +184,7 @@ public class PaymentController : Controller
     #region Maintenance Payments (Landlord -> Mechanic)
 
     // Landlord: Create payment for mechanic
-    [Authorize (Policy ="LandlordOnly")]
+    [Authorize(Policy = "LandlordOnly")]
     public async Task<IActionResult> CreateMaintenancePayment(string maintenanceRequestId)
     {
         var maintenanceRequest = await _context.MaintenanceRequests
@@ -167,7 +220,7 @@ public class PaymentController : Controller
     }
 
     [HttpPost]
-    [Authorize (Policy ="LandlordOnly")]
+    [Authorize(Policy = "LandlordOnly")]
     public async Task<IActionResult> CreateMaintenancePayment(MaintenancePayment payment)
     {
         var maintenanceRequest = await _context.MaintenanceRequests
@@ -203,7 +256,7 @@ public class PaymentController : Controller
     }
 
     // Landlord: View payments to mechanics
-    [Authorize (Policy ="LandlordOnly")]
+    [Authorize(Policy = "LandlordOnly")]
     public async Task<IActionResult> PaidMaintenancePayments()
     {
         var userId = User.UserId();
@@ -215,7 +268,7 @@ public class PaymentController : Controller
     }
 
     // Mechanic: View received payments
-    [Authorize (Policy ="MechanicOnly")]
+    [Authorize(Policy = "MechanicOnly")]
     public async Task<IActionResult> MyEarnings()
     {
         var userId = User.UserId();
@@ -228,18 +281,18 @@ public class PaymentController : Controller
 
     // Mechanic: Confirm payment received
     [HttpPost]
-    [Authorize (Policy ="MechanicOnly")]
+    [Authorize(Policy = "MechanicOnly")]
     public async Task<IActionResult> ConfirmMaintenancePaymentReceived(string paymentId)
     {
         var payment = await _paymentService.GetMaintenancePaymentByIdAsync(paymentId);
-        
+
         if (payment == null || payment.MechanicId != User.UserId())
         {
             return Json(new { success = false, message = "Payment not found or unauthorized" });
         }
 
         var result = await _paymentService.UpdateMaintenancePaymentStatusAsync(
-            paymentId, 
+            paymentId,
             PaymentStatus.Completed
         );
 
@@ -264,7 +317,7 @@ public class PaymentController : Controller
         if (type == "rent")
         {
             var payment = await _paymentService.GetRentPaymentByIdAsync(id);
-            
+
             if (payment == null)
             {
                 TempData["Error"] = "Payment not found";
@@ -285,7 +338,7 @@ public class PaymentController : Controller
         else if (type == "maintenance")
         {
             var payment = await _paymentService.GetMaintenancePaymentByIdAsync(id);
-            
+
             if (payment == null)
             {
                 TempData["Error"] = "Payment not found";
@@ -318,7 +371,7 @@ public class PaymentController : Controller
         if (type == "rent")
         {
             var payment = await _paymentService.GetRentPaymentByIdAsync(id);
-            
+
             if (payment == null || payment.TenantId != userId)
             {
                 return Json(new { success = false, message = "Payment not found or unauthorized" });
@@ -330,7 +383,7 @@ public class PaymentController : Controller
             }
 
             var result = await _paymentService.UpdateRentPaymentStatusAsync(id, PaymentStatus.Cancelled);
-            
+
             if (result)
             {
                 return Json(new { success = true, message = "Payment cancelled successfully" });
@@ -339,7 +392,7 @@ public class PaymentController : Controller
         else if (type == "maintenance")
         {
             var payment = await _paymentService.GetMaintenancePaymentByIdAsync(id);
-            
+
             if (payment == null || payment.LandlordId != userId)
             {
                 return Json(new { success = false, message = "Payment not found or unauthorized" });
@@ -351,7 +404,7 @@ public class PaymentController : Controller
             }
 
             var result = await _paymentService.UpdateMaintenancePaymentStatusAsync(id, PaymentStatus.Cancelled);
-            
+
             if (result)
             {
                 return Json(new { success = true, message = "Payment cancelled successfully" });

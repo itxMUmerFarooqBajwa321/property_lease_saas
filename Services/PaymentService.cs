@@ -172,7 +172,7 @@ public class PaymentService : IPaymentService
     #region Maintenance Payments
 
     public async Task<MaintenancePayment> CreateMaintenancePaymentAsync(MaintenancePayment payment)
-    {
+    {   
         _context.MaintenancePayments.Add(payment);
         await _context.SaveChangesAsync();
         return payment;

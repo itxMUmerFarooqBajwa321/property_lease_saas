@@ -21,6 +21,7 @@
                         <th>Start Date</th>
                         <th>End Date</th>
                         <th>Status</th>
+                        <th>Rent</th> 
                     </tr>
                 </thead>
                 <tbody>
@@ -35,6 +36,16 @@
                             <td>
                                 <span class="badge bg-success">Active</span>
                             </td>
+                            @* <td>
+                                <form asp-controller="Payment" asp-action="MakeRentPayment" method="post">
+                                        @Html.AntiForgeryToken()
+                                    <input type="hidden" name="leaseId"  value="@lease.Id" />
+                                    <button type="submit" class="btn btn-primary">Pay Rent</button>
+                                </form>
+                            </td> *@
+                            <td> <span class="badge bg-success"><a asp-controller="Payment" asp-action="MakeRentPayment" asp-route-leaseId="@lease.Id.ToString()">Pay</a></span></td>
+                            @* <td> <span class="badge bg-success"><    a href="Payment/MakeRentPayment/@lease.Id">Pay</a></span></td> *@
+
                         </tr>
                     }
                 </tbody>

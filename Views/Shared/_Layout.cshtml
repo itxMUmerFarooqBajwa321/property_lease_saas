@@ -35,7 +35,10 @@
         <!-- Main content area -->
         <div class="main-content flex-grow-1 d-flex flex-column">
             <!-- Topbar -->
-            @Html.Partial("_Topbar")
+            @if(ViewData["Title"] != "LogIn" && ViewData["Title"]!="Register" && ViewData["Title"]!= "Logout")
+            {
+                @Html.Partial("_Topbar")
+            }
 
             @if (currentUser != null)
             {

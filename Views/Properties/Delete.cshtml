@@ -19,7 +19,8 @@
         </div>
     </div>
 
-    <form asp-action="Delete" asp-route-id="@Model.Id" method="post">
+    <form asp-action="DeleteConfirmed" asp-route-id="@Model.Id" method="post" asp-antiforgery="true">
+        
         <button type="submit" class="btn btn-danger">Delete</button>
         <a asp-action="My" class="btn btn-secondary">Cancel</a>
     </form>

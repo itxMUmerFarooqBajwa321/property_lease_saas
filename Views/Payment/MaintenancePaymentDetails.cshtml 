@@ -1,0 +1,511 @@
+@model property_lease_saas.Models.Entities.MaintenancePayment
+@{
+    ViewData["Title"] = "Maintenance Payment Details";
+    var userType = User.FindFirst("UserType")?.Value;
+}
+
+<link rel="stylesheet" href="~/css/dashboard.css" />
+
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <div>
+            <h1 class="dashboard-title">
+                <i class="bi bi-tools me-2"></i>Maintenance Payment Receipt
+            </h1>
+            <p class="dashboard-subtitle">Payment ID: @Model.Id</p>
+        </div>
+        <div class="dashboard-actions">
+            <button class="btn btn-outline-primary" onclick="window.print()">
+                <i class="bi bi-printer me-2"></i>Print Receipt
+            </button>
+            @if (userType == "Mechanic")
+            {
+                <a href="/Payment/MyEarnings" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-2"></i>Back
+                </a>
+            }
+            else
+            {
+                <a href="/Payment/PaidMaintenancePayments" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-2"></i>Back
+                </a>
+            }
+        </div>
+    </div>
+
+    <!-- Status Alert -->
+    @if (Model.Status == property_lease_saas.Models.Entities.PaymentStatus.Completed)
+    {
+        <div class="alert alert-success d-flex align-items-center mb-4">
+            <i class="bi bi-check-circle-fill me-3" style="font-size: 2rem;"></i>
+            <div>
+                <h5 class="mb-0">Payment Completed</h5>
+                <p class="mb-0">This payment has been successfully processed and confirmed.</p>
+            </div>
+        </div>
+    }
+    else if (Model.Status == property_lease_saas.Models.Entities.PaymentStatus.Pending)
+    {
+        <div class="alert alert-warning d-flex align-items-center mb-4">
+            <i class="bi bi-hourglass-split me-3" style="font-size: 2rem;"></i>
+            <div>
+                <h5 class="mb-0">Payment Pending</h5>
+                <p class="mb-0">
+                    @if (userType == "Mechanic")
+                    {
+                        <text>Awaiting confirmation from landlord.</text>
+                    }
+                    else
+                    {
+                        <text>Payment submitted, awaiting mechanic confirmation.</text>
+                    }
+                </p>
+            </div>
+        </div>
+    }
+
+    <div class="row">
+        <!-- Payment Receipt Card -->
+        <div class="col-md-8">
+            <div class="dashboard-card">
+                <div class="card-header bg-success text-white">
+                    <h3 class="card-title mb-0">
+                        <i class="bi bi-receipt-cutoff me-2"></i>Payment Invoice
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <!-- Payment Status -->
+                    <div class="row mb-4 pb-4 border-bottom">
+                        <div class="col-md-6">
+                            <h5>Payment Status</h5>
+                            <span class="badge @GetStatusBadgeClass(Model.Status) fs-6">
+                                @Model.Status
+                            </span>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <h5>Payment Date</h5>
+                            <p class="mb-0">
+                                @if (Model.Status == property_lease_saas.Models.Entities.PaymentStatus.Completed)
+                                {
+                                    <strong>@Model.PaymentDate.ToString("MMMM dd, yyyy")</strong>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Not yet completed</span>
+                                }
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Landlord Information -->
+                    <div class="row mb-4 pb-4 border-bottom">
+                        <div class="col-12">
+                            <h5 class="text-success mb-3">
+                                <i class="bi bi-building me-2"></i>Paid By (Landlord)
+                            </h5>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="text-muted small">Landlord Name</label>
+                            <p class="mb-2 fw-bold">@Model.LandlordName</p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="text-muted small">Landlord ID</label>
+                            <p class="mb-2"><code>@Model.LandlordId</code></p>
+                        </div>
+                    </div>
+
+                    <!-- Mechanic Information -->
+                    <div class="row mb-4 pb-4 border-bottom">
+                        <div class="col-12">
+                            <h5 class="text-success mb-3">
+                                <i class="bi bi-person-gear me-2"></i>Paid To (Mechanic)
+                            </h5>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="text-muted small">Mechanic Name</label>
+                            <p class="mb-2 fw-bold">@Model.MechanicName</p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="text-muted small">Mechanic ID</label>
+                            <p class="mb-2"><code>@Model.MechanicId</code></p>
+                        </div>
+                    </div>
+
+                    <!-- Work Information -->
+                    <div class="row mb-4 pb-4 border-bottom">
+                        <div class="col-12">
+                            <h5 class="text-success mb-3">
+                                <i class="bi bi-wrench me-2"></i>Work Information
+                            </h5>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label class="text-muted small">Work Description</label>
+                            <p class="mb-2 fw-bold fs-5">@Model.WorkDescription</p>
+                        </div>
+                        @if (Model.MaintenanceRequest != null)
+                        {
+                            <div class="col-md-6">
+                                <label class="text-muted small">Maintenance Request ID</label>
+                                <p class="mb-2"><code>@Model.MaintenanceRequestId</code></p>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="text-muted small">Work Status</label>
+                                <p class="mb-2">
+                                    <span class="badge bg-success">
+                                        @Model.MaintenanceRequest.Status
+                                    </span>
+                                </p>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Payment Details -->
+                    <div class="row mb-4 pb-4 border-bottom">
+                        <div class="col-12">
+                            <h5 class="text-success mb-3">
+                                <i class="bi bi-cash-stack me-2"></i>Payment Details
+                            </h5>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="text-muted small">Payment Method</label>
+                            <p class="mb-2">
+                                <i class="bi bi-credit-card me-2"></i>@Model.PaymentMethod
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="text-muted small">Transaction ID</label>
+                            <p class="mb-2">
+                                @if (!string.IsNullOrEmpty(Model.TransactionId))
+                                {
+                                    <code>@Model.TransactionId</code>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Not provided</span>
+                                }
+                            </p>
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <label class="text-muted small">Created On</label>
+                            <p class="mb-2">@Model.CreatedAt.ToString("MMMM dd, yyyy")</p>
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <label class="text-muted small">Completed On</label>
+                            <p class="mb-2">
+                                @if (Model.Status == property_lease_saas.Models.Entities.PaymentStatus.Completed)
+                                {
+                                    @Model.PaymentDate.ToString("MMMM dd, yyyy")
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Pending</span>
+                                }
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Amount -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5 class="text-success mb-3">
+                                <i class="bi bi-currency-rupee me-2"></i>Payment Amount
+                            </h5>
+                        </div>
+                        <div class="col-12">
+                            <table class="table table-borderless">
+                                <tbody>
+                                    <tr class="border-top border-bottom">
+                                        <td class="h5 mb-0">Total Amount Paid</td>
+                                        <td class="text-end h3 mb-0 text-success">
+                                            Rs. @Model.Amount.ToString("N0")
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Notes -->
+                    @if (!string.IsNullOrEmpty(Model.Notes))
+                    {
+                        <div class="row">
+                            <div class="col-12">
+                                <h5 class="text-success mb-3">
+                                    <i class="bi bi-sticky me-2"></i>Payment Notes
+                                </h5>
+                                <p class="border-start border-4 border-success ps-3 mb-0">
+                                    @Model.Notes
+                                </p>
+                            </div>
+                        </div>
+                    }
+
+                    <!-- Actions -->
+                    @if (Model.Status == property_lease_saas.Models.Entities.PaymentStatus.Pending)
+                    {
+                        <div class="row mt-4 pt-4 border-top">
+                            <div class="col-12">
+                                @if (userType == "Mechanic")
+                                {
+                                    <button class="btn btn-success btn-lg" onclick="confirmPayment()">
+                                        <i class="bi bi-check-circle me-2"></i>Confirm Payment Received
+                                    </button>
+                                }
+                                else if (userType == "Landlord")
+                                {
+                                    <button class="btn btn-danger" onclick="cancelPayment()">
+                                        <i class="bi bi-x-circle me-2"></i>Cancel Payment
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Info -->
+        <div class="col-md-4">
+            <!-- Timeline -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="bi bi-clock-history me-2"></i>Payment Timeline
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-icon bg-primary">
+                                <i class="bi bi-check-circle"></i>
+                            </div>
+                            <div class="timeline-content">
+                                <h6>Work Completed</h6>
+                                <p class="text-muted mb-0">
+                                    @if (Model.MaintenanceRequest?.CompletedAt.HasValue == true)
+                                    {
+                                        @Model.MaintenanceRequest.CompletedAt.Value.ToString("MMM dd, yyyy")
+                                    }
+                                    else
+                                    {
+                                        <text>Date unknown</text>
+                                    }
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-icon bg-success">
+                                <i class="bi bi-patch-check"></i>
+                            </div>
+                            <div class="timeline-content">
+                                <h6>Work Verified</h6>
+                                <p class="text-muted mb-0">
+                                    By Landlord
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-icon bg-info">
+                                <i class="bi bi-cash-coin"></i>
+                            </div>
+                            <div class="timeline-content">
+                                <h6>Payment Created</h6>
+                                <p class="text-muted mb-0">
+                                    @Model.CreatedAt.ToString("MMM dd, yyyy HH:mm")
+                                </p>
+                            </div>
+                        </div>
+
+                        @if (Model.Status == property_lease_saas.Models.Entities.PaymentStatus.Completed)
+                        {
+                            <div class="timeline-item">
+                                <div class="timeline-icon bg-success">
+                                    <i class="bi bi-check-circle-fill"></i>
+                                </div>
+                                <div class="timeline-content">
+                                    <h6>Payment Completed</h6>
+                                    <p class="text-muted mb-0">
+                                        @Model.PaymentDate.ToString("MMM dd, yyyy HH:mm")
+                                    </p>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Work Summary -->
+            @if (Model.MaintenanceRequest != null)
+            {
+                <div class="dashboard-card mt-3">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="bi bi-clipboard-check me-2"></i>Work Summary
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label class="text-muted small">Work Title</label>
+                            <p class="mb-0 fw-bold">@Model.MaintenanceRequest.Title</p>
+                        </div>
+                        @if (!string.IsNullOrEmpty(Model.MaintenanceRequest.Description))
+                        {
+                            <div class="mb-3">
+                                <label class="text-muted small">Description</label>
+                                <p class="mb-0 small">@Model.MaintenanceRequest.Description</p>
+                            </div>
+                        }
+                        <div class="mb-3">
+                            <label class="text-muted small">Status</label>
+                            <p class="mb-0">
+                                <span class="badge bg-success">
+                                    @Model.MaintenanceRequest.Status
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <!-- Payment Info -->
+            <div class="dashboard-card mt-3">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="bi bi-info-circle me-2"></i>Payment Info
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2">
+                            <i class="bi bi-calendar-plus text-primary me-2"></i>
+                            Created: @Model.CreatedAt.ToString("MMM dd, yyyy")
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-credit-card text-success me-2"></i>
+                            Method: @Model.PaymentMethod
+                        </li>
+                        @if (Model.Status == property_lease_saas.Models.Entities.PaymentStatus.Completed)
+                        {
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle text-success me-2"></i>
+                                Completed: @Model.PaymentDate.ToString("MMM dd, yyyy")
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.timeline {
+    position: relative;
+    padding-left: 40px;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #e5e7eb;
+}
+
+.timeline-item {
+    position: relative;
+    padding-bottom: 20px;
+}
+
+.timeline-icon {
+    position: absolute;
+    left: -40px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 14px;
+}
+
+.timeline-content h6 {
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+
+.timeline-content p {
+    font-size: 0.875rem;
+}
+
+@media print {
+    .dashboard-actions, .btn, .timeline { display: none !important; }
+}
+</style>
+
+@functions {
+    private string GetStatusBadgeClass(property_lease_saas.Models.Entities.PaymentStatus status)
+    {
+        return status switch
+        {
+            property_lease_saas.Models.Entities.PaymentStatus.Pending => "bg-warning",
+            property_lease_saas.Models.Entities.PaymentStatus.Processing => "bg-info",
+            property_lease_saas.Models.Entities.PaymentStatus.Completed => "bg-success",
+            property_lease_saas.Models.Entities.PaymentStatus.Failed => "bg-danger",
+            property_lease_saas.Models.Entities.PaymentStatus.Cancelled => "bg-secondary",
+            _ => "bg-secondary"
+        };
+    }
+}
+
+<script>
+function confirmPayment() {
+    if (!confirm('Confirm that you have received this payment?')) {
+        return;
+    }
+
+    fetch('/Payment/ConfirmMaintenancePaymentReceived', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ paymentId: '@Model.Id' })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            location.reload();
+        } else {
+            alert(data.message);
+        }
+    });
+}
+
+function cancelPayment() {
+    if (!confirm('Are you sure you want to cancel this payment?')) {
+        return;
+    }
+
+    fetch('/Payment/CancelPayment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+            id: '@Model.Id', 
+            type: 'maintenance' 
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            location.reload();
+        } else {
+            alert(data.message);
+        }
+    });
+}
+</script>

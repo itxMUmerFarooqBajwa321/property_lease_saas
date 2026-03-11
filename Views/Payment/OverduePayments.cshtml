@@ -1,0 +1,228 @@
+@model List<property_lease_saas.Models.Entities.RentPayment>
+@{
+    ViewData["Title"] = "Overdue Payments";
+}
+
+<link rel="stylesheet" href="~/css/dashboard.css" />
+
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <div>
+            <h1 class="dashboard-title">
+                <i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>Overdue Rent Payments
+            </h1>
+            <p class="dashboard-subtitle">Payments that are past their due date</p>
+        </div>
+        <div class="dashboard-actions">
+            <a href="/Payment/ReceivedRentPayments" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-2"></i>Back to All Payments
+            </a>
+        </div>
+    </div>
+
+    <!-- Alert Banner -->
+    @if (Model.Any())
+    {
+        <div class="alert alert-danger d-flex align-items-center mb-4" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-3" style="font-size: 2rem;"></i>
+            <div>
+                <h5 class="mb-1">Urgent: @Model.Count Overdue Payment(s)</h5>
+                <p class="mb-0">Total overdue amount: Rs. @Model.Sum(p => p.Amount + p.LateFee).ToString("N0")</p>
+            </div>
+        </div>
+    }
+
+    <!-- Overdue Payments List -->
+    <div class="dashboard-card">
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="bi bi-list-ul me-2"></i>Overdue Payment Details
+            </h3>
+        </div>
+        <div class="card-body">
+            @if (!Model.Any())
+            {
+                <div class="empty-state">
+                    <i class="bi bi-check-circle-fill text-success"></i>
+                    <p>No overdue payments!</p>
+                    <p class="text-muted">All tenants are up to date with their rent</p>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-danger">
+                            <tr>
+                                <th>Tenant</th>
+                                <th>Property</th>
+                                <th>Payment For</th>
+                                <th>Amount</th>
+                                <th>Due Date</th>
+                                <th>Days Overdue</th>
+                                <th>Late Fee</th>
+                                <th>Total Due</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var payment in Model.OrderBy(p => p.DueDate))
+                            {
+                                var daysOverdue = (DateTime.Now - payment.DueDate).Days;
+                                var totalDue = payment.Amount + payment.LateFee;
+
+                                <tr class="table-danger">
+                                    <td>
+                                        <strong>@payment.TenantName</strong>
+                                        <br />
+                                        <small class="text-muted">ID: @payment.TenantId.Substring(0, 8)...</small>
+                                    </td>
+                                    <td>
+                                        <strong>@payment.Lease?.Property?.Title</strong>
+                                        <br />
+                                        <small class="text-muted">@payment.Lease?.Property?.Address</small>
+                                    </td>
+                                    <td>
+                                        <strong>@payment.TransactionId</strong>
+                                    </td>
+                                    <td>
+                                        <strong>Rs. @payment.Amount.ToString("N0")</strong>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-danger">
+                                            <i class="bi bi-calendar-x"></i>
+                                            @payment.DueDate.ToString("MMM dd, yyyy")
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <strong class="text-danger">@daysOverdue days</strong>
+                                    </td>
+                                    <td>
+                                        @if (payment.LateFee > 0)
+                                        {
+                                            <span class="text-danger">Rs. @payment.LateFee.ToString("N0")</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">Rs. 0</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <strong class="text-danger h6 mb-0">Rs. @totalDue.ToString("N0")</strong>
+                                    </td>
+                                    <td>
+                                        <a href="/Payment/PaymentDetails/@payment.Id?type=rent" 
+                                           class="btn btn-sm btn-outline-primary"
+                                           title="View Details">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <button class="btn btn-sm btn-success" 
+                                                onclick="confirmPayment('@payment.Id')"
+                                                title="Mark as Paid">
+                                            <i class="bi bi-check-circle"></i>
+                                        </button>
+                                        <a href="mailto:@payment.TenantName" 
+                                           class="btn btn-sm btn-warning"
+                                           title="Contact Tenant">
+                                            <i class="bi bi-envelope"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot class="table-danger">
+                            <tr>
+                                <td colspan="7" class="text-end fw-bold">Total Overdue Amount:</td>
+                                <td colspan="2" class="fw-bold h5 mb-0 text-danger">
+                                    Rs. @Model.Sum(p => p.Amount + p.LateFee).ToString("N0")
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+                <!-- Actions Guide -->
+                <div class="alert alert-info mt-4">
+                    <h6><i class="bi bi-info-circle me-2"></i>Recommended Actions</h6>
+                    <ul class="mb-0">
+                        <li>Contact tenants immediately about overdue payments</li>
+                        <li>Review lease agreements for payment terms</li>
+                        <li>Consider late fee policies (currently 5% of rent amount)</li>
+                        <li>Document all communication regarding overdue payments</li>
+                        <li>For payments overdue more than 30 days, review legal options</li>
+                    </ul>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Statistics -->
+    @if (Model.Any())
+    {
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <div class="dashboard-card">
+                    <div class="card-body text-center">
+                        <i class="bi bi-calendar-x text-danger" style="font-size: 2.5rem;"></i>
+                        <h3 class="mt-2 mb-0">@Model.Count</h3>
+                        <p class="text-muted mb-0">Overdue Payments</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="dashboard-card">
+                    <div class="card-body text-center">
+                        <i class="bi bi-currency-rupee text-warning" style="font-size: 2.5rem;"></i>
+                        <h3 class="mt-2 mb-0">Rs. @Model.Sum(p => p.Amount).ToString("N0")</h3>
+                        <p class="text-muted mb-0">Total Rent Owed</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="dashboard-card">
+                    <div class="card-body text-center">
+                        <i class="bi bi-exclamation-triangle text-danger" style="font-size: 2.5rem;"></i>
+                        <h3 class="mt-2 mb-0">Rs. @Model.Sum(p => p.LateFee).ToString("N0")</h3>
+                        <p class="text-muted mb-0">Total Late Fees</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<script>
+function confirmPayment(paymentId) {
+    const transactionId = prompt('Enter transaction/confirmation ID (optional):');
+    
+    if (transactionId === null) return; // Cancelled
+    
+    if (!confirm('Confirm that you have received this overdue payment?')) {
+        return;
+    }
+
+    fetch('/Payment/ConfirmRentPayment', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+            paymentId: paymentId, 
+            transactionId: transactionId 
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            location.reload();
+        } else {
+            alert(data.message);
+        }
+    })
+    .catch(error => {
+        alert('An error occurred');
+        console.error('Error:', error);
+    });
+}
+</script>

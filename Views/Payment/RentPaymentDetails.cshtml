@@ -1,0 +1,466 @@
+@model property_lease_saas.Models.Entities.RentPayment
+@{
+    ViewData["Title"] = "Rent Payment Details";
+    var userType = User.FindFirst("UserType")?.Value;
+    var isOverdue = Model.Status == property_lease_saas.Models.Entities.PaymentStatus.Pending 
+                   && Model.DueDate < DateTime.Now;
+    var daysOverdue = isOverdue ? (DateTime.Now - Model.DueDate).Days : 0;
+}
+
+<link rel="stylesheet" href="~/css/dashboard.css" />
+
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <div>
+            <h1 class="dashboard-title">
+                <i class="bi bi-receipt me-2"></i>Rent Payment Receipt
+            </h1>
+            <p class="dashboard-subtitle">Payment ID: @Model.Id</p>
+        </div>
+        <div class="dashboard-actions">
+            <button class="btn btn-outline-primary" onclick="window.print()">
+                <i class="bi bi-printer me-2"></i>Print Receipt
+            </button>
+            @if (userType == "Tenant")
+            {
+                <a href="/Payment/MyRentPayments" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-2"></i>Back
+                </a>
+            }
+            else
+            {
+                <a href="/Payment/ReceivedRentPayments" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-2"></i>Back
+                </a>
+            }
+        </div>
+    </div>
+
+    <!-- Status Alert -->
+    @if (Model.Status == property_lease_saas.Models.Entities.PaymentStatus.Completed)
+    {
+        <div class="alert alert-success d-flex align-items-center mb-4">
+            <i class="bi bi-check-circle-fill me-3" style="font-size: 2rem;"></i>
+            <div>
+                <h5 class="mb-0">Payment Completed</h5>
+                <p class="mb-0">This payment has been successfully processed and confirmed.</p>
+            </div>
+        </div>
+    }
+    else if (isOverdue)
+    {
+        <div class="alert alert-danger d-flex align-items-center mb-4">
+            <i class="bi bi-exclamation-triangle-fill me-3" style="font-size: 2rem;"></i>
+            <div>
+                <h5 class="mb-0">Payment Overdue</h5>
+                <p class="mb-0">This payment is @daysOverdue days overdue. Please pay immediately to avoid additional late fees.</p>
+            </div>
+        </div>
+    }
+    else if (Model.Status == property_lease_saas.Models.Entities.PaymentStatus.Pending)
+    {
+        <div class="alert alert-warning d-flex align-items-center mb-4">
+            <i class="bi bi-hourglass-split me-3" style="font-size: 2rem;"></i>
+            <div>
+                <h5 class="mb-0">Payment Pending</h5>
+                <p class="mb-0">Awaiting landlord confirmation of payment receipt.</p>
+            </div>
+        </div>
+    }
+
+    <div class="row">
+        <!-- Payment Receipt Card -->
+        <div class="col-md-8">
+            <div class="dashboard-card">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="card-title mb-0">
+                        <i class="bi bi-receipt-cutoff me-2"></i>Payment Receipt
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <!-- Payment Status -->
+                    <div class="row mb-4 pb-4 border-bottom">
+                        <div class="col-md-6">
+                            <h5>Payment Status</h5>
+                            <span class="badge @GetStatusBadgeClass(Model.Status) fs-6">
+                                @Model.Status
+                            </span>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <h5>Payment Date</h5>
+                            <p class="mb-0">
+                                @if (Model.Status == property_lease_saas.Models.Entities.PaymentStatus.Completed)
+                                {
+                                    <strong>@Model.PaymentDate.ToString("MMMM dd, yyyy")</strong>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Not yet completed</span>
+                                }
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Tenant Information -->
+                    <div class="row mb-4 pb-4 border-bottom">
+                        <div class="col-12">
+                            <h5 class="text-primary mb-3">
+                                <i class="bi bi-person-circle me-2"></i>Tenant Information
+                            </h5>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="text-muted small">Tenant Name</label>
+                            <p class="mb-2 fw-bold">@Model.TenantName</p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="text-muted small">Tenant ID</label>
+                            <p class="mb-2"><code>@Model.TenantId</code></p>
+                        </div>
+                    </div>
+
+                    <!-- Landlord Information -->
+                    <div class="row mb-4 pb-4 border-bottom">
+                        <div class="col-12">
+                            <h5 class="text-primary mb-3">
+                                <i class="bi bi-building me-2"></i>Landlord Information
+                            </h5>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="text-muted small">Landlord Name</label>
+                            <p class="mb-2 fw-bold">@Model.LandlordName</p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="text-muted small">Landlord ID</label>
+                            <p class="mb-2"><code>@Model.LandlordId</code></p>
+                        </div>
+                    </div>
+
+                    <!-- Property Information -->
+                    <div class="row mb-4 pb-4 border-bottom">
+                        <div class="col-12">
+                            <h5 class="text-primary mb-3">
+                                <i class="bi bi-house me-2"></i>Property Information
+                            </h5>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="text-muted small">Property</label>
+                            <p class="mb-2 fw-bold">@Model.Lease?.Property?.Title</p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="text-muted small">Address</label>
+                            <p class="mb-2">@Model.Lease?.Property?.Address</p>
+                        </div>
+                    </div>
+
+                    <!-- Payment Details -->
+                    <div class="row mb-4 pb-4 border-bottom">
+                        <div class="col-12">
+                            <h5 class="text-primary mb-3">
+                                <i class="bi bi-cash-stack me-2"></i>Payment Details
+                            </h5>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="text-muted small">Payment For</label>
+                            <p class="mb-2 fw-bold">@Model.PaymentFor</p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="text-muted small">Due Date</label>
+                            <p class="mb-2">
+                                @Model.DueDate.ToString("MMMM dd, yyyy")
+                                @if (isOverdue)
+                                {
+                                    <span class="badge bg-danger ms-2">@daysOverdue days overdue</span>
+                                }
+                            </p>
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <label class="text-muted small">Payment Method</label>
+                            <p class="mb-2">
+                                <i class="bi bi-credit-card me-2"></i>@Model.PaymentMethod
+                            </p>
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <label class="text-muted small">Transaction ID</label>
+                            <p class="mb-2">
+                                @if (!string.IsNullOrEmpty(Model.TransactionId))
+                                {
+                                    <code>@Model.TransactionId</code>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Not provided</span>
+                                }
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Amount Breakdown -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5 class="text-primary mb-3">
+                                <i class="bi bi-calculator me-2"></i>Amount Breakdown
+                            </h5>
+                        </div>
+                        <div class="col-12">
+                            <table class="table table-borderless">
+                                <tbody>
+                                    <tr>
+                                        <td class="text-muted">Rent Amount</td>
+                                        <td class="text-end fw-bold">Rs. @Model.Amount.ToString("N0")</td>
+                                    </tr>
+                                    @if (Model.LateFee > 0)
+                                    {
+                                        <tr class="text-danger">
+                                            <td>Late Fee (5%)</td>
+                                            <td class="text-end fw-bold">Rs. @Model.LateFee.ToString("N0")</td>
+                                        </tr>
+                                    }
+                                    <tr class="border-top">
+                                        <td class="h5 mb-0">Total Amount</td>
+                                        <td class="text-end h4 mb-0 text-primary">
+                                            Rs. @((Model.Amount + Model.LateFee).ToString("N0"))
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Notes -->
+                    @if (!string.IsNullOrEmpty(Model.Notes))
+                    {
+                        <div class="row">
+                            <div class="col-12">
+                                <h5 class="text-primary mb-3">
+                                    <i class="bi bi-sticky me-2"></i>Notes
+                                </h5>
+                                <p class="border-start border-4 border-primary ps-3 mb-0">
+                                    @Model.Notes
+                                </p>
+                            </div>
+                        </div>
+                    }
+
+                    <!-- Actions -->
+                    @if (Model.Status == property_lease_saas.Models.Entities.PaymentStatus.Pending)
+                    {
+                        <div class="row mt-4 pt-4 border-top">
+                            <div class="col-12">
+                                @if (userType == "Landlord")
+                                {
+                                    <button class="btn btn-success btn-lg" onclick="confirmPayment()">
+                                        <i class="bi bi-check-circle me-2"></i>Confirm Payment Received
+                                    </button>
+                                }
+                                else if (userType == "Tenant")
+                                {
+                                    <button class="btn btn-danger" onclick="cancelPayment()">
+                                        <i class="bi bi-x-circle me-2"></i>Cancel Payment
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Timeline / History -->
+        <div class="col-md-4">
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="bi bi-clock-history me-2"></i>Payment Timeline
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-icon bg-primary">
+                                <i class="bi bi-plus-circle"></i>
+                            </div>
+                            <div class="timeline-content">
+                                <h6>Payment Created</h6>
+                                <p class="text-muted mb-0">
+                                    @Model.CreatedAt.ToString("MMM dd, yyyy HH:mm")
+                                </p>
+                            </div>
+                        </div>
+
+                        @if (Model.Status == property_lease_saas.Models.Entities.PaymentStatus.Completed)
+                        {
+                            <div class="timeline-item">
+                                <div class="timeline-icon bg-success">
+                                    <i class="bi bi-check-circle"></i>
+                                </div>
+                                <div class="timeline-content">
+                                    <h6>Payment Completed</h6>
+                                    <p class="text-muted mb-0">
+                                        @Model.PaymentDate.ToString("MMM dd, yyyy HH:mm")
+                                    </p>
+                                </div>
+                            </div>
+                        }
+                        else if (Model.Status == property_lease_saas.Models.Entities.PaymentStatus.Cancelled)
+                        {
+                            <div class="timeline-item">
+                                <div class="timeline-icon bg-secondary">
+                                    <i class="bi bi-x-circle"></i>
+                                </div>
+                                <div class="timeline-content">
+                                    <h6>Payment Cancelled</h6>
+                                    <p class="text-muted mb-0">Cancelled</p>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Info -->
+            <div class="dashboard-card mt-3">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="bi bi-info-circle me-2"></i>Quick Info
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2">
+                            <i class="bi bi-calendar-check text-primary me-2"></i>
+                            Created: @Model.CreatedAt.ToString("MMM dd, yyyy")
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-calendar-event text-warning me-2"></i>
+                            Due: @Model.DueDate.ToString("MMM dd, yyyy")
+                        </li>
+                        @if (Model.IsLate)
+                        {
+                            <li class="mb-2">
+                                <i class="bi bi-exclamation-triangle text-danger me-2"></i>
+                                Late Payment
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.timeline {
+    position: relative;
+    padding-left: 40px;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #e5e7eb;
+}
+
+.timeline-item {
+    position: relative;
+    padding-bottom: 20px;
+}
+
+.timeline-icon {
+    position: absolute;
+    left: -40px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 14px;
+}
+
+.timeline-content h6 {
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+
+.timeline-content p {
+    font-size: 0.875rem;
+}
+
+@@media print {
+    .dashboard-actions, .btn, .timeline { display: none !important; }
+}
+</style>
+
+@functions {
+    private string GetStatusBadgeClass(property_lease_saas.Models.Entities.PaymentStatus status)
+    {
+        return status switch
+        {
+            property_lease_saas.Models.Entities.PaymentStatus.Pending => "bg-warning",
+            property_lease_saas.Models.Entities.PaymentStatus.Processing => "bg-info",
+            property_lease_saas.Models.Entities.PaymentStatus.Completed => "bg-success",
+            property_lease_saas.Models.Entities.PaymentStatus.Failed => "bg-danger",
+            property_lease_saas.Models.Entities.PaymentStatus.Cancelled => "bg-secondary",
+            _ => "bg-secondary"
+        };
+    }
+}
+
+<script>
+function confirmPayment() {
+    const transactionId = prompt('Enter transaction/confirmation ID (optional):');
+    
+    if (transactionId === null) return;
+    
+    if (!confirm('Confirm that you have received this payment?')) {
+        return;
+    }
+
+    fetch('/Payment/ConfirmRentPayment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+            paymentId: '@Model.Id', 
+            transactionId: transactionId 
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            location.reload();
+        } else {
+            alert(data.message);
+        }
+    });
+}
+
+function cancelPayment() {
+    if (!confirm('Are you sure you want to cancel this payment?')) {
+        return;
+    }
+
+    fetch('/Payment/CancelPayment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+            id: '@Model.Id', 
+            type: 'rent' 
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            location.reload();
+        } else {
+            alert(data.message);
+        }
+    });
+}
+</script>

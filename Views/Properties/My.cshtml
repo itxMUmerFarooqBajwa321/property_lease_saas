@@ -21,10 +21,7 @@
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#quickActionModal">Add Property</button> *@
     </div>
     
-    @if (User.IsTenant())
-    {
-        
-    }
+
     <div class="table-responsive">
         <table class="table table-hover">
             <thead>
@@ -72,4 +69,5 @@
 
         </table>
     </div>
+    <div>@ViewBag.message</div>
 </div>

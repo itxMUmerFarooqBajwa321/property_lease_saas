@@ -170,12 +170,16 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUGF5bWVudC9NeVJlbnRQYXltZW50cy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/Payment/PaidMaintenancePayments.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUGF5bWVudC9QYWlkTWFpbnRlbmFuY2VQYXltZW50cy5jc2h0bWw=
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/Payment/OverduePayments.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUGF5bWVudC9PdmVyZHVlUGF5bWVudHMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/Payment/ReceivedRentPayments.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUGF5bWVudC9SZWNlaXZlZFJlbnRQYXltZW50cy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/Payment/RentPaymentDetails.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUGF5bWVudC9SZW50UGF5bWVudERldGFpbHMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/Views/Properties/Available.cshtml]
