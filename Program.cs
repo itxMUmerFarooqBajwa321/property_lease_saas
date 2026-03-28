@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using property_lease_saas.Services;
 using property_lease_saas.Models.Repositories;
 using property_lease_saas.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
 // Add these using statements
 using property_lease_saas.Hubs; // We'll create this folder
 
@@ -45,6 +46,13 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.LoginPath = "/Identity/Account/Login";
     options.LogoutPath = "/Identity/Account/Logout";
     options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(30); // session timeout
+    options.SlidingExpiration = true;                 // don't auto-renew
+    options.Cookie.IsEssential = true;
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;    
+    options.Cookie.MaxAge = null; // <-- key line
 });
 
 builder.Services.AddTransient<IEmailSender, EmailSender>();

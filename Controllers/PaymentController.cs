@@ -191,16 +191,21 @@ public class PaymentController : Controller
             .Include(mr => mr.Applications)
             .ThenInclude(a => a.MechanicId)
             .FirstOrDefaultAsync(mr => mr.Id.ToString() == maintenanceRequestId);
+        
+        //MaintenancePayment payment = new MaintenancePayment() create an object of maintenacepaymnet and pass it in method written in next line to write this payment in DB
+        //_paymentService.CreateMaintenancePaymentAsync();  
 
         if (maintenanceRequest == null || maintenanceRequest.LandlordId != User.UserId())
         {
             TempData["Error"] = "Maintenance request not found or unauthorized";
+            Console.WriteLine(TempData["Error"]);
             return RedirectToAction("PaidMaintenancePayments");
         }
 
         if (maintenanceRequest.Status != MaintenanceRequestStatus.Verified)
         {
             TempData["Error"] = "Maintenance work must be verified before payment";
+            Console.WriteLine(TempData["Error"]);
             return RedirectToAction("PaidMaintenancePayments");
         }
 
@@ -210,6 +215,7 @@ public class PaymentController : Controller
         if (acceptedApplication == null)
         {
             TempData["Error"] = "No accepted application found";
+            Console.WriteLine(TempData["Error"]);
             return RedirectToAction("PaidMaintenancePayments");
         }
 

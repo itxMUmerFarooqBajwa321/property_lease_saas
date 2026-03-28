@@ -3,25 +3,36 @@ using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Mvc;
 using property_lease_saas.Data;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore; // Add this
 
 namespace property_lease_saas.Controllers
 {
     [Authorize(Policy = "LandlordOnly")]
-    public class TenantsController:Controller
+    public class TenantsController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public IActionResult Index()
+        // Add constructor
+        public TenantsController(ApplicationDbContext context)
         {
-            var leasedProperties= _context.Properties
-                .Where(p=> p.IsTaken==true)
-                .ToList();
-            
-            var tenants= _context.Users.Where(u => u.UserType== "Tenant").ToList();
-
-            //var tenants = leasedProperties.Where(p=> p==p);
-            return View(tenants);   
+            _context = context;
         }
 
+        public async Task<IActionResult> Index()
+        {
+            // If you need leased properties, store them or use them
+            var leasedProperties = await _context.Properties
+                .Where(p => p.IsTaken == true)
+                .ToListAsync();
+            
+            var tenants = await _context.Users
+                .Where(u => u.UserType == "Tenant")
+                .ToListAsync();
+
+            // You might want to pass both to view using a ViewModel
+            // ViewBag.LeasedProperties = leasedProperties;
+            
+            return View(tenants);
+        }
     }
 }
