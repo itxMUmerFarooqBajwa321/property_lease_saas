@@ -5,7 +5,7 @@ using property_lease_saas.Services;
 
 namespace property_lease_saas.Controllers
 {
-    [Authorize]
+    // [Authorize]
     public class DashboardController : Controller
     {
         private readonly IDashboardService _dashboardService;
