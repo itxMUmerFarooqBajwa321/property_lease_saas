@@ -260,3 +260,4 @@
 /home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/obj/Debug/net8.0/property-lease-saas.pdb
 /home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/obj/Debug/net8.0/property-lease-saas.genruntimeconfig.cache
 /home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/obj/Debug/net8.0/ref/property-lease-saas.dll
+/home/muhammad-umer/desktop/umerf23/semester_5/web/semester-project/property-lease-saas/bin/Debug/net8.0/App_Data/app.db
